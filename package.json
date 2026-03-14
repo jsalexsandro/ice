@@ -1,0 +1,14 @@
+{
+  "name": "ice-lang",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "bun run main.ts",
+    "dev": "bun run main.ts",
+    "test": "bun run test/parser/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

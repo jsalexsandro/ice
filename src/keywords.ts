@@ -1,0 +1,33 @@
+export const KEYWORDS = [
+  'func',
+  'val',
+  'const',
+  'if',
+  'else',
+  'for',
+  'while',
+  'return',
+  'class',
+  'import',
+  'export',
+  'from',
+  'true',
+  'false',
+  'null',
+  'new',
+  'this',
+  'async',
+  'await',
+  'try',
+  'catch',
+  'throw',
+]
+
+
+export const TypesNative = [
+  'int',
+  "float",
+  "bool",
+  "string",
+  "void"
+]
