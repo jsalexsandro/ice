@@ -475,3 +475,14 @@ val a = [1, 2, ]
 ```
 **Resultado:** ✅ Erro lançado
 - `ParserError: Expected expression but got 'RBRACKET'`
+
+---
+
+## Unary Expression Tests
+
+### 54. unary minus em expressão
+```ice
+val x = -5 * 2
+```
+**Resultado:** ✅ Sucesso
+- `-5 * 2` é parsed como: Binary(Unary(-, 5), *, 2)
