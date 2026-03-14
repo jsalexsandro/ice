@@ -486,3 +486,29 @@ val x = -5 * 2
 ```
 **Resultado:** ✅ Sucesso
 - `-5 * 2` é parsed como: Binary(Unary(-, 5), *, 2)
+
+---
+
+## Advanced Expression Tests
+
+### 55. associatividade de assignment
+```ice
+a = b = 10
+```
+**Resultado:** ✅ Sucesso
+- Parsed como: `Assign(a, Assign(b, 10))`
+- Assignment é right-associative
+
+### 56. chamada + precedência
+```ice
+sum(1,2) * 3 + 4
+```
+**Resultado:** ✅ Sucesso
+- Parsed como: `Binary(Binary(Call(sum, 1, 2), *, 3), +, 4)`
+
+### 57. chamada encadeada
+```ice
+print(sum(1,2))(3)
+```
+**Resultado:** ✅ Sucesso
+- Parsed como: `Call(Call(print, Call(sum, 1, 2)), 3)`

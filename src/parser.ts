@@ -31,6 +31,7 @@ export class Parser {
     [TokenType.SLASH, 6],
     [TokenType.MODULO, 6],
     [TokenType.ASSIGN, 10],
+    [TokenType.LPAREN, 20],
   ])
 
   private getPrecedence(type: string): number {
@@ -331,6 +332,28 @@ export class Parser {
         continue
       }
 
+      if (operator.type === TokenType.LPAREN) {
+        const args: Expr[] = []
+        
+        if (this.current().type !== TokenType.RPAREN) {
+          args.push(this.parseExpression())
+          
+          while (this.current().type === TokenType.COMMA) {
+            this.advance()
+            args.push(this.parseExpression())
+          }
+        }
+        
+        this.expect(TokenType.RPAREN)
+        
+        left = {
+          kind: "Call",
+          callee: left,
+          args
+        }
+        continue
+      }
+
       const nextMinPrecedence = operatorPrecedence
       const right = this.parseExpression(nextMinPrecedence)
 
@@ -426,10 +449,6 @@ export class Parser {
 
   private parseIdentifier(): IdentifierExpr {
     const token = this.advance()
-
-    if (this.current().type === TokenType.LPAREN) {
-      return this.parseCall(token)
-    }
 
     return {
       kind: "Identifier",
