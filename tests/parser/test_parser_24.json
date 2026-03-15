@@ -1,8 +1,7 @@
 {
   "id": "parser_24",
   "reference": "arquivo parser.test.md - teste 24",
-  "description": "função sem parâmetros",
-  "code": "func test() {\n  val x = 10\n}",
+  "code": "func test() { val x = 10 }",
   "result": {
     "kind": "Program",
     "body": [
@@ -25,8 +24,8 @@
               "name": {
                 "type": "IDENTIFIER",
                 "value": "x",
-                "line": 2,
-                "column": 6
+                "line": 1,
+                "column": 18
               },
               "initializer": {
                 "kind": "Literal",

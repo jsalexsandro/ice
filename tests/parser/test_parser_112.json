@@ -1,0 +1,56 @@
+{
+  "id": "parser_112",
+  "reference": "arquivo parser.test.md - teste 112",
+  "code": "const message: string = \"Hello\" + \" \" + \"World\"",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "const",
+        "typeAnnotation": {
+          "type": "TYPE_STRING",
+          "value": "string",
+          "line": 1,
+          "column": 15
+        },
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "message",
+          "line": 1,
+          "column": 6
+        },
+        "initializer": {
+          "kind": "Binary",
+          "left": {
+            "kind": "Literal",
+            "value": "Hello"
+          },
+          "operator": {
+            "type": "PLUS",
+            "value": "+",
+            "line": 1,
+            "column": 32
+          },
+          "right": {
+            "kind": "Binary",
+            "left": {
+              "kind": "Literal",
+              "value": " "
+            },
+            "operator": {
+              "type": "PLUS",
+              "value": "+",
+              "line": 1,
+              "column": 38
+            },
+            "right": {
+              "kind": "Literal",
+              "value": "World"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

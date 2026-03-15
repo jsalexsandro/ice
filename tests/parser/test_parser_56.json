@@ -1,0 +1,61 @@
+{
+  "id": "parser_56",
+  "reference": "arquivo parser.test.md - teste 56",
+  "code": "sum(1,2) * 3 + 4",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "Binary",
+          "left": {
+            "kind": "Binary",
+            "left": {
+              "kind": "Call",
+              "callee": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "sum",
+                  "line": 1,
+                  "column": 0
+                }
+              },
+              "args": [
+                {
+                  "kind": "Literal",
+                  "value": 1
+                },
+                {
+                  "kind": "Literal",
+                  "value": 2
+                }
+              ]
+            },
+            "operator": {
+              "type": "STAR",
+              "value": "*",
+              "line": 1,
+              "column": 9
+            },
+            "right": {
+              "kind": "Literal",
+              "value": 3
+            }
+          },
+          "operator": {
+            "type": "PLUS",
+            "value": "+",
+            "line": 1,
+            "column": 13
+          },
+          "right": {
+            "kind": "Literal",
+            "value": 4
+          }
+        }
+      }
+    ]
+  }
+}

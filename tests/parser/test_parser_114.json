@@ -1,0 +1,83 @@
+{
+  "id": "parser_114",
+  "reference": "arquivo parser.test.md - teste 114",
+  "code": "val flag = !!true && !!!false",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "flag",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Logical",
+          "left": {
+            "kind": "Unary",
+            "operator": {
+              "type": "NOT",
+              "value": "!",
+              "line": 1,
+              "column": 11
+            },
+            "right": {
+              "kind": "Unary",
+              "operator": {
+                "type": "NOT",
+                "value": "!",
+                "line": 1,
+                "column": 12
+              },
+              "right": {
+                "kind": "Literal",
+                "value": true
+              }
+            }
+          },
+          "operator": {
+            "type": "AND",
+            "value": "&&",
+            "line": 1,
+            "column": 18
+          },
+          "right": {
+            "kind": "Unary",
+            "operator": {
+              "type": "NOT",
+              "value": "!",
+              "line": 1,
+              "column": 21
+            },
+            "right": {
+              "kind": "Unary",
+              "operator": {
+                "type": "NOT",
+                "value": "!",
+                "line": 1,
+                "column": 22
+              },
+              "right": {
+                "kind": "Unary",
+                "operator": {
+                  "type": "NOT",
+                  "value": "!",
+                  "line": 1,
+                  "column": 23
+                },
+                "right": {
+                  "kind": "Literal",
+                  "value": false
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "id": "parser_77",
+  "reference": "arquivo parser.test.md - teste 77",
+  "code": "arr[1",
+  "result": "Expected token RBRACKET but got EOF"
+}

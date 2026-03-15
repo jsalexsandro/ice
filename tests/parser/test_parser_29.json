@@ -1,8 +1,7 @@
 {
   "id": "parser_29",
   "reference": "arquivo parser.test.md - teste 29",
-  "description": "return com expressão",
-  "code": "func test(): int {\n  return 5 + 5\n}",
+  "code": "func test(): int { return 5 + 5 }",
   "result": {
     "kind": "Program",
     "body": [
@@ -35,8 +34,8 @@
                 "operator": {
                   "type": "PLUS",
                   "value": "+",
-                  "line": 2,
-                  "column": 11
+                  "line": 1,
+                  "column": 28
                 },
                 "right": {
                   "kind": "Literal",

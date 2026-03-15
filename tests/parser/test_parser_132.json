@@ -1,0 +1,234 @@
+{
+  "id": "parser_132",
+  "reference": "arquivo parser.test.md - teste 132",
+  "code": "val result = -a * b + c / (d + e * f) >= g && !(h < i || j == k)",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "result",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Logical",
+          "left": {
+            "kind": "Binary",
+            "left": {
+              "kind": "Binary",
+              "left": {
+                "kind": "Binary",
+                "left": {
+                  "kind": "Unary",
+                  "operator": {
+                    "type": "MINUS",
+                    "value": "-",
+                    "line": 1,
+                    "column": 13
+                  },
+                  "right": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "a",
+                      "line": 1,
+                      "column": 14
+                    }
+                  }
+                },
+                "operator": {
+                  "type": "STAR",
+                  "value": "*",
+                  "line": 1,
+                  "column": 16
+                },
+                "right": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "b",
+                    "line": 1,
+                    "column": 18
+                  }
+                }
+              },
+              "operator": {
+                "type": "PLUS",
+                "value": "+",
+                "line": 1,
+                "column": 20
+              },
+              "right": {
+                "kind": "Binary",
+                "left": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "c",
+                    "line": 1,
+                    "column": 22
+                  }
+                },
+                "operator": {
+                  "type": "SLASH",
+                  "value": "/",
+                  "line": 1,
+                  "column": 24
+                },
+                "right": {
+                  "kind": "Group",
+                  "expression": {
+                    "kind": "Binary",
+                    "left": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "d",
+                        "line": 1,
+                        "column": 27
+                      }
+                    },
+                    "operator": {
+                      "type": "PLUS",
+                      "value": "+",
+                      "line": 1,
+                      "column": 29
+                    },
+                    "right": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "e",
+                          "line": 1,
+                          "column": 31
+                        }
+                      },
+                      "operator": {
+                        "type": "STAR",
+                        "value": "*",
+                        "line": 1,
+                        "column": 33
+                      },
+                      "right": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "f",
+                          "line": 1,
+                          "column": 35
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "operator": {
+              "type": "GREATER_EQUAL",
+              "value": ">=",
+              "line": 1,
+              "column": 38
+            },
+            "right": {
+              "kind": "Identifier",
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "g",
+                "line": 1,
+                "column": 41
+              }
+            }
+          },
+          "operator": {
+            "type": "AND",
+            "value": "&&",
+            "line": 1,
+            "column": 43
+          },
+          "right": {
+            "kind": "Unary",
+            "operator": {
+              "type": "NOT",
+              "value": "!",
+              "line": 1,
+              "column": 46
+            },
+            "right": {
+              "kind": "Group",
+              "expression": {
+                "kind": "Logical",
+                "left": {
+                  "kind": "Binary",
+                  "left": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "h",
+                      "line": 1,
+                      "column": 48
+                    }
+                  },
+                  "operator": {
+                    "type": "LESS_THAN",
+                    "value": "<",
+                    "line": 1,
+                    "column": 50
+                  },
+                  "right": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "i",
+                      "line": 1,
+                      "column": 52
+                    }
+                  }
+                },
+                "operator": {
+                  "type": "OR",
+                  "value": "||",
+                  "line": 1,
+                  "column": 54
+                },
+                "right": {
+                  "kind": "Binary",
+                  "left": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "j",
+                      "line": 1,
+                      "column": 57
+                    }
+                  },
+                  "operator": {
+                    "type": "EQUAL",
+                    "value": "==",
+                    "line": 1,
+                    "column": 59
+                  },
+                  "right": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "k",
+                      "line": 1,
+                      "column": 62
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

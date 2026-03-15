@@ -1,0 +1,52 @@
+{
+  "id": "parser_36",
+  "reference": "arquivo parser.test.md - teste 36",
+  "code": "x = a + b",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "Assign",
+          "name": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "x",
+              "line": 1,
+              "column": 0
+            }
+          },
+          "value": {
+            "kind": "Binary",
+            "left": {
+              "kind": "Identifier",
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "a",
+                "line": 1,
+                "column": 4
+              }
+            },
+            "operator": {
+              "type": "PLUS",
+              "value": "+",
+              "line": 1,
+              "column": 6
+            },
+            "right": {
+              "kind": "Identifier",
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "b",
+                "line": 1,
+                "column": 8
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

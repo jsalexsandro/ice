@@ -1,8 +1,7 @@
 {
   "id": "parser_23",
   "reference": "arquivo parser.test.md - teste 23",
-  "description": "while com expressão condicional",
-  "code": "while (x > 0) {\n  val a = 1\n}",
+  "code": "while (x > 0) { val a = 1 }",
   "result": {
     "kind": "Program",
     "body": [
@@ -40,8 +39,8 @@
               "name": {
                 "type": "IDENTIFIER",
                 "value": "a",
-                "line": 2,
-                "column": 6
+                "line": 1,
+                "column": 20
               },
               "initializer": {
                 "kind": "Literal",

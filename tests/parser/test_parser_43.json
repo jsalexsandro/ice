@@ -1,0 +1,51 @@
+{
+  "id": "parser_43",
+  "reference": "arquivo parser.test.md - teste 43",
+  "code": "func create(): int[] { return [1, 2, 3] }",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "FunctionStmt",
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "create",
+          "line": 1,
+          "column": 5
+        },
+        "params": [],
+        "returnType": {
+          "type": "TYPE_INT",
+          "value": "int[]",
+          "line": 1,
+          "column": 15
+        },
+        "body": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "ReturnStmt",
+              "value": {
+                "kind": "Array",
+                "elements": [
+                  {
+                    "kind": "Literal",
+                    "value": 1
+                  },
+                  {
+                    "kind": "Literal",
+                    "value": 2
+                  },
+                  {
+                    "kind": "Literal",
+                    "value": 3
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

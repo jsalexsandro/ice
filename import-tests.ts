@@ -1,0 +1,147 @@
+import { createTest } from "./tests/test-runner"
+
+// Testes de linha única
+const tests = [
+  { id: "01", code: `val name: string = "Olá"` },
+  { id: "02", code: `const year: int = 30` },
+  { id: "03", code: `val x = 10` },
+  { id: "04", code: `const y = 20` },
+  { id: "05", code: `val test;` },
+  { id: "06", code: `const test;` }, // erro
+  { id: "07", code: `val x: qualquerCoisa = 10` },
+  { id: "08", code: `val a: int = 10` },
+  { id: "09", code: `const a: void = null` },
+  { id: "10", code: `val name =` }, // erro
+  { id: "11", code: `const name =` }, // erro
+  { id: "12", code: `const test;` }, // erro
+  { id: "13", code: `val x: invalidType = 10` },
+  { id: "14", code: `{}` },
+  { id: "15", code: `{ val x = 10 }` },
+  { id: "16", code: `if (true) { val x = 10 }` },
+  { id: "17", code: `if (true) val x = 10` },
+  { id: "18", code: `if (true) { val x = 10 } else { val y = 20 }` },
+  { id: "19", code: `if (true) val x = 10 else val y = 20` },
+  { id: "20", code: `if (x > 5) { val a = 1 }` },
+  { id: "21", code: `while (true) { val x = 10 }` },
+  { id: "22", code: `while (true) val x = 10` },
+  { id: "23", code: `while (x > 0) { val a = 1 }` },
+  { id: "24", code: `func test() { val x = 10 }` },
+  { id: "25", code: `func test(a: int, b: int) { return a + b }` },
+  { id: "26", code: `func test(a: int, b: int): int { return a + b }` },
+  { id: "27", code: `func test(): int { return 10 }` },
+  { id: "28", code: `func test() { return }` },
+  { id: "29", code: `func test(): int { return 5 + 5 }` },
+  { id: "30", code: `val numeros: int[] = [1, 2, 3]` },
+  { id: "31", code: `val nomes: string[] = ["John", "Doe"]` },
+  { id: "32", code: `val automatico = [1, 2, 3]` },
+  { id: "33", code: `val vazio: int[] = []` },
+  { id: "34", code: `func teste(param: qualquerCoisa): outroTipo { return 10 }` },
+  { id: "35", code: `x = 10` },
+  { id: "36", code: `x = a + b` },
+  { id: "37", code: `while (x > 10 + 5) { x = x - 1 }` },
+  { id: "38", code: `print("Olá mundo")` },
+  { id: "39", code: `sum(10, 20, 30)` },
+  { id: "40", code: `val result = sum(10, 20) + 5` },
+  { id: "41", code: `if (isValid(user)) { val ok = true }` },
+  { id: "42", code: `val numeros = [1 + 2, 3 * 4, 5]` },
+  { id: "43", code: `func create(): int[] { return [1, 2, 3] }` },
+  { id: "44", code: `func calc(): int { return sum(5, 5) }` },
+  { id: "45", code: `if (true) { if (false) { val x = 10 } }` },
+  { id: "46", code: `func loop() { while (true) { val x = 1 } }` },
+  { id: "47", code: `func create(): int[] { return [1, 2, 3] }` },
+  { id: "48", code: `sum(1, 2) + 3 * 4` },
+  { id: "49", code: `1 + 2 * 3` },
+  { id: "50", code: `print(sum(1, 2))` },
+  { id: "51", code: `[1, 2 + 3, sum(4, 5)]` },
+  { id: "52", code: `val x = (10 + 5` }, // erro
+  { id: "53", code: `val a = [1, 2, ]` }, // erro
+  { id: "54", code: `val x = -5 * 2` },
+  { id: "55", code: `a = b = 10` },
+  { id: "56", code: `sum(1,2) * 3 + 4` },
+  { id: "57", code: `print(sum(1,2))(3)` },
+  { id: "58", code: `user.name` },
+  { id: "59", code: `user.profile.name` },
+  { id: "60", code: `arr[0]` },
+  { id: "61", code: `matrix[0][1]` },
+  { id: "62", code: `arr[0] = 10` },
+  { id: "63", code: `user.name = "John"` },
+  { id: "64", code: `for (val i = 0; i < 3; i = i + 1) { print(i) }` },
+  { id: "65", code: `-5 * 2` },
+  { id: "66", code: `-a + b` },
+  { id: "67", code: `obj.method()[0].name()` },
+  { id: "68", code: `!!true` },
+  { id: "69", code: `-sum(1, 2)` },
+  { id: "70", code: `-user.age` },
+  { id: "71", code: `-arr[0]` },
+  { id: "72", code: `sum(1, 2` }, // erro
+  { id: "73", code: `sum(1,,2)` }, // erro
+  { id: "74", code: `sum(,1)` }, // erro
+  { id: "75", code: `user.` }, // erro
+  { id: "76", code: `arr[]` }, // erro
+  { id: "77", code: `arr[1` }, // erro
+  { id: "78", code: `if () { }` }, // erro
+  { id: "79", code: `while () { }` }, // erro
+  { id: "80", code: `func () { }` }, // erro
+  { id: "81", code: `func test(a: int,) { }` }, // erro
+  { id: "82", code: `5 = x` }, // erro
+  { id: "83", code: `a.b()[0].c(d)[1]` },
+  { id: "84", code: `a + b * c / d - e` },
+  { id: "85", code: `a()[0]()` },
+  { id: "86", code: `arr[0].method()` },
+  { id: "87", code: `sum(1 + 2, 3 * 4)` },
+  { id: "88", code: `a.b + c.d * e.f()` },
+  { id: "89", code: `a.b(c)[d].e(f)[g].h` },
+  { id: "90", code: `a = b = c = d` },
+  { id: "91", code: `x = y = z = 10` },
+  { id: "92", code: `!true` },
+  { id: "93", code: `!a == b` },
+  { id: "94", code: `--5` },
+  { id: "95", code: `a < b && c > d` },
+  { id: "96", code: `a && b || c && d` },
+  { id: "97", code: `a && b == c` },
+  { id: "98", code: `a + b * c - d / e` },
+  { id: "99", code: `(a + b) * (c - d)` },
+  { id: "100", code: `foo(a + b, c * d)` },
+  { id: "101", code: `foo().bar().baz()` },
+  { id: "102", code: `arr[0][1][2]` },
+  { id: "103", code: `a.b.c.d` },
+  { id: "104", code: `a.b()[0].c(d)[1]` },
+  { id: "105", code: `x = a + b * c` },
+  { id: "106", code: `obj.prop = 10` },
+  { id: "107", code: `arr[0] = 10` },
+  { id: "108", code: `val x = 10 + 20 * 3 - 5 / (2 + 3)` },
+  { id: "109", code: `val result = !(true && false) || (5 > 3 && 10 <= 20)` },
+  { id: "112", code: `const message: string = "Hello" + " " + "World"` },
+  { id: "113", code: `val complex = ((1 + 2) * (3 + 4)) / (5 - (6 - 7))` },
+  { id: "114", code: `val flag = !!true && !!!false` },
+  { id: "115", code: `val mix = (10 > 5) && (3 < 2 || 8 == 8) && !(4 != 4)` },
+  { id: "116", code: `val nested = (((((1 + 2)))) * (((3 + 4))))` },
+  { id: "117", code: `val test = 1 + 2 * 3 > 5 && 10 / (2 + 3) == 2` },
+  { id: "120", code: `const message: string = "Hello" + " " + "World"` },
+  { id: "121", code: `val x = 10 + 20 * 3 - 5 / (2 + 3)` },
+  { id: "122", code: `val complex = ((1 + 2) * (3 + 4)) / (5 - (6 - 7))` },
+  { id: "123", code: `val nested = (((((1 + 2)))) * (((3 + 4))))` },
+  { id: "124", code: `val flag = !!true && !!!false` },
+  { id: "125", code: `val mix = (10 > 5) && (3 < 2 || 8 == 8) && !(4 != 4)` },
+  { id: "126", code: `val result = !(true && false) || (5 > 3 && 10 <= 20)` },
+  { id: "127", code: `val test = 1 + 2 * 3 > 5 && 10 / (2 + 3) == 2` },
+  { id: "110", code: `val a = 10\nval b = 20\nval c = a * b + (a - b) * (a + b)` },
+  { id: "111", code: `val x = 5\nval y = x + 10 * (x - 3) >= 20 && !false` },
+  { id: "118", code: `val a = 10\nval b = 20\nval c = a * b + (a - b) * (a + b)` },
+  { id: "119", code: `val x = 5\nval y = x + 10 * (x - 3) >= 20 && !false` },
+  { id: "128", code: `while (true) { break }` },
+  { id: "129", code: `while (true) { continue }` },
+  { id: "130", code: `for (val i = 0; i < 10; i = i + 1) { break }` },
+  { id: "131", code: `a.b(c + d * e)[f + g].h(i, j * k)[l].m` },
+  { id: "132", code: `val result = -a * b + c / (d + e * f) >= g && !(h < i || j == k)` },
+  { id: "133", code: `obj.a[foo(1,2)][bar + baz].value = arr[x + 1] = compute(10, 20 * 3)` },
+  { id: "134", code: `while (getValue(a.b()[0]) > 10 && !isValid(x)) { if (sum(1,2,3) * arr[i + 1] >= limit) { break } else { continue } }` },
+  { id: "135", code: `func compute(a: int, b: int): int {\n  val x = arr[a + b * 2][foo(bar(1,2))] + obj.method(a,b)[0]\n  for (val i = 0; i < 10 && check(i); i = i + 1) {\n    if (x > threshold || !ready()) {\n      break\n    }\n    x = x + data[i].value\n  }\n  return x\n}` },
+  { id: "136", code: `obj.a()[b](c).d[e](f)` },
+]
+
+for (const t of tests) {
+  createTest("parser", { id: t.id, code: t.code })
+}
+
+console.log(`✅ ${tests.length} testes importados!`)

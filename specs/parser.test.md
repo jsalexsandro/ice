@@ -1119,3 +1119,94 @@ val result = !(true && false) || (5 > 3 && 10 <= 20)
 val test = 1 + 2 * 3 > 5 && 10 / (2 + 3) == 2
 ```
 **Resultado:** ✅ Sucesso
+
+---
+
+## Break/Continue Statement Tests
+
+### 128. break em while
+```ice
+while (true) { break }
+```
+**Resultado:** ✅ Sucesso
+- Parseado como: `BreakStmt`
+
+### 129. continue em while
+```ice
+while (true) { continue }
+```
+**Resultado:** ✅ Sucesso
+- Parseado como: `ContinueStmt`
+
+### 130. break em for
+```ice
+for (val i = 0; i < 10; i = i + 1) { break }
+```
+**Resultado:** ✅ Sucesso
+- Parseado como: `BreakStmt`
+
+---
+
+## Complex Expression Tests - Final
+
+### 131. Encadeamento extremo
+```ice
+a.b(c + d * e)[f + g].h(i, j * k)[l].m
+```
+**Resultado:** ✅ Sucesso
+- Estrutura: Member → Call → Index → Member → Call → Index → Member
+- Combinação de todos os tipos de expressões encadeadas
+
+### 132. Expressão lógica complexa
+```ice
+val result = -a * b + c / (d + e * f) >= g && !(h < i || j == k)
+```
+**Resultado:** ✅ Sucesso
+- Precedência: unary (-) > * / > + > >= > && > ||
+- Parênteses preservados como Group
+- Operadores lógicos com precedência correta
+
+### 133. Múltiplas atribuições
+```ice
+obj.a[foo(1,2)][bar + baz].value = arr[x + 1] = compute(10, 20 * 3)
+```
+**Resultado:** ✅ Sucesso
+- Right-associative: a = b = c → a = (b = c)
+- Membro com índices encadeados
+- Precedência correta nos argumentos
+
+### 134. While com break/continue
+```ice
+while (getValue(a.b()[0]) > 10 && !isValid(x)) {
+  if (sum(1,2,3) * arr[i + 1] >= limit) {
+    break
+  } else {
+    continue
+  }
+}
+```
+**Resultado:** ✅ Sucesso
+- While com condição lógica complexa
+- If/else com break e continue
+- Chamadas encadeadas na condição
+
+### 135. Função complexa completa
+```ice
+func compute(a: int, b: int): int {
+  val x = arr[a + b * 2][foo(bar(1,2))] + obj.method(a,b)[0]
+  for (val i = 0; i < 10 && check(i); i = i + 1) {
+    if (x > threshold || !ready()) {
+      break
+    }
+    x = x + data[i].value
+  }
+  return x
+}
+```
+**Resultado:** ✅ Sucesso
+- Função com parâmetros tipados e retorno
+- Variável com expressão complexa (índices, chamadas, membros)
+- For com condição lógica
+- If com OR e NOT
+- Break e Member expression
+- Return com identifier

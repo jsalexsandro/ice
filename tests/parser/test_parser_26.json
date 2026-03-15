@@ -1,8 +1,7 @@
 {
   "id": "parser_26",
   "reference": "arquivo parser.test.md - teste 26",
-  "description": "função com parâmetros e tipo de retorno",
-  "code": "func test(a: int, b: int): int {\n  return a + b\n}",
+  "code": "func test(a: int, b: int): int { return a + b }",
   "result": {
     "kind": "Program",
     "body": [
@@ -62,23 +61,23 @@
                   "name": {
                     "type": "IDENTIFIER",
                     "value": "a",
-                    "line": 2,
-                    "column": 9
+                    "line": 1,
+                    "column": 40
                   }
                 },
                 "operator": {
                   "type": "PLUS",
                   "value": "+",
-                  "line": 2,
-                  "column": 11
+                  "line": 1,
+                  "column": 42
                 },
                 "right": {
                   "kind": "Identifier",
                   "name": {
                     "type": "IDENTIFIER",
                     "value": "b",
-                    "line": 3,
-                    "column": 13
+                    "line": 1,
+                    "column": 44
                   }
                 }
               }

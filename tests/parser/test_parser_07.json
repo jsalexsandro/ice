@@ -1,7 +1,6 @@
 {
   "id": "parser_07",
   "reference": "arquivo parser.test.md - teste 07",
-  "description": "tipo personalizado (qualquer identificador é aceito)",
   "code": "val x: qualquerCoisa = 10",
   "result": {
     "kind": "Program",

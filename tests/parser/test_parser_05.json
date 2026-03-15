@@ -1,7 +1,6 @@
 {
   "id": "parser_05",
   "reference": "arquivo parser.test.md - teste 05",
-  "description": "val sem inicializador",
   "code": "val test;",
   "result": {
     "kind": "Program",

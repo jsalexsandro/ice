@@ -1,7 +1,6 @@
 {
   "id": "parser_30",
   "reference": "arquivo parser.test.md - teste 30",
-  "description": "array com tipo int[]",
   "code": "val numeros: int[] = [1, 2, 3]",
   "result": {
     "kind": "Program",

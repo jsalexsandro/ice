@@ -1,0 +1,224 @@
+{
+  "id": "parser_134",
+  "reference": "arquivo parser.test.md - teste 134",
+  "code": "while (getValue(a.b()[0]) > 10 && !isValid(x)) { if (sum(1,2,3) * arr[i + 1] >= limit) { break } else { continue } }",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "WhileStmt",
+        "condition": {
+          "kind": "Logical",
+          "left": {
+            "kind": "Binary",
+            "left": {
+              "kind": "Call",
+              "callee": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "getValue",
+                  "line": 1,
+                  "column": 7
+                }
+              },
+              "args": [
+                {
+                  "kind": "Index",
+                  "object": {
+                    "kind": "Call",
+                    "callee": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "a",
+                          "line": 1,
+                          "column": 16
+                        }
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "b",
+                          "line": 1,
+                          "column": 18
+                        }
+                      }
+                    },
+                    "args": []
+                  },
+                  "index": {
+                    "kind": "Literal",
+                    "value": 0
+                  }
+                }
+              ]
+            },
+            "operator": {
+              "type": "GREATER_THAN",
+              "value": ">",
+              "line": 1,
+              "column": 26
+            },
+            "right": {
+              "kind": "Literal",
+              "value": 10
+            }
+          },
+          "operator": {
+            "type": "AND",
+            "value": "&&",
+            "line": 1,
+            "column": 31
+          },
+          "right": {
+            "kind": "Unary",
+            "operator": {
+              "type": "NOT",
+              "value": "!",
+              "line": 1,
+              "column": 34
+            },
+            "right": {
+              "kind": "Call",
+              "callee": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "isValid",
+                  "line": 1,
+                  "column": 35
+                }
+              },
+              "args": [
+                {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "x",
+                    "line": 1,
+                    "column": 43
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "body": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "IfStmt",
+              "condition": {
+                "kind": "Binary",
+                "left": {
+                  "kind": "Binary",
+                  "left": {
+                    "kind": "Call",
+                    "callee": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "sum",
+                        "line": 1,
+                        "column": 53
+                      }
+                    },
+                    "args": [
+                      {
+                        "kind": "Literal",
+                        "value": 1
+                      },
+                      {
+                        "kind": "Literal",
+                        "value": 2
+                      },
+                      {
+                        "kind": "Literal",
+                        "value": 3
+                      }
+                    ]
+                  },
+                  "operator": {
+                    "type": "STAR",
+                    "value": "*",
+                    "line": 1,
+                    "column": 64
+                  },
+                  "right": {
+                    "kind": "Index",
+                    "object": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "arr",
+                        "line": 1,
+                        "column": 66
+                      }
+                    },
+                    "index": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "i",
+                          "line": 1,
+                          "column": 70
+                        }
+                      },
+                      "operator": {
+                        "type": "PLUS",
+                        "value": "+",
+                        "line": 1,
+                        "column": 72
+                      },
+                      "right": {
+                        "kind": "Literal",
+                        "value": 1
+                      }
+                    }
+                  }
+                },
+                "operator": {
+                  "type": "GREATER_EQUAL",
+                  "value": ">=",
+                  "line": 1,
+                  "column": 77
+                },
+                "right": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "limit",
+                    "line": 1,
+                    "column": 80
+                  }
+                }
+              },
+              "thenBranch": {
+                "kind": "BlockStmt",
+                "statements": [
+                  {
+                    "kind": "BreakStmt"
+                  }
+                ]
+              },
+              "elseBranch": {
+                "kind": "BlockStmt",
+                "statements": [
+                  {
+                    "kind": "ContinueStmt"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

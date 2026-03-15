@@ -1,0 +1,45 @@
+{
+  "id": "parser_86",
+  "reference": "arquivo parser.test.md - teste 86",
+  "code": "arr[0].method()",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "Call",
+          "callee": {
+            "kind": "Member",
+            "object": {
+              "kind": "Index",
+              "object": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "arr",
+                  "line": 1,
+                  "column": 0
+                }
+              },
+              "index": {
+                "kind": "Literal",
+                "value": 0
+              }
+            },
+            "property": {
+              "kind": "Identifier",
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "method",
+                "line": 1,
+                "column": 7
+              }
+            }
+          },
+          "args": []
+        }
+      }
+    ]
+  }
+}

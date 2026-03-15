@@ -1,0 +1,38 @@
+{
+  "id": "parser_32",
+  "reference": "arquivo parser.test.md - teste 32",
+  "code": "val automatico = [1, 2, 3]",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "automatico",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Array",
+          "elements": [
+            {
+              "kind": "Literal",
+              "value": 1
+            },
+            {
+              "kind": "Literal",
+              "value": 2
+            },
+            {
+              "kind": "Literal",
+              "value": 3
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

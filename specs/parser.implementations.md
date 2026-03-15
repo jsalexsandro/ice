@@ -110,3 +110,20 @@ Passo 19 LogicalExpression
 Passo 20 ForStatement                  ✅
 IMPLEMENTADO
   for (val i = 0; i < 10; i = i + 1) { }
+
+Passo 21 BreakStatement               ✅
+IMPLEMENTADO
+  while (true) { break }
+
+Passo 22 ContinueStatement             ✅
+IMPLEMENTADO
+  while (true) { continue }
+
+---
+
+## Adições Futuras (Não Implementadas)
+- Switch statement
+- Classes/Structs
+- Try/Catch
+- Operador ternário
+- Import/require

@@ -1,0 +1,191 @@
+{
+  "id": "parser_131",
+  "reference": "arquivo parser.test.md - teste 131",
+  "code": "a.b(c + d * e)[f + g].h(i, j * k)[l].m",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "Member",
+          "object": {
+            "kind": "Index",
+            "object": {
+              "kind": "Call",
+              "callee": {
+                "kind": "Member",
+                "object": {
+                  "kind": "Index",
+                  "object": {
+                    "kind": "Call",
+                    "callee": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "a",
+                          "line": 1,
+                          "column": 0
+                        }
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "b",
+                          "line": 1,
+                          "column": 2
+                        }
+                      }
+                    },
+                    "args": [
+                      {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "c",
+                            "line": 1,
+                            "column": 4
+                          }
+                        },
+                        "operator": {
+                          "type": "PLUS",
+                          "value": "+",
+                          "line": 1,
+                          "column": 6
+                        },
+                        "right": {
+                          "kind": "Binary",
+                          "left": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "d",
+                              "line": 1,
+                              "column": 8
+                            }
+                          },
+                          "operator": {
+                            "type": "STAR",
+                            "value": "*",
+                            "line": 1,
+                            "column": 10
+                          },
+                          "right": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "e",
+                              "line": 1,
+                              "column": 12
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "index": {
+                    "kind": "Binary",
+                    "left": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "f",
+                        "line": 1,
+                        "column": 15
+                      }
+                    },
+                    "operator": {
+                      "type": "PLUS",
+                      "value": "+",
+                      "line": 1,
+                      "column": 17
+                    },
+                    "right": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "g",
+                        "line": 1,
+                        "column": 19
+                      }
+                    }
+                  }
+                },
+                "property": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "h",
+                    "line": 1,
+                    "column": 22
+                  }
+                }
+              },
+              "args": [
+                {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "i",
+                    "line": 1,
+                    "column": 24
+                  }
+                },
+                {
+                  "kind": "Binary",
+                  "left": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "j",
+                      "line": 1,
+                      "column": 27
+                    }
+                  },
+                  "operator": {
+                    "type": "STAR",
+                    "value": "*",
+                    "line": 1,
+                    "column": 29
+                  },
+                  "right": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "k",
+                      "line": 1,
+                      "column": 31
+                    }
+                  }
+                }
+              ]
+            },
+            "index": {
+              "kind": "Identifier",
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "l",
+                "line": 1,
+                "column": 34
+              }
+            }
+          },
+          "property": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "m",
+              "line": 1,
+              "column": 37
+            }
+          }
+        }
+      }
+    ]
+  }
+}

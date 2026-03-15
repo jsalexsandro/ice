@@ -1,0 +1,58 @@
+{
+  "id": "parser_97",
+  "reference": "arquivo parser.test.md - teste 97",
+  "code": "a && b == c",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "Logical",
+          "left": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "a",
+              "line": 1,
+              "column": 0
+            }
+          },
+          "operator": {
+            "type": "AND",
+            "value": "&&",
+            "line": 1,
+            "column": 2
+          },
+          "right": {
+            "kind": "Binary",
+            "left": {
+              "kind": "Identifier",
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "b",
+                "line": 1,
+                "column": 5
+              }
+            },
+            "operator": {
+              "type": "EQUAL",
+              "value": "==",
+              "line": 1,
+              "column": 7
+            },
+            "right": {
+              "kind": "Identifier",
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "c",
+                "line": 1,
+                "column": 10
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

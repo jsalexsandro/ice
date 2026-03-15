@@ -1,0 +1,49 @@
+{
+  "id": "parser_50",
+  "reference": "arquivo parser.test.md - teste 50",
+  "code": "print(sum(1, 2))",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "Call",
+          "callee": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "print",
+              "line": 1,
+              "column": 0
+            }
+          },
+          "args": [
+            {
+              "kind": "Call",
+              "callee": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "sum",
+                  "line": 1,
+                  "column": 6
+                }
+              },
+              "args": [
+                {
+                  "kind": "Literal",
+                  "value": 1
+                },
+                {
+                  "kind": "Literal",
+                  "value": 2
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

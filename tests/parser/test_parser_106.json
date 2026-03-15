@@ -1,0 +1,41 @@
+{
+  "id": "parser_106",
+  "reference": "arquivo parser.test.md - teste 106",
+  "code": "obj.prop = 10",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "Assign",
+          "name": {
+            "kind": "Member",
+            "object": {
+              "kind": "Identifier",
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "obj",
+                "line": 1,
+                "column": 0
+              }
+            },
+            "property": {
+              "kind": "Identifier",
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "prop",
+                "line": 1,
+                "column": 4
+              }
+            }
+          },
+          "value": {
+            "kind": "Literal",
+            "value": 10
+          }
+        }
+      }
+    ]
+  }
+}

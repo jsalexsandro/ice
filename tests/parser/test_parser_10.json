@@ -1,7 +1,6 @@
 {
   "id": "parser_10",
   "reference": "arquivo parser.test.md - teste 10",
-  "description": "val com atribuidor sem expressão (erro)",
-  "code": "val name = ",
-  "result": "Expected expression but got 'EOF'"
+  "code": "val name =",
+  "result": "Parser Error: Expected expression but got 'EOF' at line 1, column 10"
 }

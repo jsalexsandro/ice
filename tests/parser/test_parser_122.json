@@ -1,0 +1,118 @@
+{
+  "id": "parser_122",
+  "reference": "arquivo parser.test.md - teste 122",
+  "code": "val complex = ((1 + 2) * (3 + 4)) / (5 - (6 - 7))",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "complex",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Binary",
+          "left": {
+            "kind": "Group",
+            "expression": {
+              "kind": "Binary",
+              "left": {
+                "kind": "Group",
+                "expression": {
+                  "kind": "Binary",
+                  "left": {
+                    "kind": "Literal",
+                    "value": 1
+                  },
+                  "operator": {
+                    "type": "PLUS",
+                    "value": "+",
+                    "line": 1,
+                    "column": 18
+                  },
+                  "right": {
+                    "kind": "Literal",
+                    "value": 2
+                  }
+                }
+              },
+              "operator": {
+                "type": "STAR",
+                "value": "*",
+                "line": 1,
+                "column": 23
+              },
+              "right": {
+                "kind": "Group",
+                "expression": {
+                  "kind": "Binary",
+                  "left": {
+                    "kind": "Literal",
+                    "value": 3
+                  },
+                  "operator": {
+                    "type": "PLUS",
+                    "value": "+",
+                    "line": 1,
+                    "column": 28
+                  },
+                  "right": {
+                    "kind": "Literal",
+                    "value": 4
+                  }
+                }
+              }
+            }
+          },
+          "operator": {
+            "type": "SLASH",
+            "value": "/",
+            "line": 1,
+            "column": 34
+          },
+          "right": {
+            "kind": "Group",
+            "expression": {
+              "kind": "Binary",
+              "left": {
+                "kind": "Literal",
+                "value": 5
+              },
+              "operator": {
+                "type": "MINUS",
+                "value": "-",
+                "line": 1,
+                "column": 39
+              },
+              "right": {
+                "kind": "Group",
+                "expression": {
+                  "kind": "Binary",
+                  "left": {
+                    "kind": "Literal",
+                    "value": 6
+                  },
+                  "operator": {
+                    "type": "MINUS",
+                    "value": "-",
+                    "line": 1,
+                    "column": 44
+                  },
+                  "right": {
+                    "kind": "Literal",
+                    "value": 7
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

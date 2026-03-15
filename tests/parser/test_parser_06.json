@@ -1,7 +1,6 @@
 {
   "id": "parser_06",
   "reference": "arquivo parser.test.md - teste 06",
-  "description": "const sem inicializador (erro)",
   "code": "const test;",
-  "result": "Constant 'test' must be initialized"
+  "result": "Parser Error: Constant 'test' must be initialized at line 1, column 6"
 }

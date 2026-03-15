@@ -1,0 +1,88 @@
+{
+  "id": "parser_116",
+  "reference": "arquivo parser.test.md - teste 116",
+  "code": "val nested = (((((1 + 2)))) * (((3 + 4))))",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "nested",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Group",
+          "expression": {
+            "kind": "Binary",
+            "left": {
+              "kind": "Group",
+              "expression": {
+                "kind": "Group",
+                "expression": {
+                  "kind": "Group",
+                  "expression": {
+                    "kind": "Group",
+                    "expression": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Literal",
+                        "value": 1
+                      },
+                      "operator": {
+                        "type": "PLUS",
+                        "value": "+",
+                        "line": 1,
+                        "column": 20
+                      },
+                      "right": {
+                        "kind": "Literal",
+                        "value": 2
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "operator": {
+              "type": "STAR",
+              "value": "*",
+              "line": 1,
+              "column": 28
+            },
+            "right": {
+              "kind": "Group",
+              "expression": {
+                "kind": "Group",
+                "expression": {
+                  "kind": "Group",
+                  "expression": {
+                    "kind": "Binary",
+                    "left": {
+                      "kind": "Literal",
+                      "value": 3
+                    },
+                    "operator": {
+                      "type": "PLUS",
+                      "value": "+",
+                      "line": 1,
+                      "column": 35
+                    },
+                    "right": {
+                      "kind": "Literal",
+                      "value": 4
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

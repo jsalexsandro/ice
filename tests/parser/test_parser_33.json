@@ -1,0 +1,30 @@
+{
+  "id": "parser_33",
+  "reference": "arquivo parser.test.md - teste 33",
+  "code": "val vazio: int[] = []",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": {
+          "type": "TYPE_INT",
+          "value": "int[]",
+          "line": 1,
+          "column": 11
+        },
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "vazio",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Array",
+          "elements": []
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "id": "parser_100",
+  "reference": "arquivo parser.test.md - teste 100",
+  "code": "foo(a + b, c * d)",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "Call",
+          "callee": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "foo",
+              "line": 1,
+              "column": 0
+            }
+          },
+          "args": [
+            {
+              "kind": "Binary",
+              "left": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "a",
+                  "line": 1,
+                  "column": 4
+                }
+              },
+              "operator": {
+                "type": "PLUS",
+                "value": "+",
+                "line": 1,
+                "column": 6
+              },
+              "right": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "b",
+                  "line": 1,
+                  "column": 8
+                }
+              }
+            },
+            {
+              "kind": "Binary",
+              "left": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "c",
+                  "line": 1,
+                  "column": 11
+                }
+              },
+              "operator": {
+                "type": "STAR",
+                "value": "*",
+                "line": 1,
+                "column": 13
+              },
+              "right": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "d",
+                  "line": 1,
+                  "column": 15
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

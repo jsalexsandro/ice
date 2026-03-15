@@ -1,8 +1,7 @@
 {
   "id": "parser_27",
   "reference": "arquivo parser.test.md - teste 27",
-  "description": "return com valor",
-  "code": "func test(): int {\n  return 10\n}",
+  "code": "func test(): int { return 10 }",
   "result": {
     "kind": "Program",
     "body": [

@@ -1,0 +1,6 @@
+{
+  "id": "parser_82",
+  "reference": "arquivo parser.test.md - teste 82",
+  "code": "5 = x",
+  "result": "Parser Error: Invalid assignment target at line 0, column 0"
+}

@@ -1,0 +1,29 @@
+{
+  "id": "parser_60",
+  "reference": "arquivo parser.test.md - teste 60",
+  "code": "arr[0]",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "Index",
+          "object": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "arr",
+              "line": 1,
+              "column": 0
+            }
+          },
+          "index": {
+            "kind": "Literal",
+            "value": 0
+          }
+        }
+      }
+    ]
+  }
+}

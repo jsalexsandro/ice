@@ -1,0 +1,37 @@
+{
+  "id": "parser_85",
+  "reference": "arquivo parser.test.md - teste 85",
+  "code": "a()[0]()",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "Call",
+          "callee": {
+            "kind": "Index",
+            "object": {
+              "kind": "Call",
+              "callee": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "a",
+                  "line": 1,
+                  "column": 0
+                }
+              },
+              "args": []
+            },
+            "index": {
+              "kind": "Literal",
+              "value": 0
+            }
+          },
+          "args": []
+        }
+      }
+    ]
+  }
+}

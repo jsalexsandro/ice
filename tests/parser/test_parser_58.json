@@ -1,0 +1,34 @@
+{
+  "id": "parser_58",
+  "reference": "arquivo parser.test.md - teste 58",
+  "code": "user.name",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "Member",
+          "object": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "user",
+              "line": 1,
+              "column": 0
+            }
+          },
+          "property": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "name",
+              "line": 1,
+              "column": 5
+            }
+          }
+        }
+      }
+    ]
+  }
+}

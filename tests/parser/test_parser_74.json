@@ -1,0 +1,6 @@
+{
+  "id": "parser_74",
+  "reference": "arquivo parser.test.md - teste 74",
+  "code": "sum(,1)",
+  "result": "Parser Error: Expected expression but got 'COMMA' at line 1, column 4"
+}

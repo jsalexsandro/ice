@@ -1,0 +1,56 @@
+{
+  "id": "parser_40",
+  "reference": "arquivo parser.test.md - teste 40",
+  "code": "val result = sum(10, 20) + 5",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "result",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Binary",
+          "left": {
+            "kind": "Call",
+            "callee": {
+              "kind": "Identifier",
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "sum",
+                "line": 1,
+                "column": 13
+              }
+            },
+            "args": [
+              {
+                "kind": "Literal",
+                "value": 10
+              },
+              {
+                "kind": "Literal",
+                "value": 20
+              }
+            ]
+          },
+          "operator": {
+            "type": "PLUS",
+            "value": "+",
+            "line": 1,
+            "column": 25
+          },
+          "right": {
+            "kind": "Literal",
+            "value": 5
+          }
+        }
+      }
+    ]
+  }
+}

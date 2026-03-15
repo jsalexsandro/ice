@@ -1,0 +1,43 @@
+{
+  "id": "parser_49",
+  "reference": "arquivo parser.test.md - teste 49",
+  "code": "1 + 2 * 3",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "Binary",
+          "left": {
+            "kind": "Literal",
+            "value": 1
+          },
+          "operator": {
+            "type": "PLUS",
+            "value": "+",
+            "line": 1,
+            "column": 2
+          },
+          "right": {
+            "kind": "Binary",
+            "left": {
+              "kind": "Literal",
+              "value": 2
+            },
+            "operator": {
+              "type": "STAR",
+              "value": "*",
+              "line": 1,
+              "column": 6
+            },
+            "right": {
+              "kind": "Literal",
+              "value": 3
+            }
+          }
+        }
+      }
+    ]
+  }
+}

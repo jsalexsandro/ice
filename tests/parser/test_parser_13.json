@@ -1,7 +1,6 @@
 {
   "id": "parser_13",
   "reference": "arquivo parser.test.md - teste 13",
-  "description": "tipo personalizado (aceito pelo parser)",
   "code": "val x: invalidType = 10",
   "result": {
     "kind": "Program",

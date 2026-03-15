@@ -1,0 +1,6 @@
+{
+  "id": "parser_81",
+  "reference": "arquivo parser.test.md - teste 81",
+  "code": "func test(a: int,) { }",
+  "result": "Expected token IDENTIFIER but got RPAREN"
+}

@@ -1,7 +1,6 @@
 {
   "id": "parser_11",
   "reference": "arquivo parser.test.md - teste 11",
-  "description": "const com atribuidor sem expressão (erro)",
-  "code": "const name = ",
-  "result": "Expected expression but got 'EOF'"
+  "code": "const name =",
+  "result": "Parser Error: Expected expression but got 'EOF' at line 1, column 12"
 }

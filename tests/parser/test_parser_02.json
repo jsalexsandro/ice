@@ -1,7 +1,6 @@
 {
   "id": "parser_02",
   "reference": "arquivo parser.test.md - teste 02",
-  "description": "const com anotação de tipo",
   "code": "const year: int = 30",
   "result": {
     "kind": "Program",

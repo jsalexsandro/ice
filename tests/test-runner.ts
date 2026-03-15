@@ -80,7 +80,7 @@ function runParserTest(testCase: { id: string, code: string, result: any }): Tes
       const tokens = lexer.tokenize()
       const parser = new Parser(tokens)
       parser.parseProgram()
-      
+
       return { passed: false, message: `Test ${testCase.id} failed: Expected error "${expected}" but no error was thrown` }
     } catch (error: any) {
       if (error.message.includes(expected)) {
@@ -106,9 +106,9 @@ function runParserTest(testCase: { id: string, code: string, result: any }): Tes
     } else {
       const actualStr = JSON.stringify(ast, null, 2)
       const expectedStr = JSON.stringify(expected, null, 2)
-      return { 
-        passed: false, 
-        message: `Test ${testCase.id} failed: ${result.message}\n\nExpected:\n${expectedStr}\n\nActual:\n${actualStr}` 
+      return {
+        passed: false,
+        message: `Test ${testCase.id} failed: ${result.message}\n\nExpected:\n${expectedStr}\n\nActual:\n${actualStr}`
       }
     }
   } catch (error: any) {
@@ -118,14 +118,14 @@ function runParserTest(testCase: { id: string, code: string, result: any }): Tes
 
 function runAll(component?: Component, options?: RunOptions): void {
   const components: Component[] = component ? [component] : ["parser", "lexer", "semantic"]
-  
+
   let totalPassed = 0
   let totalFailed = 0
   let totalTests = 0
 
   for (const comp of components) {
     const tests = loadTests(comp, options?.id)
-    
+
     if (tests.length === 0) {
       console.log(`No tests found for component: ${comp}`)
       continue
@@ -162,9 +162,9 @@ export { runAll, createTest }
 function createTest(component: Component, options: CreateTestOptions): any {
   const { id, description, code } = options
   const testId = `${component}_${id.padStart(2, '0')}`
-  
+
   let result: any
-  
+
   try {
     const lexer = new Lexer(code)
     const tokens = lexer.tokenize()
@@ -196,7 +196,3 @@ function createTest(component: Component, options: CreateTestOptions): any {
 
   return testData
 }
-
-// Para executar testes diretamente: bun tests/test-runner.ts
-runAll()
-

@@ -1,0 +1,6 @@
+{
+  "id": "parser_53",
+  "reference": "arquivo parser.test.md - teste 53",
+  "code": "val a = [1, 2, ]",
+  "result": "Parser Error: Expected expression but got 'RBRACKET' at line 1, column 15"
+}

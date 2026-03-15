@@ -1,0 +1,29 @@
+{
+  "id": "parser_35",
+  "reference": "arquivo parser.test.md - teste 35",
+  "code": "x = 10",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "Assign",
+          "name": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "x",
+              "line": 1,
+              "column": 0
+            }
+          },
+          "value": {
+            "kind": "Literal",
+            "value": 10
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,7 +1,6 @@
 {
   "id": "parser_01",
   "reference": "arquivo parser.test.md - teste 01",
-  "description": "val com anotação de tipo",
   "code": "val name: string = \"Olá\"",
   "result": {
     "kind": "Program",

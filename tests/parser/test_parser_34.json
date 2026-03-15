@@ -1,0 +1,53 @@
+{
+  "id": "parser_34",
+  "reference": "arquivo parser.test.md - teste 34",
+  "code": "func teste(param: qualquerCoisa): outroTipo { return 10 }",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "FunctionStmt",
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "teste",
+          "line": 1,
+          "column": 5
+        },
+        "params": [
+          {
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "param",
+              "line": 1,
+              "column": 11
+            },
+            "type": {
+              "type": "IDENTIFIER",
+              "value": "qualquerCoisa",
+              "line": 1,
+              "column": 18
+            }
+          }
+        ],
+        "returnType": {
+          "type": "IDENTIFIER",
+          "value": "outroTipo",
+          "line": 1,
+          "column": 34
+        },
+        "body": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "ReturnStmt",
+              "value": {
+                "kind": "Literal",
+                "value": 10
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

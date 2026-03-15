@@ -40,6 +40,11 @@ export class Parser {
     return this.precedence.get(type) ?? 0
   }
 
+  private isValidType(token: Token): boolean {
+    const validTypes = ['int', 'float', 'bool', 'string', 'void', 'any']
+    return validTypes.includes(token.value) || token.type === TokenType.IDENTIFIER
+  }
+
   /*
   =====================================
   Cursor helpers
@@ -51,7 +56,7 @@ export class Parser {
   }
 
   private peek(): Token {
-    return this.tokens[this.position + 1]
+    return this.tokens[this.position + 1] ?? this.tokens[this.position]
   }
 
   private advance(): Token {
@@ -116,6 +121,12 @@ export class Parser {
       }
       if (token.value === 'return') {
         return this.parseReturnStatement()
+      }
+      if (token.value === 'break') {
+        return this.parseBreakStatement()
+      }
+      if (token.value === 'continue') {
+        return this.parseContinueStatement()
       }
     }
 
@@ -183,7 +194,21 @@ export class Parser {
     this.expect(TokenType.KEYWORD)
     this.expect(TokenType.LPAREN)
     
-    const initializer = this.parseVariableDeclaration()
+    let initializer: Stmt | null = null
+    if (this.current().type !== TokenType.SEMICOLON) {
+      if (this.current().type === TokenType.KEYWORD && 
+          (this.current().value === 'val' || this.current().value === 'const')) {
+        initializer = this.parseVariableDeclaration()
+      } else {
+        initializer = this.parseExpressionStatement()
+      }
+    } else {
+      this.advance()
+    }
+    
+    if (this.current().type === TokenType.SEMICOLON) {
+      this.advance()
+    }
     
     const condition = this.parseExpression()
     this.expect(TokenType.SEMICOLON)
@@ -214,7 +239,11 @@ export class Parser {
       
       if (this.current().type === TokenType.COLON) {
         this.advance()
-        paramType = this.advance()
+        if (this.isValidType(this.current())) {
+          paramType = this.advance()
+        } else {
+          throw new Error(`Invalid type '${this.current().value}' at line ${this.current().line}, column ${this.current().column}`)
+        }
       }
       
       params.push({ name: paramName, type: paramType })
@@ -226,7 +255,11 @@ export class Parser {
         
         if (this.current().type === TokenType.COLON) {
           this.advance()
-          pType = this.advance()
+          if (this.isValidType(this.current())) {
+            pType = this.advance()
+          } else {
+            throw new Error(`Invalid type '${this.current().value}' at line ${this.current().line}, column ${this.current().column}`)
+          }
         }
         
         params.push({ name: pName, type: pType })
@@ -282,6 +315,30 @@ export class Parser {
     return {
       kind: "ReturnStmt",
       value
+    }
+  }
+
+  private parseBreakStatement(): BreakStmt {
+    this.expect(TokenType.KEYWORD)
+    
+    if (this.current().type === TokenType.SEMICOLON) {
+      this.advance()
+    }
+
+    return {
+      kind: "BreakStmt"
+    }
+  }
+
+  private parseContinueStatement(): ContinueStmt {
+    this.expect(TokenType.KEYWORD)
+    
+    if (this.current().type === TokenType.SEMICOLON) {
+      this.advance()
+    }
+
+    return {
+      kind: "ContinueStmt"
     }
   }
 
@@ -417,11 +474,14 @@ export class Parser {
       }
 
       if (operator.type === TokenType.DOT) {
-        const property = this.expect(TokenType.IDENTIFIER)
+        const propertyToken = this.expect(TokenType.IDENTIFIER)
         left = {
           kind: "Member",
           object: left,
-          property
+          property: {
+            kind: "Identifier",
+            name: propertyToken
+          }
         }
         continue
       }

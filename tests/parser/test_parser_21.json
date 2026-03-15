@@ -1,8 +1,7 @@
 {
   "id": "parser_21",
   "reference": "arquivo parser.test.md - teste 21",
-  "description": "while com bloco",
-  "code": "while (true) {\n  val x = 10\n}",
+  "code": "while (true) { val x = 10 }",
   "result": {
     "kind": "Program",
     "body": [
@@ -22,8 +21,8 @@
               "name": {
                 "type": "IDENTIFIER",
                 "value": "x",
-                "line": 2,
-                "column": 6
+                "line": 1,
+                "column": 19
               },
               "initializer": {
                 "kind": "Literal",

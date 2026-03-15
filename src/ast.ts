@@ -68,7 +68,7 @@ export interface ArrayExpr {
 export interface MemberExpr {
   kind: "Member"
   object: Expr
-  property: Token
+  property: IdentifierExpr
 }
 
 export interface IndexExpr {
@@ -114,7 +114,7 @@ export interface WhileStmt {
 
 export interface ForStmt {
   kind: "ForStmt"
-  initializer: VarStmt
+  initializer: Stmt | null
   condition: Expr
   update: Expr
   body: Stmt

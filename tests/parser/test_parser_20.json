@@ -1,8 +1,7 @@
 {
   "id": "parser_20",
   "reference": "arquivo parser.test.md - teste 20",
-  "description": "if com expressão condicional",
-  "code": "if (x > 5) {\n  val a = 1\n}",
+  "code": "if (x > 5) { val a = 1 }",
   "result": {
     "kind": "Program",
     "body": [
@@ -40,8 +39,8 @@
               "name": {
                 "type": "IDENTIFIER",
                 "value": "a",
-                "line": 2,
-                "column": 6
+                "line": 1,
+                "column": 17
               },
               "initializer": {
                 "kind": "Literal",

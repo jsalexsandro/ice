@@ -1,0 +1,105 @@
+{
+  "id": "parser_126",
+  "reference": "arquivo parser.test.md - teste 126",
+  "code": "val result = !(true && false) || (5 > 3 && 10 <= 20)",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "result",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Logical",
+          "left": {
+            "kind": "Unary",
+            "operator": {
+              "type": "NOT",
+              "value": "!",
+              "line": 1,
+              "column": 13
+            },
+            "right": {
+              "kind": "Group",
+              "expression": {
+                "kind": "Logical",
+                "left": {
+                  "kind": "Literal",
+                  "value": true
+                },
+                "operator": {
+                  "type": "AND",
+                  "value": "&&",
+                  "line": 1,
+                  "column": 20
+                },
+                "right": {
+                  "kind": "Literal",
+                  "value": false
+                }
+              }
+            }
+          },
+          "operator": {
+            "type": "OR",
+            "value": "||",
+            "line": 1,
+            "column": 30
+          },
+          "right": {
+            "kind": "Group",
+            "expression": {
+              "kind": "Logical",
+              "left": {
+                "kind": "Binary",
+                "left": {
+                  "kind": "Literal",
+                  "value": 5
+                },
+                "operator": {
+                  "type": "GREATER_THAN",
+                  "value": ">",
+                  "line": 1,
+                  "column": 36
+                },
+                "right": {
+                  "kind": "Literal",
+                  "value": 3
+                }
+              },
+              "operator": {
+                "type": "AND",
+                "value": "&&",
+                "line": 1,
+                "column": 40
+              },
+              "right": {
+                "kind": "Binary",
+                "left": {
+                  "kind": "Literal",
+                  "value": 10
+                },
+                "operator": {
+                  "type": "LESS_EQUAL",
+                  "value": "<=",
+                  "line": 1,
+                  "column": 46
+                },
+                "right": {
+                  "kind": "Literal",
+                  "value": 20
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

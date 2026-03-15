@@ -1,0 +1,58 @@
+{
+  "id": "parser_101",
+  "reference": "arquivo parser.test.md - teste 101",
+  "code": "foo().bar().baz()",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "Call",
+          "callee": {
+            "kind": "Member",
+            "object": {
+              "kind": "Call",
+              "callee": {
+                "kind": "Member",
+                "object": {
+                  "kind": "Call",
+                  "callee": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "foo",
+                      "line": 1,
+                      "column": 0
+                    }
+                  },
+                  "args": []
+                },
+                "property": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "bar",
+                    "line": 1,
+                    "column": 6
+                  }
+                }
+              },
+              "args": []
+            },
+            "property": {
+              "kind": "Identifier",
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "baz",
+                "line": 1,
+                "column": 12
+              }
+            }
+          },
+          "args": []
+        }
+      }
+    ]
+  }
+}

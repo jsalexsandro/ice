@@ -1,0 +1,49 @@
+{
+  "id": "parser_93",
+  "reference": "arquivo parser.test.md - teste 93",
+  "code": "!a == b",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "Binary",
+          "left": {
+            "kind": "Unary",
+            "operator": {
+              "type": "NOT",
+              "value": "!",
+              "line": 1,
+              "column": 0
+            },
+            "right": {
+              "kind": "Identifier",
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "a",
+                "line": 1,
+                "column": 1
+              }
+            }
+          },
+          "operator": {
+            "type": "EQUAL",
+            "value": "==",
+            "line": 1,
+            "column": 3
+          },
+          "right": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "b",
+              "line": 1,
+              "column": 6
+            }
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "id": "parser_42",
+  "reference": "arquivo parser.test.md - teste 42",
+  "code": "val numeros = [1 + 2, 3 * 4, 5]",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "numeros",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Array",
+          "elements": [
+            {
+              "kind": "Binary",
+              "left": {
+                "kind": "Literal",
+                "value": 1
+              },
+              "operator": {
+                "type": "PLUS",
+                "value": "+",
+                "line": 1,
+                "column": 17
+              },
+              "right": {
+                "kind": "Literal",
+                "value": 2
+              }
+            },
+            {
+              "kind": "Binary",
+              "left": {
+                "kind": "Literal",
+                "value": 3
+              },
+              "operator": {
+                "type": "STAR",
+                "value": "*",
+                "line": 1,
+                "column": 24
+              },
+              "right": {
+                "kind": "Literal",
+                "value": 4
+              }
+            },
+            {
+              "kind": "Literal",
+              "value": 5
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

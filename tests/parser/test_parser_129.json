@@ -1,0 +1,25 @@
+{
+  "id": "parser_129",
+  "reference": "arquivo parser.test.md - teste 129",
+  "code": "while (true) { continue }",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "WhileStmt",
+        "condition": {
+          "kind": "Literal",
+          "value": true
+        },
+        "body": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "ContinueStmt"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

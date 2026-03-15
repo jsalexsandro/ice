@@ -1,0 +1,39 @@
+{
+  "id": "parser_39",
+  "reference": "arquivo parser.test.md - teste 39",
+  "code": "sum(10, 20, 30)",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "Call",
+          "callee": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "sum",
+              "line": 1,
+              "column": 0
+            }
+          },
+          "args": [
+            {
+              "kind": "Literal",
+              "value": 10
+            },
+            {
+              "kind": "Literal",
+              "value": 20
+            },
+            {
+              "kind": "Literal",
+              "value": 30
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

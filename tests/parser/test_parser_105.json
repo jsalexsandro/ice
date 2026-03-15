@@ -1,0 +1,70 @@
+{
+  "id": "parser_105",
+  "reference": "arquivo parser.test.md - teste 105",
+  "code": "x = a + b * c",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "Assign",
+          "name": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "x",
+              "line": 1,
+              "column": 0
+            }
+          },
+          "value": {
+            "kind": "Binary",
+            "left": {
+              "kind": "Identifier",
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "a",
+                "line": 1,
+                "column": 4
+              }
+            },
+            "operator": {
+              "type": "PLUS",
+              "value": "+",
+              "line": 1,
+              "column": 6
+            },
+            "right": {
+              "kind": "Binary",
+              "left": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "b",
+                  "line": 1,
+                  "column": 8
+                }
+              },
+              "operator": {
+                "type": "STAR",
+                "value": "*",
+                "line": 1,
+                "column": 10
+              },
+              "right": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "c",
+                  "line": 1,
+                  "column": 12
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

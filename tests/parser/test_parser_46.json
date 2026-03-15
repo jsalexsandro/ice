@@ -1,0 +1,52 @@
+{
+  "id": "parser_46",
+  "reference": "arquivo parser.test.md - teste 46",
+  "code": "func loop() { while (true) { val x = 1 } }",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "FunctionStmt",
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "loop",
+          "line": 1,
+          "column": 5
+        },
+        "params": [],
+        "body": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "WhileStmt",
+              "condition": {
+                "kind": "Literal",
+                "value": true
+              },
+              "body": {
+                "kind": "BlockStmt",
+                "statements": [
+                  {
+                    "kind": "VarStmt",
+                    "type": "val",
+                    "typeAnnotation": null,
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "x",
+                      "line": 1,
+                      "column": 33
+                    },
+                    "initializer": {
+                      "kind": "Literal",
+                      "value": 1
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

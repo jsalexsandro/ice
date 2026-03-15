@@ -1,0 +1,49 @@
+{
+  "id": "parser_45",
+  "reference": "arquivo parser.test.md - teste 45",
+  "code": "if (true) { if (false) { val x = 10 } }",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "IfStmt",
+        "condition": {
+          "kind": "Literal",
+          "value": true
+        },
+        "thenBranch": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "IfStmt",
+              "condition": {
+                "kind": "Literal",
+                "value": false
+              },
+              "thenBranch": {
+                "kind": "BlockStmt",
+                "statements": [
+                  {
+                    "kind": "VarStmt",
+                    "type": "val",
+                    "typeAnnotation": null,
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "x",
+                      "line": 1,
+                      "column": 29
+                    },
+                    "initializer": {
+                      "kind": "Literal",
+                      "value": 10
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

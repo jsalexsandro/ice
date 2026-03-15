@@ -1,0 +1,92 @@
+{
+  "id": "parser_130",
+  "reference": "arquivo parser.test.md - teste 130",
+  "code": "for (val i = 0; i < 10; i = i + 1) { break }",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ForStmt",
+        "initializer": {
+          "kind": "VarStmt",
+          "type": "val",
+          "typeAnnotation": null,
+          "name": {
+            "type": "IDENTIFIER",
+            "value": "i",
+            "line": 1,
+            "column": 9
+          },
+          "initializer": {
+            "kind": "Literal",
+            "value": 0
+          }
+        },
+        "condition": {
+          "kind": "Binary",
+          "left": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "i",
+              "line": 1,
+              "column": 16
+            }
+          },
+          "operator": {
+            "type": "LESS_THAN",
+            "value": "<",
+            "line": 1,
+            "column": 18
+          },
+          "right": {
+            "kind": "Literal",
+            "value": 10
+          }
+        },
+        "update": {
+          "kind": "Assign",
+          "name": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "i",
+              "line": 1,
+              "column": 24
+            }
+          },
+          "value": {
+            "kind": "Binary",
+            "left": {
+              "kind": "Identifier",
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "i",
+                "line": 1,
+                "column": 28
+              }
+            },
+            "operator": {
+              "type": "PLUS",
+              "value": "+",
+              "line": 1,
+              "column": 30
+            },
+            "right": {
+              "kind": "Literal",
+              "value": 1
+            }
+          }
+        },
+        "body": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "BreakStmt"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

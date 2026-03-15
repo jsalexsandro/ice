@@ -1,0 +1,134 @@
+{
+  "id": "parser_115",
+  "reference": "arquivo parser.test.md - teste 115",
+  "code": "val mix = (10 > 5) && (3 < 2 || 8 == 8) && !(4 != 4)",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "mix",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Logical",
+          "left": {
+            "kind": "Group",
+            "expression": {
+              "kind": "Binary",
+              "left": {
+                "kind": "Literal",
+                "value": 10
+              },
+              "operator": {
+                "type": "GREATER_THAN",
+                "value": ">",
+                "line": 1,
+                "column": 14
+              },
+              "right": {
+                "kind": "Literal",
+                "value": 5
+              }
+            }
+          },
+          "operator": {
+            "type": "AND",
+            "value": "&&",
+            "line": 1,
+            "column": 19
+          },
+          "right": {
+            "kind": "Logical",
+            "left": {
+              "kind": "Group",
+              "expression": {
+                "kind": "Logical",
+                "left": {
+                  "kind": "Binary",
+                  "left": {
+                    "kind": "Literal",
+                    "value": 3
+                  },
+                  "operator": {
+                    "type": "LESS_THAN",
+                    "value": "<",
+                    "line": 1,
+                    "column": 25
+                  },
+                  "right": {
+                    "kind": "Literal",
+                    "value": 2
+                  }
+                },
+                "operator": {
+                  "type": "OR",
+                  "value": "||",
+                  "line": 1,
+                  "column": 29
+                },
+                "right": {
+                  "kind": "Binary",
+                  "left": {
+                    "kind": "Literal",
+                    "value": 8
+                  },
+                  "operator": {
+                    "type": "EQUAL",
+                    "value": "==",
+                    "line": 1,
+                    "column": 34
+                  },
+                  "right": {
+                    "kind": "Literal",
+                    "value": 8
+                  }
+                }
+              }
+            },
+            "operator": {
+              "type": "AND",
+              "value": "&&",
+              "line": 1,
+              "column": 40
+            },
+            "right": {
+              "kind": "Unary",
+              "operator": {
+                "type": "NOT",
+                "value": "!",
+                "line": 1,
+                "column": 43
+              },
+              "right": {
+                "kind": "Group",
+                "expression": {
+                  "kind": "Binary",
+                  "left": {
+                    "kind": "Literal",
+                    "value": 4
+                  },
+                  "operator": {
+                    "type": "NOT_EQUAL",
+                    "value": "!=",
+                    "line": 1,
+                    "column": 47
+                  },
+                  "right": {
+                    "kind": "Literal",
+                    "value": 4
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

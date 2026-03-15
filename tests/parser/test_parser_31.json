@@ -1,0 +1,39 @@
+{
+  "id": "parser_31",
+  "reference": "arquivo parser.test.md - teste 31",
+  "code": "val nomes: string[] = [\"John\", \"Doe\"]",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": {
+          "type": "TYPE_STRING",
+          "value": "string[]",
+          "line": 1,
+          "column": 11
+        },
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "nomes",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Array",
+          "elements": [
+            {
+              "kind": "Literal",
+              "value": "John"
+            },
+            {
+              "kind": "Literal",
+              "value": "Doe"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

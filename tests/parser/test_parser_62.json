@@ -1,0 +1,36 @@
+{
+  "id": "parser_62",
+  "reference": "arquivo parser.test.md - teste 62",
+  "code": "arr[0] = 10",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "Assign",
+          "name": {
+            "kind": "Index",
+            "object": {
+              "kind": "Identifier",
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "arr",
+                "line": 1,
+                "column": 0
+              }
+            },
+            "index": {
+              "kind": "Literal",
+              "value": 0
+            }
+          },
+          "value": {
+            "kind": "Literal",
+            "value": 10
+          }
+        }
+      }
+    ]
+  }
+}

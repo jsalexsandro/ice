@@ -21,6 +21,8 @@ export const KEYWORDS = [
   'try',
   'catch',
   'throw',
+  'break',
+  'continue',
 ]
 
 

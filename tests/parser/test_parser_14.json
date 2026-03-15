@@ -1,7 +1,6 @@
 {
   "id": "parser_14",
   "reference": "arquivo parser.test.md - teste 14",
-  "description": "Bloco vazio",
   "code": "{}",
   "result": {
     "kind": "Program",

@@ -1,0 +1,26 @@
+{
+  "id": "parser_92",
+  "reference": "arquivo parser.test.md - teste 92",
+  "code": "!true",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "Unary",
+          "operator": {
+            "type": "NOT",
+            "value": "!",
+            "line": 1,
+            "column": 0
+          },
+          "right": {
+            "kind": "Literal",
+            "value": true
+          }
+        }
+      }
+    ]
+  }
+}

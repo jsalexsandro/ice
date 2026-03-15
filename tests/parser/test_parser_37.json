@@ -1,0 +1,90 @@
+{
+  "id": "parser_37",
+  "reference": "arquivo parser.test.md - teste 37",
+  "code": "while (x > 10 + 5) { x = x - 1 }",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "WhileStmt",
+        "condition": {
+          "kind": "Binary",
+          "left": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "x",
+              "line": 1,
+              "column": 7
+            }
+          },
+          "operator": {
+            "type": "GREATER_THAN",
+            "value": ">",
+            "line": 1,
+            "column": 9
+          },
+          "right": {
+            "kind": "Binary",
+            "left": {
+              "kind": "Literal",
+              "value": 10
+            },
+            "operator": {
+              "type": "PLUS",
+              "value": "+",
+              "line": 1,
+              "column": 14
+            },
+            "right": {
+              "kind": "Literal",
+              "value": 5
+            }
+          }
+        },
+        "body": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "ExpressionStmt",
+              "expression": {
+                "kind": "Assign",
+                "name": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "x",
+                    "line": 1,
+                    "column": 21
+                  }
+                },
+                "value": {
+                  "kind": "Binary",
+                  "left": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "x",
+                      "line": 1,
+                      "column": 25
+                    }
+                  },
+                  "operator": {
+                    "type": "MINUS",
+                    "value": "-",
+                    "line": 1,
+                    "column": 27
+                  },
+                  "right": {
+                    "kind": "Literal",
+                    "value": 1
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

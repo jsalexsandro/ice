@@ -1,8 +1,7 @@
 {
   "id": "parser_17",
   "reference": "arquivo parser.test.md - teste 17",
-  "description": "if sem bloco",
-  "code": "if (true)\n  val x = 10",
+  "code": "if (true) val x = 10",
   "result": {
     "kind": "Program",
     "body": [
@@ -19,8 +18,8 @@
           "name": {
             "type": "IDENTIFIER",
             "value": "x",
-            "line": 2,
-            "column": 6
+            "line": 1,
+            "column": 14
           },
           "initializer": {
             "kind": "Literal",

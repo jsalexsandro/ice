@@ -1,0 +1,93 @@
+{
+  "id": "parser_121",
+  "reference": "arquivo parser.test.md - teste 121",
+  "code": "val x = 10 + 20 * 3 - 5 / (2 + 3)",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "x",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Binary",
+          "left": {
+            "kind": "Literal",
+            "value": 10
+          },
+          "operator": {
+            "type": "PLUS",
+            "value": "+",
+            "line": 1,
+            "column": 11
+          },
+          "right": {
+            "kind": "Binary",
+            "left": {
+              "kind": "Binary",
+              "left": {
+                "kind": "Literal",
+                "value": 20
+              },
+              "operator": {
+                "type": "STAR",
+                "value": "*",
+                "line": 1,
+                "column": 16
+              },
+              "right": {
+                "kind": "Literal",
+                "value": 3
+              }
+            },
+            "operator": {
+              "type": "MINUS",
+              "value": "-",
+              "line": 1,
+              "column": 20
+            },
+            "right": {
+              "kind": "Binary",
+              "left": {
+                "kind": "Literal",
+                "value": 5
+              },
+              "operator": {
+                "type": "SLASH",
+                "value": "/",
+                "line": 1,
+                "column": 24
+              },
+              "right": {
+                "kind": "Group",
+                "expression": {
+                  "kind": "Binary",
+                  "left": {
+                    "kind": "Literal",
+                    "value": 2
+                  },
+                  "operator": {
+                    "type": "PLUS",
+                    "value": "+",
+                    "line": 1,
+                    "column": 29
+                  },
+                  "right": {
+                    "kind": "Literal",
+                    "value": 3
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

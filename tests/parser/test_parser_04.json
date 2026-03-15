@@ -1,7 +1,6 @@
 {
   "id": "parser_04",
   "reference": "arquivo parser.test.md - teste 04",
-  "description": "const com auto type",
   "code": "const y = 20",
   "result": {
     "kind": "Program",

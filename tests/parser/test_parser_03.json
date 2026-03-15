@@ -1,7 +1,6 @@
 {
   "id": "parser_03",
   "reference": "arquivo parser.test.md - teste 03",
-  "description": "val com auto type",
   "code": "val x = 10",
   "result": {
     "kind": "Program",

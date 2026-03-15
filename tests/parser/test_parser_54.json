@@ -1,0 +1,47 @@
+{
+  "id": "parser_54",
+  "reference": "arquivo parser.test.md - teste 54",
+  "code": "val x = -5 * 2",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "x",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Binary",
+          "left": {
+            "kind": "Unary",
+            "operator": {
+              "type": "MINUS",
+              "value": "-",
+              "line": 1,
+              "column": 8
+            },
+            "right": {
+              "kind": "Literal",
+              "value": 5
+            }
+          },
+          "operator": {
+            "type": "STAR",
+            "value": "*",
+            "line": 1,
+            "column": 11
+          },
+          "right": {
+            "kind": "Literal",
+            "value": 2
+          }
+        }
+      }
+    ]
+  }
+}

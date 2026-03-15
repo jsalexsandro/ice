@@ -1,8 +1,7 @@
 {
   "id": "parser_28",
   "reference": "arquivo parser.test.md - teste 28",
-  "description": "return sem valor",
-  "code": "func test() {\n  return\n}",
+  "code": "func test() { return }",
   "result": {
     "kind": "Program",
     "body": [

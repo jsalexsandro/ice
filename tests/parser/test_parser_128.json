@@ -1,0 +1,25 @@
+{
+  "id": "parser_128",
+  "reference": "arquivo parser.test.md - teste 128",
+  "code": "while (true) { break }",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "WhileStmt",
+        "condition": {
+          "kind": "Literal",
+          "value": true
+        },
+        "body": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "BreakStmt"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

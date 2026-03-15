@@ -1,0 +1,56 @@
+{
+  "id": "parser_44",
+  "reference": "arquivo parser.test.md - teste 44",
+  "code": "func calc(): int { return sum(5, 5) }",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "FunctionStmt",
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "calc",
+          "line": 1,
+          "column": 5
+        },
+        "params": [],
+        "returnType": {
+          "type": "TYPE_INT",
+          "value": "int",
+          "line": 1,
+          "column": 13
+        },
+        "body": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "ReturnStmt",
+              "value": {
+                "kind": "Call",
+                "callee": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "sum",
+                    "line": 1,
+                    "column": 26
+                  }
+                },
+                "args": [
+                  {
+                    "kind": "Literal",
+                    "value": 5
+                  },
+                  {
+                    "kind": "Literal",
+                    "value": 5
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

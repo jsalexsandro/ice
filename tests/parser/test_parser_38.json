@@ -1,0 +1,31 @@
+{
+  "id": "parser_38",
+  "reference": "arquivo parser.test.md - teste 38",
+  "code": "print(\"Olá mundo\")",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "Call",
+          "callee": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "print",
+              "line": 1,
+              "column": 0
+            }
+          },
+          "args": [
+            {
+              "kind": "Literal",
+              "value": "Olá mundo"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

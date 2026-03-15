@@ -1,7 +1,6 @@
 {
   "id": "parser_09",
   "reference": "arquivo parser.test.md - teste 09",
-  "description": "const com tipo void = null",
   "code": "const a: void = null",
   "result": {
     "kind": "Program",
