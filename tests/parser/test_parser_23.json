@@ -1,0 +1,56 @@
+{
+  "id": "parser_23",
+  "reference": "arquivo parser.test.md - teste 23",
+  "description": "while com expressão condicional",
+  "code": "while (x > 0) {\n  val a = 1\n}",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "WhileStmt",
+        "condition": {
+          "kind": "Binary",
+          "left": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "x",
+              "line": 1,
+              "column": 7
+            }
+          },
+          "operator": {
+            "type": "GREATER_THAN",
+            "value": ">",
+            "line": 1,
+            "column": 9
+          },
+          "right": {
+            "kind": "Literal",
+            "value": 0
+          }
+        },
+        "body": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "VarStmt",
+              "type": "val",
+              "typeAnnotation": null,
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "a",
+                "line": 2,
+                "column": 6
+              },
+              "initializer": {
+                "kind": "Literal",
+                "value": 1
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

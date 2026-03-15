@@ -1,0 +1,7 @@
+{
+  "id": "parser_12",
+  "reference": "arquivo parser.test.md - teste 12",
+  "description": "const sem inicializador (erro)",
+  "code": "const test;",
+  "result": "Constant 'test' must be initialized"
+}

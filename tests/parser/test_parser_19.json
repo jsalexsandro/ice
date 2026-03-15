@@ -1,0 +1,48 @@
+{
+  "id": "parser_19",
+  "reference": "arquivo parser.test.md - teste 19",
+  "description": "if-else sem blocos",
+  "code": "if (true)\n  val x = 10\nelse\n  val y = 20",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "IfStmt",
+        "condition": {
+          "kind": "Literal",
+          "value": true
+        },
+        "thenBranch": {
+          "kind": "VarStmt",
+          "type": "val",
+          "typeAnnotation": null,
+          "name": {
+            "type": "IDENTIFIER",
+            "value": "x",
+            "line": 2,
+            "column": 6
+          },
+          "initializer": {
+            "kind": "Literal",
+            "value": 10
+          }
+        },
+        "elseBranch": {
+          "kind": "VarStmt",
+          "type": "val",
+          "typeAnnotation": null,
+          "name": {
+            "type": "IDENTIFIER",
+            "value": "y",
+            "line": 4,
+            "column": 6
+          },
+          "initializer": {
+            "kind": "Literal",
+            "value": 20
+          }
+        }
+      }
+    ]
+  }
+}

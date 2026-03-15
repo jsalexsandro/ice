@@ -1,0 +1,41 @@
+{
+  "id": "parser_24",
+  "reference": "arquivo parser.test.md - teste 24",
+  "description": "função sem parâmetros",
+  "code": "func test() {\n  val x = 10\n}",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "FunctionStmt",
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "test",
+          "line": 1,
+          "column": 5
+        },
+        "params": [],
+        "body": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "VarStmt",
+              "type": "val",
+              "typeAnnotation": null,
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "x",
+                "line": 2,
+                "column": 6
+              },
+              "initializer": {
+                "kind": "Literal",
+                "value": 10
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

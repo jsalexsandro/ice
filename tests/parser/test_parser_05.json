@@ -1,0 +1,22 @@
+{
+  "id": "parser_05",
+  "reference": "arquivo parser.test.md - teste 05",
+  "description": "val sem inicializador",
+  "code": "val test;",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "test",
+          "line": 1,
+          "column": 4
+        }
+      }
+    ]
+  }
+}

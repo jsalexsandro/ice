@@ -1,0 +1,26 @@
+{
+  "id": "parser_04",
+  "reference": "arquivo parser.test.md - teste 04",
+  "description": "const com auto type",
+  "code": "const y = 20",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "const",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "y",
+          "line": 1,
+          "column": 6
+        },
+        "initializer": {
+          "kind": "Literal",
+          "value": 20
+        }
+      }
+    ]
+  }
+}

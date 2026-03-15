@@ -58,3 +58,4 @@ return
 val nomes: string[] = ["John", "Doe"]
 val numbers: int[] = [1, 2, 3]
 val numbers2: int[] [...numbers, 4, 5] // spread operator
+// o parser não permite trailing comma. [1, 2, 3, ] -> error

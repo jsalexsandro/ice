@@ -1,0 +1,31 @@
+{
+  "id": "parser_02",
+  "reference": "arquivo parser.test.md - teste 02",
+  "description": "const com anotação de tipo",
+  "code": "const year: int = 30",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "const",
+        "typeAnnotation": {
+          "type": "TYPE_INT",
+          "value": "int",
+          "line": 1,
+          "column": 12
+        },
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "year",
+          "line": 1,
+          "column": 6
+        },
+        "initializer": {
+          "kind": "Literal",
+          "value": 30
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "id": "parser_01",
+  "reference": "arquivo parser.test.md - teste 01",
+  "description": "val com anotação de tipo",
+  "code": "val name: string = \"Olá\"",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": {
+          "type": "TYPE_STRING",
+          "value": "string",
+          "line": 1,
+          "column": 10
+        },
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "name",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Literal",
+          "value": "Olá"
+        }
+      }
+    ]
+  }
+}

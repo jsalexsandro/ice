@@ -1,0 +1,31 @@
+{
+  "id": "parser_09",
+  "reference": "arquivo parser.test.md - teste 09",
+  "description": "const com tipo void = null",
+  "code": "const a: void = null",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "const",
+        "typeAnnotation": {
+          "type": "TYPE_VOID",
+          "value": "void",
+          "line": 1,
+          "column": 9
+        },
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "a",
+          "line": 1,
+          "column": 6
+        },
+        "initializer": {
+          "kind": "Literal",
+          "value": null
+        }
+      }
+    ]
+  }
+}

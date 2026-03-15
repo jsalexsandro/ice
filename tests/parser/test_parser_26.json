@@ -1,0 +1,91 @@
+{
+  "id": "parser_26",
+  "reference": "arquivo parser.test.md - teste 26",
+  "description": "função com parâmetros e tipo de retorno",
+  "code": "func test(a: int, b: int): int {\n  return a + b\n}",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "FunctionStmt",
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "test",
+          "line": 1,
+          "column": 5
+        },
+        "params": [
+          {
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "a",
+              "line": 1,
+              "column": 10
+            },
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 1,
+              "column": 13
+            }
+          },
+          {
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "b",
+              "line": 1,
+              "column": 18
+            },
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 1,
+              "column": 21
+            }
+          }
+        ],
+        "returnType": {
+          "type": "TYPE_INT",
+          "value": "int",
+          "line": 1,
+          "column": 27
+        },
+        "body": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "ReturnStmt",
+              "value": {
+                "kind": "Binary",
+                "left": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "a",
+                    "line": 2,
+                    "column": 9
+                  }
+                },
+                "operator": {
+                  "type": "PLUS",
+                  "value": "+",
+                  "line": 2,
+                  "column": 11
+                },
+                "right": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "b",
+                    "line": 3,
+                    "column": 13
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

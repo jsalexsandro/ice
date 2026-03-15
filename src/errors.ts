@@ -27,4 +27,7 @@ export const ErrorMessages = {
 
   expectedExpression: (got: Token) =>
     new ParserError(`Expected expression but got '${got.type}'`, got),
+
+  invalidAssignment: (token: Token) =>
+    new ParserError(`Invalid assignment target`, token),
 }

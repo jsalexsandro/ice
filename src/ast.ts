@@ -10,6 +10,8 @@ export type Expr =
   | AssignExpr
   | CallExpr
   | ArrayExpr
+  | MemberExpr
+  | IndexExpr
 
 export interface BinaryExpr {
   kind: "Binary"
@@ -48,7 +50,7 @@ export interface IdentifierExpr {
 
 export interface AssignExpr {
   kind: "Assign"
-  name: Token
+  name: Expr
   value: Expr
 }
 
@@ -63,12 +65,25 @@ export interface ArrayExpr {
   elements: Expr[]
 }
 
+export interface MemberExpr {
+  kind: "Member"
+  object: Expr
+  property: Token
+}
+
+export interface IndexExpr {
+  kind: "Index"
+  object: Expr
+  index: Expr
+}
+
 export type Stmt =
   | ExpressionStmt
   | BlockStmt
   | IfStmt
   | VarStmt
   | WhileStmt
+  | ForStmt
   | BreakStmt
   | ContinueStmt
   | FunctionStmt
@@ -94,6 +109,14 @@ export interface IfStmt {
 export interface WhileStmt {
   kind: "WhileStmt"
   condition: Expr
+  body: Stmt
+}
+
+export interface ForStmt {
+  kind: "ForStmt"
+  initializer: VarStmt
+  condition: Expr
+  update: Expr
   body: Stmt
 }
 

@@ -1,0 +1,31 @@
+{
+  "id": "parser_08",
+  "reference": "arquivo parser.test.md - teste 08",
+  "description": "tipos nativos int",
+  "code": "val a: int = 10",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": {
+          "type": "TYPE_INT",
+          "value": "int",
+          "line": 1,
+          "column": 7
+        },
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "a",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Literal",
+          "value": 10
+        }
+      }
+    ]
+  }
+}

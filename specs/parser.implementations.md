@@ -89,19 +89,24 @@ IMPLEMENTADO
   - x = a + b
   - Atribuição em while/for
 
-Passo 17 MemberExpression
+Passo 17 MemberExpression              ✅
+IMPLEMENTADO
   user.name
   person.age
   Encadeamento: user.profile.name
+  Atribuição: user.name = valor
 
-Passo 18 IndexExpression
+Passo 18 IndexExpression               ✅
+IMPLEMENTADO
   arr[0]
   numbers[i]
   Encadeamento: matrix[x][y]
+  Atribuição: arr[0] = valor
 
 Passo 19 LogicalExpression
   Operadores: &&, ||
   Exemplo: if (a > 10 && b < 5) {}
 
-Passo 20 ForStatement
+Passo 20 ForStatement                  ✅
+IMPLEMENTADO
   for (val i = 0; i < 10; i = i + 1) { }

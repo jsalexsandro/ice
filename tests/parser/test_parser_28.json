@@ -1,0 +1,29 @@
+{
+  "id": "parser_28",
+  "reference": "arquivo parser.test.md - teste 28",
+  "description": "return sem valor",
+  "code": "func test() {\n  return\n}",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "FunctionStmt",
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "test",
+          "line": 1,
+          "column": 5
+        },
+        "params": [],
+        "body": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "ReturnStmt"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

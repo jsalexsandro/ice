@@ -1,0 +1,31 @@
+{
+  "id": "parser_07",
+  "reference": "arquivo parser.test.md - teste 07",
+  "description": "tipo personalizado (qualquer identificador é aceito)",
+  "code": "val x: qualquerCoisa = 10",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": {
+          "type": "IDENTIFIER",
+          "value": "qualquerCoisa",
+          "line": 1,
+          "column": 7
+        },
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "x",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Literal",
+          "value": 10
+        }
+      }
+    ]
+  }
+}

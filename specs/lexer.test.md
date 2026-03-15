@@ -1,5 +1,7 @@
 # Testes do Lexer
 
+> **Arquivo de teste:** `tests/lexer/test_lexer_01.json`
+
 ## Teste 1: Funções de Leitura (Passo 3)
 
 **Data:** 13/03/2026

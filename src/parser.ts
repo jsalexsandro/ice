@@ -30,8 +30,10 @@ export class Parser {
     [TokenType.STAR, 6],
     [TokenType.SLASH, 6],
     [TokenType.MODULO, 6],
-    [TokenType.ASSIGN, 10],
+    [TokenType.ASSIGN, 0],
     [TokenType.LPAREN, 20],
+    [TokenType.DOT, 20],
+    [TokenType.LBRACKET, 20],
   ])
 
   private getPrecedence(type: string): number {
@@ -106,6 +108,9 @@ export class Parser {
       if (token.value === 'while') {
         return this.parseWhileStatement()
       }
+      if (token.value === 'for') {
+        return this.parseForStatement()
+      }
       if (token.value === 'func') {
         return this.parseFunctionStatement()
       }
@@ -174,6 +179,29 @@ export class Parser {
     }
   }
 
+  private parseForStatement(): ForStmt {
+    this.expect(TokenType.KEYWORD)
+    this.expect(TokenType.LPAREN)
+    
+    const initializer = this.parseVariableDeclaration()
+    
+    const condition = this.parseExpression()
+    this.expect(TokenType.SEMICOLON)
+    
+    const update = this.parseExpression()
+    this.expect(TokenType.RPAREN)
+    
+    const body = this.parseStatement()
+
+    return {
+      kind: "ForStmt",
+      initializer,
+      condition,
+      update,
+      body
+    }
+  }
+
   private parseFunctionStatement(): FunctionStmt {
     this.expect(TokenType.KEYWORD)
     const name = this.expect(TokenType.IDENTIFIER)
@@ -236,7 +264,14 @@ export class Parser {
     this.expect(TokenType.KEYWORD)
     
     let value: Expr | undefined = undefined
-    if (this.current().type !== TokenType.SEMICOLON && !this.isEOF()) {
+    const currentType = this.current().type
+    const isStatementTerminator = 
+      currentType === TokenType.SEMICOLON ||
+      currentType === TokenType.RBRACE ||
+      currentType === TokenType.EOF ||
+      (currentType === TokenType.KEYWORD && ['val', 'const', 'if', 'while', 'for', 'func', 'return', 'else'].includes(this.current().value as string))
+    
+    if (!isStatementTerminator) {
       value = this.parseExpression()
     }
 
@@ -256,7 +291,7 @@ export class Parser {
 
     const name = this.expect(TokenType.IDENTIFIER)
 
-    let typeAnnotation: Token | undefined = undefined
+    let typeAnnotation: Token | null = null
     if (this.current().type === TokenType.COLON) {
       this.advance()
       
@@ -297,6 +332,10 @@ export class Parser {
   private parseExpressionStatement(): ExpressionStmt {
     const expression = this.parseExpression()
 
+    if (this.current().type === TokenType.SEMICOLON) {
+      this.advance()
+    }
+
     return {
       kind: "ExpressionStmt",
       expression
@@ -314,16 +353,39 @@ export class Parser {
 
     while (true) {
       const operator = this.current()
+      
+      const statementTerminators = [
+        TokenType.EOF,
+        TokenType.SEMICOLON,
+        TokenType.RBRACE,
+        TokenType.RPAREN,
+        TokenType.RBRACKET,
+        TokenType.COMMA,
+      ]
+      
+      if (statementTerminators.includes(operator.type)) {
+        break
+      }
+
+      if (operator.type === TokenType.KEYWORD && 
+          ['val', 'const', 'if', 'while', 'for', 'func', 'return', 'else'].includes(operator.value as string)) {
+        break
+      }
+
       const operatorPrecedence = this.getPrecedence(operator.type)
 
-      if (operatorPrecedence <= minPrecedence) {
+      if (operatorPrecedence < minPrecedence) {
         break
       }
 
       this.advance()
 
       if (operator.type === TokenType.ASSIGN) {
-        const right = this.parseExpression(0)
+        if (!this.isValidLValue(left)) {
+          const token = this.getTokenFromExpr(left)
+          throw ErrorMessages.invalidAssignment(token)
+        }
+        const right = this.parseExpression(operatorPrecedence - 1)
         left = {
           kind: "Assign",
           name: left,
@@ -350,6 +412,27 @@ export class Parser {
           kind: "Call",
           callee: left,
           args
+        }
+        continue
+      }
+
+      if (operator.type === TokenType.DOT) {
+        const property = this.expect(TokenType.IDENTIFIER)
+        left = {
+          kind: "Member",
+          object: left,
+          property
+        }
+        continue
+      }
+
+      if (operator.type === TokenType.LBRACKET) {
+        const index = this.parseExpression()
+        this.expect(TokenType.RBRACKET)
+        left = {
+          kind: "Index",
+          object: left,
+          index
         }
         continue
       }
@@ -407,7 +490,7 @@ export class Parser {
         return this.parseUnary()
 
       default:
-        throw new Error(`Unexpected token: ${token.type}`)
+        throw ErrorMessages.expectedExpression(token)
     }
   }
 
@@ -469,7 +552,7 @@ export class Parser {
 
   private parseUnary(): Expr {
     const operator = this.advance()
-    const right = this.parsePrefix()
+    const right = this.parseExpression(7)
 
     return {
       kind: "Unary",
@@ -478,39 +561,51 @@ export class Parser {
     }
   }
 
-  private parseCall(calleeToken: Token): Expr {
-    const callee: IdentifierExpr = {
-      kind: "Identifier",
-      name: calleeToken
-    }
-
-    this.expect(TokenType.LPAREN)
-
-    const args: Expr[] = []
-
-    if (this.current().type !== TokenType.RPAREN) {
-      args.push(this.parseExpression())
-
-      while (this.current().type === TokenType.COMMA) {
-        this.advance()
-        args.push(this.parseExpression())
-      }
-    }
-
-    this.expect(TokenType.RPAREN)
-
-    return {
-      kind: "Call",
-      callee,
-      args
-    }
-  }
-
   /*
   =====================================
   Utilities
   =====================================
   */
+
+  private isValidLValue(expr: Expr): boolean {
+    switch (expr.kind) {
+      case "Identifier":
+      case "Member":
+      case "Index":
+        return true
+      default:
+        return false
+    }
+  }
+
+  private getTokenFromExpr(expr: Expr): Token {
+    switch (expr.kind) {
+      case "Identifier":
+        return expr.name
+      case "Binary":
+      case "Logical":
+        return expr.operator
+      case "Unary":
+        return expr.operator
+      case "Member":
+        return expr.property
+      case "Group":
+        return this.getTokenFromExpr(expr.expression)
+      case "Array":
+        if (expr.elements.length > 0) {
+          return this.getTokenFromExpr(expr.elements[0])
+        }
+        return { type: TokenType.EOF, value: null, line: 0, column: 0 }
+      case "Index":
+        return this.getTokenFromExpr(expr.object)
+      case "Call":
+        return this.getTokenFromExpr(expr.callee)
+      case "Assign":
+        return this.getTokenFromExpr(expr.name)
+      default:
+        return { type: TokenType.NUMBER, value: 0, line: 0, column: 0 }
+    }
+  }
 
   private isEOF(): boolean {
     return this.current().type === TokenType.EOF

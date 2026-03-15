@@ -1,0 +1,38 @@
+{
+  "id": "parser_21",
+  "reference": "arquivo parser.test.md - teste 21",
+  "description": "while com bloco",
+  "code": "while (true) {\n  val x = 10\n}",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "WhileStmt",
+        "condition": {
+          "kind": "Literal",
+          "value": true
+        },
+        "body": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "VarStmt",
+              "type": "val",
+              "typeAnnotation": null,
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "x",
+                "line": 2,
+                "column": 6
+              },
+              "initializer": {
+                "kind": "Literal",
+                "value": 10
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

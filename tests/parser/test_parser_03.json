@@ -1,0 +1,26 @@
+{
+  "id": "parser_03",
+  "reference": "arquivo parser.test.md - teste 03",
+  "description": "val com auto type",
+  "code": "val x = 10",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "x",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Literal",
+          "value": 10
+        }
+      }
+    ]
+  }
+}

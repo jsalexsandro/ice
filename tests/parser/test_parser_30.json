@@ -1,0 +1,44 @@
+{
+  "id": "parser_30",
+  "reference": "arquivo parser.test.md - teste 30",
+  "description": "array com tipo int[]",
+  "code": "val numeros: int[] = [1, 2, 3]",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": {
+          "type": "TYPE_INT",
+          "value": "int[]",
+          "line": 1,
+          "column": 13
+        },
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "numeros",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Array",
+          "elements": [
+            {
+              "kind": "Literal",
+              "value": 1
+            },
+            {
+              "kind": "Literal",
+              "value": 2
+            },
+            {
+              "kind": "Literal",
+              "value": 3
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -6,7 +6,10 @@
   "scripts": {
     "start": "bun run main.ts",
     "dev": "bun run main.ts",
-    "test": "bun run test/parser/index.ts"
+    "test": "bun run tests/test-runner.ts",
+    "test:update": "bun run tests/test-runner.ts --update",
+    "test:verbose": "bun run tests/test-runner.ts --verbose",
+    "test:only": "bun run tests/test-runner.ts --only="
   },
   "keywords": [],
   "author": "",

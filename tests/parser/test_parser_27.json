@@ -1,0 +1,39 @@
+{
+  "id": "parser_27",
+  "reference": "arquivo parser.test.md - teste 27",
+  "description": "return com valor",
+  "code": "func test(): int {\n  return 10\n}",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "FunctionStmt",
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "test",
+          "line": 1,
+          "column": 5
+        },
+        "params": [],
+        "returnType": {
+          "type": "TYPE_INT",
+          "value": "int",
+          "line": 1,
+          "column": 13
+        },
+        "body": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "ReturnStmt",
+              "value": {
+                "kind": "Literal",
+                "value": 10
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

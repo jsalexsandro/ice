@@ -1,0 +1,31 @@
+{
+  "id": "parser_13",
+  "reference": "arquivo parser.test.md - teste 13",
+  "description": "tipo personalizado (aceito pelo parser)",
+  "code": "val x: invalidType = 10",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": {
+          "type": "IDENTIFIER",
+          "value": "invalidType",
+          "line": 1,
+          "column": 7
+        },
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "x",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Literal",
+          "value": 10
+        }
+      }
+    ]
+  }
+}

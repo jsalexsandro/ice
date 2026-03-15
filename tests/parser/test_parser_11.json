@@ -1,0 +1,7 @@
+{
+  "id": "parser_11",
+  "reference": "arquivo parser.test.md - teste 11",
+  "description": "const com atribuidor sem expressão (erro)",
+  "code": "const name = ",
+  "result": "Expected expression but got 'EOF'"
+}

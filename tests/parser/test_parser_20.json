@@ -1,0 +1,56 @@
+{
+  "id": "parser_20",
+  "reference": "arquivo parser.test.md - teste 20",
+  "description": "if com expressão condicional",
+  "code": "if (x > 5) {\n  val a = 1\n}",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "IfStmt",
+        "condition": {
+          "kind": "Binary",
+          "left": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "x",
+              "line": 1,
+              "column": 4
+            }
+          },
+          "operator": {
+            "type": "GREATER_THAN",
+            "value": ">",
+            "line": 1,
+            "column": 6
+          },
+          "right": {
+            "kind": "Literal",
+            "value": 5
+          }
+        },
+        "thenBranch": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "VarStmt",
+              "type": "val",
+              "typeAnnotation": null,
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "a",
+                "line": 2,
+                "column": 6
+              },
+              "initializer": {
+                "kind": "Literal",
+                "value": 1
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
