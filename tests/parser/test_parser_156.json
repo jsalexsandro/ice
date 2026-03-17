@@ -1,0 +1,50 @@
+{
+  "id": "parser_156",
+  "reference": "arquivo parser.test.md - teste 156",
+  "description": "ICEX - boolean expression in interpolation",
+  "code": "val t = <div>{true && false}</div>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "t",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "div",
+          "attributes": [],
+          "children": [
+            {
+              "kind": "IcexExpression",
+              "expression": {
+                "kind": "Logical",
+                "left": {
+                  "kind": "Literal",
+                  "value": true
+                },
+                "operator": {
+                  "type": "AND",
+                  "value": "&&",
+                  "line": 1,
+                  "column": 19
+                },
+                "right": {
+                  "kind": "Literal",
+                  "value": false
+                }
+              }
+            }
+          ],
+          "isSelfClosing": false
+        }
+      }
+    ]
+  }
+}

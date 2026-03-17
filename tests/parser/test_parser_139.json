@@ -1,0 +1,21 @@
+{
+  "id": "parser_139",
+  "reference": "arquivo parser.test.md - teste 139",
+  "description": "ICEX - self-closing tag",
+  "code": "<br/>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "IcexElement",
+          "tag": "br",
+          "attributes": [],
+          "children": [],
+          "isSelfClosing": true
+        }
+      }
+    ]
+  }
+}

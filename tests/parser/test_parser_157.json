@@ -1,0 +1,43 @@
+{
+  "id": "parser_157",
+  "reference": "arquivo parser.test.md - teste 157",
+  "description": "ICEX - button with class and boolean attr",
+  "code": "val button = <button class=\"primary\" disabled>Click me</button>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "button",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "button",
+          "attributes": [
+            {
+              "name": "class",
+              "value": "primary"
+            },
+            {
+              "name": "disabled",
+              "value": true
+            }
+          ],
+          "children": [
+            {
+              "kind": "IcexText",
+              "value": "Click me"
+            }
+          ],
+          "isSelfClosing": false
+        }
+      }
+    ]
+  }
+}

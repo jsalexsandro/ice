@@ -12,6 +12,7 @@ export type Expr =
   | ArrayExpr
   | MemberExpr
   | IndexExpr
+  | IcexElement
 
 export interface BinaryExpr {
   kind: "Binary"
@@ -152,4 +153,29 @@ export interface FunctionStmt {
 export interface ReturnStmt {
   kind: "ReturnStmt"
   value?: Expr
+}
+
+export interface IcexElement {
+  kind: "IcexElement"
+  tag: string
+  attributes: IcexAttribute[]
+  children: IcexChild[]
+  isSelfClosing: boolean
+}
+
+export interface IcexAttribute {
+  name: string
+  value: Expr | string | boolean
+}
+
+export type IcexChild = IcexElement | IcexText | IcexExpression
+
+export interface IcexText {
+  kind: "IcexText"
+  value: string
+}
+
+export interface IcexExpression {
+  kind: "IcexExpression"
+  expression: Expr
 }

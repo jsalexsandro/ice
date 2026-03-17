@@ -1,0 +1,31 @@
+{
+  "id": "parser_141",
+  "reference": "arquivo parser.test.md - teste 141",
+  "description": "ICEX - tag with boolean attribute",
+  "code": "<button disabled>Click</button>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "IcexElement",
+          "tag": "button",
+          "attributes": [
+            {
+              "name": "disabled",
+              "value": true
+            }
+          ],
+          "children": [
+            {
+              "kind": "IcexText",
+              "value": "Click"
+            }
+          ],
+          "isSelfClosing": false
+        }
+      }
+    ]
+  }
+}

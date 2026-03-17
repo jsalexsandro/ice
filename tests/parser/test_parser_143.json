@@ -1,0 +1,34 @@
+{
+  "id": "parser_143",
+  "reference": "arquivo parser.test.md - teste 143",
+  "description": "ICEX - nested tags",
+  "code": "<div><span>Text</span></div>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "IcexElement",
+          "tag": "div",
+          "attributes": [],
+          "children": [
+            {
+              "kind": "IcexElement",
+              "tag": "span",
+              "attributes": [],
+              "children": [
+                {
+                  "kind": "IcexText",
+                  "value": "Text"
+                }
+              ],
+              "isSelfClosing": false
+            }
+          ],
+          "isSelfClosing": false
+        }
+      }
+    ]
+  }
+}

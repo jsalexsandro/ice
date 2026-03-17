@@ -1,0 +1,161 @@
+{
+  "id": "parser_160",
+  "reference": "arquivo parser.test.md - teste 160",
+  "description": "ICEX - interpolation with variables",
+  "code": "val name = \"João\"\nval age = 25\nval score = 98\nval profile = <div class=\"profile\">\n    <h2>{name}</h2>\n    <span>Age: {age}</span>\n    <span>Score: {score * 2}</span>\n</div>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "name",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Literal",
+          "value": "João"
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "age",
+          "line": 2,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Literal",
+          "value": 25
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "score",
+          "line": 3,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Literal",
+          "value": 98
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "profile",
+          "line": 4,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "div",
+          "attributes": [
+            {
+              "name": "class",
+              "value": "profile"
+            }
+          ],
+          "children": [
+            {
+              "kind": "IcexElement",
+              "tag": "h2",
+              "attributes": [],
+              "children": [
+                {
+                  "kind": "IcexExpression",
+                  "expression": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "name",
+                      "line": 5,
+                      "column": 9
+                    }
+                  }
+                }
+              ],
+              "isSelfClosing": false
+            },
+            {
+              "kind": "IcexElement",
+              "tag": "span",
+              "attributes": [],
+              "children": [
+                {
+                  "kind": "IcexText",
+                  "value": "Age:"
+                },
+                {
+                  "kind": "IcexExpression",
+                  "expression": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "age",
+                      "line": 6,
+                      "column": 16
+                    }
+                  }
+                }
+              ],
+              "isSelfClosing": false
+            },
+            {
+              "kind": "IcexElement",
+              "tag": "span",
+              "attributes": [],
+              "children": [
+                {
+                  "kind": "IcexText",
+                  "value": "Score:"
+                },
+                {
+                  "kind": "IcexExpression",
+                  "expression": {
+                    "kind": "Binary",
+                    "left": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "score",
+                        "line": 7,
+                        "column": 18
+                      }
+                    },
+                    "operator": {
+                      "type": "STAR",
+                      "value": "*",
+                      "line": 7,
+                      "column": 24
+                    },
+                    "right": {
+                      "kind": "Literal",
+                      "value": 2
+                    }
+                  }
+                }
+              ],
+              "isSelfClosing": false
+            }
+          ],
+          "isSelfClosing": false
+        }
+      }
+    ]
+  }
+}

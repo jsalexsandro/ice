@@ -1,0 +1,34 @@
+{
+  "id": "parser_146",
+  "reference": "arquivo parser.test.md - teste 146",
+  "description": "ICEX - multiple attributes",
+  "code": "<input type=\"text\" name=\"username\" placeholder=\"Enter name\"/>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "IcexElement",
+          "tag": "input",
+          "attributes": [
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "name",
+              "value": "username"
+            },
+            {
+              "name": "placeholder",
+              "value": "Enter name"
+            }
+          ],
+          "children": [],
+          "isSelfClosing": true
+        }
+      }
+    ]
+  }
+}

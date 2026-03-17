@@ -1,0 +1,63 @@
+{
+  "id": "parser_159",
+  "reference": "arquivo parser.test.md - teste 159",
+  "description": "ICEX - card with nested elements",
+  "code": "val card = <div class=\"card\" data-id=\"123\">\n    <h1>Title</h1>\n    <p>Content here</p>\n</div>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "card",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "div",
+          "attributes": [
+            {
+              "name": "class",
+              "value": "card"
+            },
+            {
+              "name": "data-id",
+              "value": "123"
+            }
+          ],
+          "children": [
+            {
+              "kind": "IcexElement",
+              "tag": "h1",
+              "attributes": [],
+              "children": [
+                {
+                  "kind": "IcexText",
+                  "value": "Title"
+                }
+              ],
+              "isSelfClosing": false
+            },
+            {
+              "kind": "IcexElement",
+              "tag": "p",
+              "attributes": [],
+              "children": [
+                {
+                  "kind": "IcexText",
+                  "value": "Content here"
+                }
+              ],
+              "isSelfClosing": false
+            }
+          ],
+          "isSelfClosing": false
+        }
+      }
+    ]
+  }
+}

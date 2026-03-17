@@ -1,0 +1,65 @@
+{
+  "id": "parser_144",
+  "reference": "arquivo parser.test.md - teste 144",
+  "description": "ICEX - interpolation",
+  "code": "val name = \"World\"\nval t = <div>Hello {name}!</div>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "name",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Literal",
+          "value": "World"
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "t",
+          "line": 2,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "div",
+          "attributes": [],
+          "children": [
+            {
+              "kind": "IcexText",
+              "value": "Hello"
+            },
+            {
+              "kind": "IcexExpression",
+              "expression": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "name",
+                  "line": 2,
+                  "column": 20
+                }
+              }
+            },
+            {
+              "kind": "IcexText",
+              "value": "!"
+            }
+          ],
+          "isSelfClosing": false
+        }
+      }
+    ]
+  }
+}

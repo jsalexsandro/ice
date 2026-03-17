@@ -497,6 +497,22 @@ export class Parser {
         continue
       }
 
+      if (operator.type === TokenType.LESS_THAN ||
+          operator.type === TokenType.LESS_EQUAL ||
+          operator.type === TokenType.GREATER_THAN ||
+          operator.type === TokenType.GREATER_EQUAL ||
+          operator.type === TokenType.EQUAL ||
+          operator.type === TokenType.NOT_EQUAL) {
+        const right = this.parseExpression(operatorPrecedence)
+        left = {
+          kind: "Binary",
+          left,
+          operator,
+          right
+        }
+        continue
+      }
+
       const nextMinPrecedence = operatorPrecedence
       const right = this.parseExpression(nextMinPrecedence)
 
@@ -548,6 +564,12 @@ export class Parser {
       case TokenType.MINUS:
       case TokenType.NOT:
         return this.parseUnary()
+
+      case TokenType.LESS_THAN:
+        if (this.peek().type === TokenType.IDENTIFIER) {
+          return this.parseIcexElement()
+        }
+        throw ErrorMessages.expectedExpression(token)
 
       default:
         throw ErrorMessages.expectedExpression(token)
@@ -669,5 +691,191 @@ export class Parser {
 
   private isEOF(): boolean {
     return this.current().type === TokenType.EOF
+  }
+
+  private parseIcexElement(): Expr {
+    this.expect(TokenType.LESS_THAN)
+
+    const tagToken = this.current()
+    if (tagToken.type !== TokenType.IDENTIFIER && 
+        (tagToken.type !== TokenType.KEYWORD || typeof tagToken.value !== "string")) {
+      throw ErrorMessages.expectedExpression(tagToken)
+    }
+    const tag = this.advance().value as string
+
+    const attributes = this.parseIcexAttributes()
+
+    let isSelfClosing = false
+    if (this.current().type === TokenType.SLASH) {
+      this.advance()
+      isSelfClosing = true
+    }
+
+    this.expect(TokenType.GREATER_THAN)
+
+    const children: any[] = []
+    if (!isSelfClosing) {
+      const parsedChildren = this.parseIcexChildren(tag)
+      children.push(...parsedChildren)
+      this.expect(TokenType.LESS_THAN)
+      this.expect(TokenType.SLASH)
+      const closeTagToken = this.current()
+      const closeTag = closeTagToken.type === TokenType.IDENTIFIER || 
+                       (closeTagToken.type === TokenType.KEYWORD && typeof closeTagToken.value === "string")
+        ? this.advance().value as string
+        : null
+      if (closeTag !== tag) {
+        throw new Error(`Tag de fechamento incorreta: esperado </${tag}>, encontrado </${closeTagToken.value}>`)
+      }
+      this.expect(TokenType.GREATER_THAN)
+    }
+
+    return {
+      kind: "IcexElement",
+      tag,
+      attributes,
+      children,
+      isSelfClosing
+    }
+  }
+
+  private parseIcexAttributes(): any[] {
+    const attributes: any[] = []
+
+    while (this.current().type === TokenType.IDENTIFIER || 
+           (this.current().type === TokenType.KEYWORD && typeof this.current().value === "string")) {
+      let name = ""
+
+      while (true) {
+        const token = this.current()
+        
+        if (token.type === TokenType.IDENTIFIER || 
+            (token.type === TokenType.KEYWORD && typeof token.value === "string")) {
+          if (name !== "" && !name.endsWith("-")) {
+            name += "-"
+          }
+          name += this.advance().value
+        } else if (token.type === TokenType.MINUS) {
+          if (name !== "" && !name.endsWith("-")) {
+            name += this.advance().value
+          } else {
+            break
+          }
+        } else {
+          break
+        }
+      }
+
+      if (name === "") {
+        break
+      }
+
+      let value: any = true
+
+        if (this.current().type === TokenType.ASSIGN) {
+          this.advance()
+
+          if (this.current().type === TokenType.STRING) {
+            value = this.advance().value
+          } else if (this.current().type === TokenType.LBRACE) {
+            this.advance()
+            value = this.parseExpression(0)
+            this.expect(TokenType.RBRACE)
+          } else {
+            throw ErrorMessages.expectedExpression(this.current())
+          }
+        }
+
+      attributes.push({ name, value })
+    }
+
+    return attributes
+  }
+
+  private parseIcexAttributeValue(): Expr {
+    const token = this.current()
+
+    switch (token.type) {
+      case TokenType.NUMBER:
+      case TokenType.STRING:
+      case TokenType.BOOLEAN:
+      case TokenType.NULL:
+        return this.parseLiteral()
+
+      case TokenType.IDENTIFIER:
+        return this.parseIdentifier()
+
+      case TokenType.LPAREN:
+        return this.parseGroup()
+
+      case TokenType.LBRACKET:
+        return this.parseArray()
+
+      case TokenType.MINUS:
+      case TokenType.NOT:
+        return this.parseUnary()
+
+      default:
+        throw ErrorMessages.expectedExpression(token)
+    }
+  }
+
+  private parseIcexChildren(parentTag: string): any[] {
+    const children: any[] = []
+    let currentText = ""
+
+    while (true) {
+      const token = this.current()
+
+      if (token.type === TokenType.LESS_THAN) {
+        if (currentText !== "") {
+          children.push({ kind: "IcexText", value: currentText })
+          currentText = ""
+        }
+
+        const nextToken = this.peek()
+        if (nextToken.type === TokenType.SLASH) {
+          break
+        }
+
+        children.push(this.parseIcexElement())
+        continue
+      }
+
+      if (token.type === TokenType.LBRACE) {
+        if (currentText !== "") {
+          children.push({ kind: "IcexText", value: currentText })
+          currentText = ""
+        }
+
+        this.advance()
+        const expr = this.parseExpression()
+        this.expect(TokenType.RBRACE)
+        children.push({ kind: "IcexExpression", expression: expr })
+        continue
+      }
+
+      if (token.type === TokenType.GREATER_THAN) {
+        break
+      }
+
+      if (token.type === TokenType.EOF) {
+        throw new Error(`Tag ${parentTag} não fechada`)
+      }
+
+      if ((token.type === TokenType.IDENTIFIER || token.type === TokenType.NUMBER) && currentText !== "" && !currentText.endsWith(" ")) {
+        currentText += " " + token.value
+      } else {
+        currentText += token.value
+      }
+
+      this.advance()
+    }
+
+    if (currentText !== "") {
+      children.push({ kind: "IcexText", value: currentText })
+    }
+
+    return children
   }
 }

@@ -1,0 +1,31 @@
+{
+  "id": "parser_140",
+  "reference": "arquivo parser.test.md - teste 140",
+  "description": "ICEX - tag with attribute string",
+  "code": "<div class=\"container\">Text</div>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "IcexElement",
+          "tag": "div",
+          "attributes": [
+            {
+              "name": "class",
+              "value": "container"
+            }
+          ],
+          "children": [
+            {
+              "kind": "IcexText",
+              "value": "Text"
+            }
+          ],
+          "isSelfClosing": false
+        }
+      }
+    ]
+  }
+}

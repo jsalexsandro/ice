@@ -1,0 +1,42 @@
+{
+  "id": "parser_151",
+  "reference": "arquivo parser.test.md - teste 151",
+  "description": "ICEX - text between tags",
+  "code": "<div>Text before<span>inner</span>Text after</div>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "IcexElement",
+          "tag": "div",
+          "attributes": [],
+          "children": [
+            {
+              "kind": "IcexText",
+              "value": "Text before"
+            },
+            {
+              "kind": "IcexElement",
+              "tag": "span",
+              "attributes": [],
+              "children": [
+                {
+                  "kind": "IcexText",
+                  "value": "inner"
+                }
+              ],
+              "isSelfClosing": false
+            },
+            {
+              "kind": "IcexText",
+              "value": "Text after"
+            }
+          ],
+          "isSelfClosing": false
+        }
+      }
+    ]
+  }
+}

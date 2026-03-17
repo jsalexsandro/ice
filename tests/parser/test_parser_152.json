@@ -1,0 +1,77 @@
+{
+  "id": "parser_152",
+  "reference": "arquivo parser.test.md - teste 152",
+  "description": "ICEX - array access in interpolation",
+  "code": "val items = [\"a\", \"b\", \"c\"]\nval t = <div>{items[0]}</div>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "items",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Array",
+          "elements": [
+            {
+              "kind": "Literal",
+              "value": "a"
+            },
+            {
+              "kind": "Literal",
+              "value": "b"
+            },
+            {
+              "kind": "Literal",
+              "value": "c"
+            }
+          ]
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "t",
+          "line": 2,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "div",
+          "attributes": [],
+          "children": [
+            {
+              "kind": "IcexExpression",
+              "expression": {
+                "kind": "Index",
+                "object": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "items",
+                    "line": 2,
+                    "column": 14
+                  }
+                },
+                "index": {
+                  "kind": "Literal",
+                  "value": 0
+                }
+              }
+            }
+          ],
+          "isSelfClosing": false
+        }
+      }
+    ]
+  }
+}

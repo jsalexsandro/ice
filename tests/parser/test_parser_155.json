@@ -1,0 +1,66 @@
+{
+  "id": "parser_155",
+  "reference": "arquivo parser.test.md - teste 155",
+  "description": "ICEX - parentheses in interpolation",
+  "code": "val t = <div>{(1 + 2) * 3}</div>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "t",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "div",
+          "attributes": [],
+          "children": [
+            {
+              "kind": "IcexExpression",
+              "expression": {
+                "kind": "Binary",
+                "left": {
+                  "kind": "Group",
+                  "expression": {
+                    "kind": "Binary",
+                    "left": {
+                      "kind": "Literal",
+                      "value": 1
+                    },
+                    "operator": {
+                      "type": "PLUS",
+                      "value": "+",
+                      "line": 1,
+                      "column": 17
+                    },
+                    "right": {
+                      "kind": "Literal",
+                      "value": 2
+                    }
+                  }
+                },
+                "operator": {
+                  "type": "STAR",
+                  "value": "*",
+                  "line": 1,
+                  "column": 22
+                },
+                "right": {
+                  "kind": "Literal",
+                  "value": 3
+                }
+              }
+            }
+          ],
+          "isSelfClosing": false
+        }
+      }
+    ]
+  }
+}

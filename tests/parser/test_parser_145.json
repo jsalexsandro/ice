@@ -1,0 +1,30 @@
+{
+  "id": "parser_145",
+  "reference": "arquivo parser.test.md - teste 145",
+  "description": "ICEX - self-closing with attributes",
+  "code": "<input type=\"text\" disabled/>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "IcexElement",
+          "tag": "input",
+          "attributes": [
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "disabled",
+              "value": true
+            }
+          ],
+          "children": [],
+          "isSelfClosing": true
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,156 @@
+{
+  "id": "parser_162",
+  "reference": "arquivo parser.test.md - teste 162",
+  "description": "ICEX - function return",
+  "code": "func renderUser(name: string, age: int): string {\n    val greeting = \"Hello\"\n    return <div class=\"user\">\n        <h1>{greeting}, {name}!</h1>\n        <p>Age: {age}</p>\n    </div>\n}",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "FunctionStmt",
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "renderUser",
+          "line": 1,
+          "column": 5
+        },
+        "params": [
+          {
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "name",
+              "line": 1,
+              "column": 16
+            },
+            "type": {
+              "type": "TYPE_STRING",
+              "value": "string",
+              "line": 1,
+              "column": 22
+            }
+          },
+          {
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "age",
+              "line": 1,
+              "column": 30
+            },
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 1,
+              "column": 35
+            }
+          }
+        ],
+        "returnType": {
+          "type": "TYPE_STRING",
+          "value": "string",
+          "line": 1,
+          "column": 41
+        },
+        "body": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "VarStmt",
+              "type": "val",
+              "typeAnnotation": null,
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "greeting",
+                "line": 2,
+                "column": 8
+              },
+              "initializer": {
+                "kind": "Literal",
+                "value": "Hello"
+              }
+            },
+            {
+              "kind": "ReturnStmt",
+              "value": {
+                "kind": "IcexElement",
+                "tag": "div",
+                "attributes": [
+                  {
+                    "name": "class",
+                    "value": "user"
+                  }
+                ],
+                "children": [
+                  {
+                    "kind": "IcexElement",
+                    "tag": "h1",
+                    "attributes": [],
+                    "children": [
+                      {
+                        "kind": "IcexExpression",
+                        "expression": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "greeting",
+                            "line": 4,
+                            "column": 13
+                          }
+                        }
+                      },
+                      {
+                        "kind": "IcexText",
+                        "value": ","
+                      },
+                      {
+                        "kind": "IcexExpression",
+                        "expression": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "name",
+                            "line": 4,
+                            "column": 25
+                          }
+                        }
+                      },
+                      {
+                        "kind": "IcexText",
+                        "value": "!"
+                      }
+                    ],
+                    "isSelfClosing": false
+                  },
+                  {
+                    "kind": "IcexElement",
+                    "tag": "p",
+                    "attributes": [],
+                    "children": [
+                      {
+                        "kind": "IcexText",
+                        "value": "Age:"
+                      },
+                      {
+                        "kind": "IcexExpression",
+                        "expression": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "age",
+                            "line": 5,
+                            "column": 17
+                          }
+                        }
+                      }
+                    ],
+                    "isSelfClosing": false
+                  }
+                ],
+                "isSelfClosing": false
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

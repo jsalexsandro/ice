@@ -1210,3 +1210,289 @@ func compute(a: int, b: int): int {
 - If com OR e NOT
 - Break e Member expression
 - Return com identifier
+
+### 136. Extreme expression chaining
+```ice
+obj.a()[b](c).d[e](f)
+```
+**Arquivo:** `tests/parser/test_parser_136.json`
+**Resultado:** ✅ Sucesso
+- Estrutura: Call → Index → Member → Call → Index → Call → Member → Identifier
+- Combinação extrema de todos os tipos de expressão encadeada
+
+---
+
+## ICEX (HTML-like Template) Tests
+
+### 137. Basic tag
+```ice
+<div>Hello</div>
+```
+**Arquivo:** `tests/parser/test_parser_137.json`
+**Resultado:** ✅ Sucesso
+
+### 138. Tag with text
+```ice
+<div>Hello World</div>
+```
+**Arquivo:** `tests/parser/test_parser_138.json`
+**Resultado:** ✅ Sucesso
+
+### 139. Self-closing tag
+```ice
+<br/>
+```
+**Arquivo:** `tests/parser/test_parser_139.json`
+**Resultado:** ✅ Sucesso
+
+### 140. Tag with string attribute
+```ice
+<div class="container">Text</div>
+```
+**Arquivo:** `tests/parser/test_parser_140.json`
+**Resultado:** ✅ Sucesso
+
+### 141. Tag with boolean attribute
+```ice
+<button disabled>Click</button>
+```
+**Arquivo:** `tests/parser/test_parser_141.json`
+**Resultado:** ✅ Sucesso
+
+### 142. Tag with expression attribute
+```ice
+val x = 10
+val t = <input value={x}/>
+```
+**Arquivo:** `tests/parser/test_parser_142.json`
+**Resultado:** ✅ Sucesso
+
+### 143. Nested tags
+```ice
+<div><span>Text</span></div>
+```
+**Arquivo:** `tests/parser/test_parser_143.json`
+**Resultado:** ✅ Sucesso
+
+### 144. Interpolation
+```ice
+val name = "World"
+val t = <div>Hello {name}!</div>
+```
+**Arquivo:** `tests/parser/test_parser_144.json`
+**Resultado:** ✅ Sucesso
+
+### 145. Self-closing with attributes
+```ice
+<input type="text" disabled/>
+```
+**Arquivo:** `tests/parser/test_parser_145.json`
+**Resultado:** ✅ Sucesso
+
+### 146. Multiple attributes
+```ice
+<input type="text" name="username" placeholder="Enter name"/>
+```
+**Arquivo:** `tests/parser/test_parser_146.json`
+**Resultado:** ✅ Sucesso
+
+### 147. Deep nesting (10 levels)
+```ice
+<a><b><c><d><e><f><g><h><i><j>text</j></i></h></g></f></e></d></c></b></a>
+```
+**Arquivo:** `tests/parser/test_parser_147.json`
+**Resultado:** ✅ Sucesso
+
+### 148. Attribute with hyphen (data-*)
+```ice
+<div data-value="test"></div>
+```
+**Arquivo:** `tests/parser/test_parser_148.json`
+**Resultado:** ✅ Sucesso
+
+### 149. Interpolation with binary expression
+```ice
+val a = 10
+val b = 20
+val t = <div>{a + b}</div>
+```
+**Arquivo:** `tests/parser/test_parser_149.json`
+**Resultado:** ✅ Sucesso
+
+### 150. Multiple interpolations
+```ice
+val a = "Hello"
+val b = "World"
+val t = <div>{a} {b}</div>
+```
+**Arquivo:** `tests/parser/test_parser_150.json`
+**Resultado:** ✅ Sucesso
+
+### 151. Text between tags (mixed content)
+```ice
+<div>Text before<span>inner</span>Text after</div>
+```
+**Arquivo:** `tests/parser/test_parser_151.json`
+**Resultado:** ✅ Sucesso
+
+### 152. Array access in interpolation
+```ice
+val items = ["a", "b", "c"]
+val t = <div>{items[0]}</div>
+```
+**Arquivo:** `tests/parser/test_parser_152.json`
+**Resultado:** ✅ Sucesso
+
+### 153. Expression attribute (arithmetic)
+```ice
+val x = 10
+val t = <div data-count={x * 2}></div>
+```
+**Arquivo:** `tests/parser/test_parser_154.json`
+**Resultado:** ✅ Sucesso
+
+### 154. Parentheses in interpolation
+```ice
+val t = <div>{(1 + 2) * 3}</div>
+```
+**Arquivo:** `tests/parser/test_parser_155.json`
+**Resultado:** ✅ Sucesso
+
+### 155. Boolean expression in interpolation
+```ice
+val t = <div>{true && false}</div>
+```
+**Arquivo:** `tests/parser/test_parser_156.json`
+**Resultado:** ✅ Sucesso
+
+### 156. Button with class and boolean attribute
+```ice
+val button = <button class="primary" disabled>Click me</button>
+```
+**Arquivo:** `tests/parser/test_parser_157.json`
+**Resultado:** ✅ Sucesso
+
+### 157. Input with multiple attributes
+```ice
+val input = <input type="text" name="username" placeholder="Enter name"/>
+```
+**Arquivo:** `tests/parser/test_parser_158.json`
+**Resultado:** ✅ Sucesso
+
+### 158. Card with nested elements
+```ice
+val card = <div class="card" data-id="123">
+    <h1>Title</h1>
+    <p>Content here</p>
+</div>
+```
+**Arquivo:** `tests/parser/test_parser_159.json`
+**Resultado:** ✅ Sucesso
+
+### 159. Interpolation with variables
+```ice
+val name = "João"
+val age = 25
+val score = 98
+val profile = <div class="profile">
+    <h2>{name}</h2>
+    <span>Age: {age}</span>
+    <span>Score: {score * 2}</span>
+</div>
+```
+**Arquivo:** `tests/parser/test_parser_160.json`
+**Resultado:** ✅ Sucesso
+
+### 160. Arrays and complex expressions
+```ice
+val items = ["apple", "banana", "grape"]
+val count = 3
+val isAdmin = true
+
+val panel = <div data-count={count + 1} data-admin={isAdmin && count > 0}>
+    <span>First: {items[0]}</span>
+    <span>Total: {count * 10}</span>
+    <span>Check: {(count + 1) * 2}</span>
+</div>
+```
+**Arquivo:** `tests/parser/test_parser_161.json`
+**Resultado:** ✅ Sucesso
+
+### 161. ICEX as function return
+```ice
+func renderUser(name: string, age: int): string {
+    val greeting = "Hello"
+    return <div class="user">
+        <h1>{greeting}, {name}!</h1>
+        <p>Age: {age}</p>
+    </div>
+}
+```
+**Arquivo:** `tests/parser/test_parser_162.json`
+**Resultado:** ✅ Sucesso
+
+### 162. Complex expressions in interpolation
+```ice
+val x = 10
+val t = <div class="result" data-valid={isValid && x > 0}>
+    <span>{x + y * 2}</span>
+    <span>{!(x == y)}</span>
+    <span>{(x + y) * (x - y)}</span>
+    <input type="number" value={x * y}/>
+</div>
+```
+**Arquivo:** `tests/parser/test_parser_163.json`
+**Resultado:** ✅ Sucesso
+
+### 164. Extreme dashboard with complex expressions
+```ice
+func renderDashboard(data: Dashboard, cfg: Config): string {
+    val header = <header data-ready={cfg.status.get(data.items[0].key) && !data.loading}>
+        <nav data-active={!(data.route == cfg.routes[0])}>
+            <ul data-items={data.items[0].count * cfg.factor.get()}>
+                <li data-selected={data.active[0] && !(cfg.hidden)}>{data.items[0].label}</li>
+            </ul>
+        </nav>
+    </header>
+    val body = <main>
+        <section>
+            <article>
+                <h1>{data.title}</h1>
+                <p>Body: {data.body}</p>
+            </article>
+        </section>
+    </main>
+    return <div data-ready={cfg.status.get(data.items[0].key) && !(data.loading)}>
+        {header}
+        {body}
+    </div>
+}
+```
+**Arquivo:** `tests/parser/test_parser_164.json`
+**Resultado:** ✅ Sucesso
+- Teste extremo com 2016 tokens
+- Múltiplas tags aninhadas
+- Expressões complexas encadeadas (member access + index + call)
+- Atributos com expressões lógicas e aritméticas
+- Retorno de função com ICEX
+
+---
+
+## ICEX Limitations
+
+### Objetos literais não suportados
+```ice
+val t = <div>{ { name: "John" } }</div>
+```
+**Resultado:** ❌ Erro - Objetos literais `{ key: value }` não são suportados pela linguagem ainda.
+
+### Múltiplas tags consecutivas sem pai
+```ice
+val t = <div></div><span></span>
+```
+**Resultado:** ❌ Erro - Múltiplas tags ICEX no mesmo nível requerem um elemento pai (como no JSX).
+
+```ice
+val t = <wrapper><div></div><span></span></wrapper>
+```
+**Resultado:** ✅ Sucesso - Com elemento pai.

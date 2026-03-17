@@ -1,0 +1,278 @@
+{
+  "id": "parser_161",
+  "reference": "arquivo parser.test.md - teste 161",
+  "description": "ICEX - arrays and complex expressions",
+  "code": "val items = [\"apple\", \"banana\", \"grape\"]\nval count = 3\nval isAdmin = true\n\nval panel = <div data-count={count + 1} data-admin={isAdmin && count > 0}>\n    <span>First: {items[0]}</span>\n    <span>Total: {count * 10}</span>\n    <span>Check: {(count + 1) * 2}</span>\n</div>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "items",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Array",
+          "elements": [
+            {
+              "kind": "Literal",
+              "value": "apple"
+            },
+            {
+              "kind": "Literal",
+              "value": "banana"
+            },
+            {
+              "kind": "Literal",
+              "value": "grape"
+            }
+          ]
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "count",
+          "line": 2,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Literal",
+          "value": 3
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "isAdmin",
+          "line": 3,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Literal",
+          "value": true
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "panel",
+          "line": 5,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "div",
+          "attributes": [
+            {
+              "name": "data-count",
+              "value": {
+                "kind": "Binary",
+                "left": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "count",
+                    "line": 5,
+                    "column": 29
+                  }
+                },
+                "operator": {
+                  "type": "PLUS",
+                  "value": "+",
+                  "line": 5,
+                  "column": 35
+                },
+                "right": {
+                  "kind": "Literal",
+                  "value": 1
+                }
+              }
+            },
+            {
+              "name": "data-admin",
+              "value": {
+                "kind": "Logical",
+                "left": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "isAdmin",
+                    "line": 5,
+                    "column": 52
+                  }
+                },
+                "operator": {
+                  "type": "AND",
+                  "value": "&&",
+                  "line": 5,
+                  "column": 60
+                },
+                "right": {
+                  "kind": "Binary",
+                  "left": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "count",
+                      "line": 5,
+                      "column": 63
+                    }
+                  },
+                  "operator": {
+                    "type": "GREATER_THAN",
+                    "value": ">",
+                    "line": 5,
+                    "column": 69
+                  },
+                  "right": {
+                    "kind": "Literal",
+                    "value": 0
+                  }
+                }
+              }
+            }
+          ],
+          "children": [
+            {
+              "kind": "IcexElement",
+              "tag": "span",
+              "attributes": [],
+              "children": [
+                {
+                  "kind": "IcexText",
+                  "value": "First:"
+                },
+                {
+                  "kind": "IcexExpression",
+                  "expression": {
+                    "kind": "Index",
+                    "object": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "items",
+                        "line": 6,
+                        "column": 18
+                      }
+                    },
+                    "index": {
+                      "kind": "Literal",
+                      "value": 0
+                    }
+                  }
+                }
+              ],
+              "isSelfClosing": false
+            },
+            {
+              "kind": "IcexElement",
+              "tag": "span",
+              "attributes": [],
+              "children": [
+                {
+                  "kind": "IcexText",
+                  "value": "Total:"
+                },
+                {
+                  "kind": "IcexExpression",
+                  "expression": {
+                    "kind": "Binary",
+                    "left": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "count",
+                        "line": 7,
+                        "column": 18
+                      }
+                    },
+                    "operator": {
+                      "type": "STAR",
+                      "value": "*",
+                      "line": 7,
+                      "column": 24
+                    },
+                    "right": {
+                      "kind": "Literal",
+                      "value": 10
+                    }
+                  }
+                }
+              ],
+              "isSelfClosing": false
+            },
+            {
+              "kind": "IcexElement",
+              "tag": "span",
+              "attributes": [],
+              "children": [
+                {
+                  "kind": "IcexText",
+                  "value": "Check:"
+                },
+                {
+                  "kind": "IcexExpression",
+                  "expression": {
+                    "kind": "Binary",
+                    "left": {
+                      "kind": "Group",
+                      "expression": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "count",
+                            "line": 8,
+                            "column": 19
+                          }
+                        },
+                        "operator": {
+                          "type": "PLUS",
+                          "value": "+",
+                          "line": 8,
+                          "column": 25
+                        },
+                        "right": {
+                          "kind": "Literal",
+                          "value": 1
+                        }
+                      }
+                    },
+                    "operator": {
+                      "type": "STAR",
+                      "value": "*",
+                      "line": 8,
+                      "column": 30
+                    },
+                    "right": {
+                      "kind": "Literal",
+                      "value": 2
+                    }
+                  }
+                }
+              ],
+              "isSelfClosing": false
+            }
+          ],
+          "isSelfClosing": false
+        }
+      }
+    ]
+  }
+}

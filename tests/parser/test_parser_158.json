@@ -1,0 +1,42 @@
+{
+  "id": "parser_158",
+  "reference": "arquivo parser.test.md - teste 158",
+  "description": "ICEX - input with multiple attrs",
+  "code": "val input = <input type=\"text\" name=\"username\" placeholder=\"Enter name\"/>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "input",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "input",
+          "attributes": [
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "name",
+              "value": "username"
+            },
+            {
+              "name": "placeholder",
+              "value": "Enter name"
+            }
+          ],
+          "children": [],
+          "isSelfClosing": true
+        }
+      }
+    ]
+  }
+}

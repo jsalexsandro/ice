@@ -1,0 +1,26 @@
+{
+  "id": "parser_148",
+  "reference": "arquivo parser.test.md - teste 148",
+  "description": "ICEX - attribute with hyphen",
+  "code": "<div data-value=\"test\"></div>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "IcexElement",
+          "tag": "div",
+          "attributes": [
+            {
+              "name": "data-value",
+              "value": "test"
+            }
+          ],
+          "children": [],
+          "isSelfClosing": false
+        }
+      }
+    ]
+  }
+}

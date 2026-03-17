@@ -1,0 +1,7 @@
+{
+  "id": "parser_153",
+  "reference": "arquivo parser.test.md - teste 153",
+  "description": "ICEX - member access in interpolation",
+  "code": "val user = { name: \"John\" }\n// member access not supported yet\nval t = <div>test</div>",
+  "result": "Parser Error: Expected expression but got 'LBRACE' at line 1, column 11"
+}

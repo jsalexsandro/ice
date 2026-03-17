@@ -1,0 +1,26 @@
+{
+  "id": "parser_137",
+  "reference": "arquivo parser.test.md - teste 137",
+  "description": "ICEX - basic tag",
+  "code": "<div>Hello</div>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "IcexElement",
+          "tag": "div",
+          "attributes": [],
+          "children": [
+            {
+              "kind": "IcexText",
+              "value": "Hello"
+            }
+          ],
+          "isSelfClosing": false
+        }
+      }
+    ]
+  }
+}

@@ -115,15 +115,143 @@ Passo 21 BreakStatement               ✅
 IMPLEMENTADO
   while (true) { break }
 
-Passo 22 ContinueStatement             ✅
+Passo 22 ContinueStatement               ✅
 IMPLEMENTADO
   while (true) { continue }
+
+---
+
+## ICEX - Implementação
+
+o basico da gramatica está em icex.ice
+
+### Fase 1: Lexer
+Reutilizar tokens existentes: `<`, `>`, `{`, `}`, `=`, `/`
+Parser controla todo fluxo, lexer não deve ser modificado
+
+<tag>
+    tudo aqui dentro é ICEX_Text
+<tag/>
+
+<tag>
+    tudo aqui dentro é Icex Text
+    { 2 + 4 } aqui é um interpolação deve aceitar codigo valido 
+<tag/>
+
+### Fase 2: AST (src/ast.ts)                  
+Adicionar novos tipos:
+
+```typescript
+// IcexElement - elemento principal
+export interface IcexElement extends Expr {
+  kind: "IcexElement"
+  tag: string
+  attributes: IcexAttribute[]
+  children: IcexChild[]
+  isSelfClosing: boolean
+  isComponent: boolean
+}
+
+// IcexAttribute - atributo da tag
+export interface IcexAttribute {
+  name: string
+  value: Expr | string | boolean
+}
+
+// IcexChild - children pode ser texto, expressão ou elemento
+export type IcexChild = IcexElement | IcexText | IcexExpression
+
+// IcexText - texto puro dentro da tag
+export interface IcexText {
+  kind: "IcexText"
+  value: string
+}
+
+// IcexExpression - interpolação {expressão}
+export interface IcexExpression {
+  kind: "IcexExpression"
+  expression: Expr
+}
+```
+
+Adicionar `IcexElement` ao tipo `Expr`.
+
+### Fase 3: Parser - parsePrefix() (src/parser.ts)  
+Modificar `parsePrefix()` para detectar `<tag`:
+
+1. Se current token é `<` E peek token é IDENTIFIER → iniciar parse ICEX
+2. Caso contrário, deixar para tratamento padrão (comparação)
+
+### Fase 4: Parser - parseIcexElement()              
+Fluxo completo:
+
+```
+1. Consumir '<'
+2. Ler nome da tag (IDENTIFIER)
+3. Detectar se é componente (primeira letra maiúscula) - para futura extensão
+4. Parse atributos (enquanto IDENTIFIER)
+5. Detectar self-closing (se '/>' encontrado)
+6. Consumir '>'
+7. Se não self-closing → parse children
+8. Consumir '</tag>' de fechamento
+9. Retornar IcexElement
+```
+
+### Fase 5: Parser - parseIcexAttributes()          
+Parse de atributos:
+
+```
+- name="value"    → { name: "name", value: "value" }
+- name={expr}     → { name: "name", value: expr }
+- name            → { name: "name", value: true }  (boolean)
+```
+
+### Fase 6: Parser - parseIcexChildren()              
+Loop até encontrar `</tag>`:
+
+- Texto puro → IcexText
+- `{` + expressão + `}` → IcexExpression  
+- `<` + tag → IcexElement (recursivo)
+
+### Fase 7: Parser - Validação de erros             
+- Tag não fechada → erro de parser
+- Tag de fechamento incorreta (ex: `<tag></div>`) → erro de parser
+
+### Fase 8: Precedence                              
+Adicionar `<` e `>` com alta precedência (como DOT, LBRACKET) para permitir:
+- `<tag>` como expressão
+- `a < b` como comparação (em contextos não-ICEX)
+
+---
+
+## Exemplos de Input/Output
+
+| Input | Output AST |
+|-------|------------|
+| `<tag/>` | IcexElement { tag: "tag", isSelfClosing: true } |
+| `<tag></tag>` | IcexElement { tag: "tag", isSelfClosing: false } |
+| `<tag>Hello</tag>` | IcexElement + IcexText |
+| `<tag>{name}</tag>` | IcexElement + IcexExpression |
+| `<tag><child/></tag>` | IcexElement + IcexElement aninhado |
+| `<tag a="b"/>` | IcexElement + IcexAttribute |
+| `<tag a={b}/>` | IcexElement + IcexAttribute (Expr) |
+
+---
+
+## Arquivos a modificar
+1. `src/lexer.ts` 
+2. `src/ast.ts` - adicionar tipos
+3. `src/parser.ts` - adicionar parsing ICEX
 
 ---
 
 ## Adições Futuras (Não Implementadas)
 - Switch statement
 - Classes/Structs
+- Anonimus functions
+- arrow function
+- ?? 
+- ?: ternario
 - Try/Catch
 - Operador ternário
 - Import/require

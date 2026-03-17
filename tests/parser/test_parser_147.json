@@ -1,0 +1,98 @@
+{
+  "id": "parser_147",
+  "reference": "arquivo parser.test.md - teste 147",
+  "description": "ICEX - deep nesting (10 levels)",
+  "code": "<a><b><c><d><e><f><g><h><i><j>text</j></i></h></g></f></e></d></c></b></a>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "IcexElement",
+          "tag": "a",
+          "attributes": [],
+          "children": [
+            {
+              "kind": "IcexElement",
+              "tag": "b",
+              "attributes": [],
+              "children": [
+                {
+                  "kind": "IcexElement",
+                  "tag": "c",
+                  "attributes": [],
+                  "children": [
+                    {
+                      "kind": "IcexElement",
+                      "tag": "d",
+                      "attributes": [],
+                      "children": [
+                        {
+                          "kind": "IcexElement",
+                          "tag": "e",
+                          "attributes": [],
+                          "children": [
+                            {
+                              "kind": "IcexElement",
+                              "tag": "f",
+                              "attributes": [],
+                              "children": [
+                                {
+                                  "kind": "IcexElement",
+                                  "tag": "g",
+                                  "attributes": [],
+                                  "children": [
+                                    {
+                                      "kind": "IcexElement",
+                                      "tag": "h",
+                                      "attributes": [],
+                                      "children": [
+                                        {
+                                          "kind": "IcexElement",
+                                          "tag": "i",
+                                          "attributes": [],
+                                          "children": [
+                                            {
+                                              "kind": "IcexElement",
+                                              "tag": "j",
+                                              "attributes": [],
+                                              "children": [
+                                                {
+                                                  "kind": "IcexText",
+                                                  "value": "text"
+                                                }
+                                              ],
+                                              "isSelfClosing": false
+                                            }
+                                          ],
+                                          "isSelfClosing": false
+                                        }
+                                      ],
+                                      "isSelfClosing": false
+                                    }
+                                  ],
+                                  "isSelfClosing": false
+                                }
+                              ],
+                              "isSelfClosing": false
+                            }
+                          ],
+                          "isSelfClosing": false
+                        }
+                      ],
+                      "isSelfClosing": false
+                    }
+                  ],
+                  "isSelfClosing": false
+                }
+              ],
+              "isSelfClosing": false
+            }
+          ],
+          "isSelfClosing": false
+        }
+      }
+    ]
+  }
+}
