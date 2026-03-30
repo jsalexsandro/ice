@@ -429,6 +429,14 @@ export class Parser {
         break
       }
 
+      if (operator.type === TokenType.IDENTIFIER ||
+          operator.type === TokenType.NUMBER ||
+          operator.type === TokenType.STRING ||
+          operator.type === TokenType.BOOLEAN ||
+          operator.type === TokenType.NULL) {
+        break
+      }
+
       const operatorPrecedence = this.getPrecedence(operator.type)
 
       if (operatorPrecedence < minPrecedence) {
