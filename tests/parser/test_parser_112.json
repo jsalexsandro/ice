@@ -23,31 +23,31 @@
         "initializer": {
           "kind": "Binary",
           "left": {
-            "kind": "Literal",
-            "value": "Hello"
-          },
-          "operator": {
-            "type": "PLUS",
-            "value": "+",
-            "line": 1,
-            "column": 32
-          },
-          "right": {
             "kind": "Binary",
             "left": {
               "kind": "Literal",
-              "value": " "
+              "value": "Hello"
             },
             "operator": {
               "type": "PLUS",
               "value": "+",
               "line": 1,
-              "column": 38
+              "column": 32
             },
             "right": {
               "kind": "Literal",
-              "value": "World"
+              "value": " "
             }
+          },
+          "operator": {
+            "type": "PLUS",
+            "value": "+",
+            "line": 1,
+            "column": 38
+          },
+          "right": {
+            "kind": "Literal",
+            "value": "World"
           }
         }
       }

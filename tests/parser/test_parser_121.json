@@ -18,18 +18,18 @@
         "initializer": {
           "kind": "Binary",
           "left": {
-            "kind": "Literal",
-            "value": 10
-          },
-          "operator": {
-            "type": "PLUS",
-            "value": "+",
-            "line": 1,
-            "column": 11
-          },
-          "right": {
             "kind": "Binary",
             "left": {
+              "kind": "Literal",
+              "value": 10
+            },
+            "operator": {
+              "type": "PLUS",
+              "value": "+",
+              "line": 1,
+              "column": 11
+            },
+            "right": {
               "kind": "Binary",
               "left": {
                 "kind": "Literal",
@@ -45,43 +45,43 @@
                 "kind": "Literal",
                 "value": 3
               }
+            }
+          },
+          "operator": {
+            "type": "MINUS",
+            "value": "-",
+            "line": 1,
+            "column": 20
+          },
+          "right": {
+            "kind": "Binary",
+            "left": {
+              "kind": "Literal",
+              "value": 5
             },
             "operator": {
-              "type": "MINUS",
-              "value": "-",
+              "type": "SLASH",
+              "value": "/",
               "line": 1,
-              "column": 20
+              "column": 24
             },
             "right": {
-              "kind": "Binary",
-              "left": {
-                "kind": "Literal",
-                "value": 5
-              },
-              "operator": {
-                "type": "SLASH",
-                "value": "/",
-                "line": 1,
-                "column": 24
-              },
-              "right": {
-                "kind": "Group",
-                "expression": {
-                  "kind": "Binary",
-                  "left": {
-                    "kind": "Literal",
-                    "value": 2
-                  },
-                  "operator": {
-                    "type": "PLUS",
-                    "value": "+",
-                    "line": 1,
-                    "column": 29
-                  },
-                  "right": {
-                    "kind": "Literal",
-                    "value": 3
-                  }
+              "kind": "Group",
+              "expression": {
+                "kind": "Binary",
+                "left": {
+                  "kind": "Literal",
+                  "value": 2
+                },
+                "operator": {
+                  "type": "PLUS",
+                  "value": "+",
+                  "line": 1,
+                  "column": 29
+                },
+                "right": {
+                  "kind": "Literal",
+                  "value": 3
                 }
               }
             }

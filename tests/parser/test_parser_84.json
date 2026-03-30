@@ -10,42 +10,42 @@
         "expression": {
           "kind": "Binary",
           "left": {
-            "kind": "Identifier",
-            "name": {
-              "type": "IDENTIFIER",
-              "value": "a",
-              "line": 1,
-              "column": 0
-            }
-          },
-          "operator": {
-            "type": "PLUS",
-            "value": "+",
-            "line": 1,
-            "column": 2
-          },
-          "right": {
             "kind": "Binary",
             "left": {
+              "kind": "Identifier",
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "a",
+                "line": 1,
+                "column": 0
+              }
+            },
+            "operator": {
+              "type": "PLUS",
+              "value": "+",
+              "line": 1,
+              "column": 2
+            },
+            "right": {
               "kind": "Binary",
               "left": {
-                "kind": "Identifier",
-                "name": {
-                  "type": "IDENTIFIER",
-                  "value": "b",
-                  "line": 1,
-                  "column": 4
-                }
-              },
-              "operator": {
-                "type": "STAR",
-                "value": "*",
-                "line": 1,
-                "column": 6
-              },
-              "right": {
                 "kind": "Binary",
                 "left": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "b",
+                    "line": 1,
+                    "column": 4
+                  }
+                },
+                "operator": {
+                  "type": "STAR",
+                  "value": "*",
+                  "line": 1,
+                  "column": 6
+                },
+                "right": {
                   "kind": "Identifier",
                   "name": {
                     "type": "IDENTIFIER",
@@ -53,38 +53,38 @@
                     "line": 1,
                     "column": 8
                   }
-                },
-                "operator": {
-                  "type": "SLASH",
-                  "value": "/",
+                }
+              },
+              "operator": {
+                "type": "SLASH",
+                "value": "/",
+                "line": 1,
+                "column": 10
+              },
+              "right": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "d",
                   "line": 1,
-                  "column": 10
-                },
-                "right": {
-                  "kind": "Identifier",
-                  "name": {
-                    "type": "IDENTIFIER",
-                    "value": "d",
-                    "line": 1,
-                    "column": 12
-                  }
+                  "column": 12
                 }
               }
-            },
-            "operator": {
-              "type": "MINUS",
-              "value": "-",
+            }
+          },
+          "operator": {
+            "type": "MINUS",
+            "value": "-",
+            "line": 1,
+            "column": 14
+          },
+          "right": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "e",
               "line": 1,
-              "column": 14
-            },
-            "right": {
-              "kind": "Identifier",
-              "name": {
-                "type": "IDENTIFIER",
-                "value": "e",
-                "line": 1,
-                "column": 16
-              }
+              "column": 16
             }
           }
         }

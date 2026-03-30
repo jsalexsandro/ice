@@ -10,23 +10,23 @@
         "expression": {
           "kind": "Binary",
           "left": {
-            "kind": "Identifier",
-            "name": {
-              "type": "IDENTIFIER",
-              "value": "a",
-              "line": 1,
-              "column": 0
-            }
-          },
-          "operator": {
-            "type": "PLUS",
-            "value": "+",
-            "line": 1,
-            "column": 2
-          },
-          "right": {
             "kind": "Binary",
             "left": {
+              "kind": "Identifier",
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "a",
+                "line": 1,
+                "column": 0
+              }
+            },
+            "operator": {
+              "type": "PLUS",
+              "value": "+",
+              "line": 1,
+              "column": 2
+            },
+            "right": {
               "kind": "Binary",
               "left": {
                 "kind": "Identifier",
@@ -52,38 +52,38 @@
                   "column": 8
                 }
               }
+            }
+          },
+          "operator": {
+            "type": "MINUS",
+            "value": "-",
+            "line": 1,
+            "column": 10
+          },
+          "right": {
+            "kind": "Binary",
+            "left": {
+              "kind": "Identifier",
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "d",
+                "line": 1,
+                "column": 12
+              }
             },
             "operator": {
-              "type": "MINUS",
-              "value": "-",
+              "type": "SLASH",
+              "value": "/",
               "line": 1,
-              "column": 10
+              "column": 14
             },
             "right": {
-              "kind": "Binary",
-              "left": {
-                "kind": "Identifier",
-                "name": {
-                  "type": "IDENTIFIER",
-                  "value": "d",
-                  "line": 1,
-                  "column": 12
-                }
-              },
-              "operator": {
-                "type": "SLASH",
-                "value": "/",
+              "kind": "Identifier",
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "e",
                 "line": 1,
-                "column": 14
-              },
-              "right": {
-                "kind": "Identifier",
-                "name": {
-                  "type": "IDENTIFIER",
-                  "value": "e",
-                  "line": 1,
-                  "column": 16
-                }
+                "column": 16
               }
             }
           }

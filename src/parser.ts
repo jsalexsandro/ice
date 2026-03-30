@@ -513,7 +513,7 @@ export class Parser {
         continue
       }
 
-      const nextMinPrecedence = operatorPrecedence
+      const nextMinPrecedence = operatorPrecedence + 1
       const right = this.parseExpression(nextMinPrecedence)
 
       left = {

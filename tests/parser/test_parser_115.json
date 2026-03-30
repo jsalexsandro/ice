@@ -18,34 +18,34 @@
         "initializer": {
           "kind": "Logical",
           "left": {
-            "kind": "Group",
-            "expression": {
-              "kind": "Binary",
-              "left": {
-                "kind": "Literal",
-                "value": 10
-              },
-              "operator": {
-                "type": "GREATER_THAN",
-                "value": ">",
-                "line": 1,
-                "column": 14
-              },
-              "right": {
-                "kind": "Literal",
-                "value": 5
-              }
-            }
-          },
-          "operator": {
-            "type": "AND",
-            "value": "&&",
-            "line": 1,
-            "column": 19
-          },
-          "right": {
             "kind": "Logical",
             "left": {
+              "kind": "Group",
+              "expression": {
+                "kind": "Binary",
+                "left": {
+                  "kind": "Literal",
+                  "value": 10
+                },
+                "operator": {
+                  "type": "GREATER_THAN",
+                  "value": ">",
+                  "line": 1,
+                  "column": 14
+                },
+                "right": {
+                  "kind": "Literal",
+                  "value": 5
+                }
+              }
+            },
+            "operator": {
+              "type": "AND",
+              "value": "&&",
+              "line": 1,
+              "column": 19
+            },
+            "right": {
               "kind": "Group",
               "expression": {
                 "kind": "Logical",
@@ -90,39 +90,39 @@
                   }
                 }
               }
-            },
+            }
+          },
+          "operator": {
+            "type": "AND",
+            "value": "&&",
+            "line": 1,
+            "column": 40
+          },
+          "right": {
+            "kind": "Unary",
             "operator": {
-              "type": "AND",
-              "value": "&&",
+              "type": "NOT",
+              "value": "!",
               "line": 1,
-              "column": 40
+              "column": 43
             },
             "right": {
-              "kind": "Unary",
-              "operator": {
-                "type": "NOT",
-                "value": "!",
-                "line": 1,
-                "column": 43
-              },
-              "right": {
-                "kind": "Group",
-                "expression": {
-                  "kind": "Binary",
-                  "left": {
-                    "kind": "Literal",
-                    "value": 4
-                  },
-                  "operator": {
-                    "type": "NOT_EQUAL",
-                    "value": "!=",
-                    "line": 1,
-                    "column": 47
-                  },
-                  "right": {
-                    "kind": "Literal",
-                    "value": 4
-                  }
+              "kind": "Group",
+              "expression": {
+                "kind": "Binary",
+                "left": {
+                  "kind": "Literal",
+                  "value": 4
+                },
+                "operator": {
+                  "type": "NOT_EQUAL",
+                  "value": "!=",
+                  "line": 1,
+                  "column": 47
+                },
+                "right": {
+                  "kind": "Literal",
+                  "value": 4
                 }
               }
             }
