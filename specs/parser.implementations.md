@@ -255,3 +255,105 @@ Adicionar `<` e `>` com alta precedência (como DOT, LBRACKET) para permitir:
 - Try/Catch
 - Operador ternário
 - Import/require
+
+---
+
+## Features Faltantes - Análise Completa
+
+### Features de Sintaxe
+
+| # | Feature | Status | Prioridade | Notas |
+|---|---------|--------|------------|-------|
+| 1 | Try-Catch | ⚠️ Parcial | Alta | Keywords existem (`try`, `catch`, `throw`), mas não são parsed |
+| 2 | Switch/Match | ❌ Falta | Média | Não existe, útil para match de valores |
+| 3 | Classes | ⚠️ Parcial | Alta | Keywords existem (`class`, `new`, `this`), não são parsed |
+| 4 | Import/Export | ⚠️ Parcial | Alta | Keywords existem, não são parsed |
+| 5 | Ternary `? :` | ❌ Falta | Alta | Operador condicional essencial |
+| 6 | Do-While | ❌ Falta | Baixa | Só tem `while` |
+| 7 | Lambdas | ❌ Falta | Alta | Arrow functions para callbacks |
+| 8 | Generics `<T>` | ❌ Falta | Média | Só arrays `[]` por enquanto |
+| 9 | Async/Await | ⚠️ Parcial | Alta | Keywords existem, não são parsed |
+| 10 | Null Safety `?.` `??` | ❌ Falta | Alta | Optional chaining e coalescing |
+| 11 | String Interpolation `$""` | ❌ Falta | Alta | Templates string nativos |
+| 12 | Range/Iterator `..` | ❌ Falta | Média | Para loops estilo `for i in 0..10` |
+
+### Bugs Conhecidos
+
+| Bug | Severidade | Descrição | Solução |
+|-----|------------|-----------|---------|
+| Erro Recovery | Alta | Parser para no primeiro erro | Implementar recovery mechanism |
+| ICEX Comments | Média | `<!-- -->` vira texto | Adicionar skip de comentários em ICEX |
+| Contexto de Erros | Média | Mensagens sem contexto útil | Adicionar expected/got context |
+
+### Keywords Definidas mas Não Parsed
+
+```
+src/keywords.ts - KEYWORDS array
+├── try, catch, throw       → Error handling
+├── class, new, this         → OOP
+├── import, export, from     → Módulos
+└── async, await             → Async programming
+```
+
+### Plano de Implementação
+
+#### Fase 1: Features Essenciais para Web (Alta Prioridade)
+1. **Try-Catch** - Error handling básico
+2. **Async/Await** - Programação assíncrona
+3. **Ternary** - Operador condicional
+4. **Null Safety** - `?.` e `??`
+5. **Classes** - OOP básico
+
+#### Fase 2: Features de Conveniência
+1. **String Interpolation** - `$"hello {name}"`
+2. **Lambdas** - Arrow functions
+3. **Import/Export** - Módulos
+
+#### Fase 3: Features Avançadas
+1. **Switch/Match** - Pattern matching
+2. **Generics** - Type parameters
+3. **Range/Iterator** - Loop estilizado
+4. **Do-While** - Loop invertido
+
+### Métricas de Cobertura
+
+| Componente | Cobertura | Notes |
+|------------|-----------|-------|
+| Statements | ~80% | Falta: try-catch, class, switch |
+| Expressions | ~75% | Falta: ternary, null safety |
+| Types | ~70% | Falta: generics, unions |
+| Modules | ~0% | Import/export não implementado |
+| Error Handling | ~20% | Só parsing errors, sem recovery |
+
+### Features Implementadas (Total: 22 Passos)
+
+| # | Passo | Status |
+|---|-------|--------|
+| 1 | Estrutura do Parser | ✅ |
+| 2 | parseProgram | ✅ |
+| 3 | parseStatement | ✅ |
+| 3.1 | parseExpressionStatement | ✅ |
+| 4 | Precedence Table | ✅ |
+| 5 | Pratt Parser | ✅ |
+| 6 | Prefix Expressions | ✅ |
+| 6.1 | Literal (NumberLiteral) | ✅ |
+| 6.2 | Identifier | ✅ |
+| 6.3 | GroupedExpression | ✅ |
+| 6.4 | PrefixExpression (Unary) | ✅ |
+| 7 | BinaryExpression | ✅ |
+| 8 | CallExpression | ✅ |
+| 9 | VariableDeclaration | ✅ |
+| 10 | BlockStatement | ✅ |
+| 11 | IfStatement | ✅ |
+| 12 | WhileStatement | ✅ |
+| 13 | FunctionStmt | ✅ |
+| 13.1 | ReturnStatement | ✅ |
+| 14 | ArgumentList | ✅ |
+| 15 | ExpressionList (Arrays) | ✅ |
+| 16 | AssignmentExpression | ✅ |
+| 17 | MemberExpression | ✅ |
+| 18 | IndexExpression | ✅ |
+| 19 | LogicalExpression | ✅ |
+| 20 | ForStatement | ✅ |
+| 21 | BreakStatement | ✅ |
+| 22 | ContinueStatement | ✅ |

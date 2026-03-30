@@ -1478,6 +1478,24 @@ func renderDashboard(data: Dashboard, cfg: Config): string {
 
 ---
 
+## ICEX Limitations
+
+### Objetos literais não suportados
+```ice
+val t = <div>{ { name: "John" } }</div>
+```
+**Resultado:** ❌ Erro - Objetos literais `{ key: value }` não são suportados pela linguagem ainda.
+
+### Múltiplas tags consecutivas sem pai
+```ice
+val t = <div></div><span></span>
+```
+**Resultado:** ❌ Erro - Múltiplas tags ICEX no mesmo nível requerem um elemento pai (como no JSX).
+
+```ice
+val t = <wrapper><div></div><span></span></wrapper>
+```
+**Resultado:** ✅ Sucesso - Com elemento pai.
 
 ---
 
@@ -1896,22 +1914,114 @@ const nextMinPrecedence = operatorPrecedence + 1
 
 **Explicação:** Para operadores left-associative, o `minPrecedence` deve ser `operatorPrecedence + 1`, garantindo que operadores de mesma precedência sejam agrupados da esquerda para a direita.
 
+---
 
-## ICEX Limitations
+## Stress Tests 199-203
 
-### Objetos literais não suportados
-```ice
-val t = <div>{ { name: "John" } }</div>
-```
-**Resultado:** ❌ Erro - Objetos literais `{ key: value }` não são suportados pela linguagem ainda.
-
-### Múltiplas tags consecutivas sem pai
-```ice
-val t = <div></div><span></span>
-```
-**Resultado:** ❌ Erro - Múltiplas tags ICEX no mesmo nível requerem um elemento pai (como no JSX).
+### Teste 199: Complex ICEX with 2D Arrays
+**Arquivo:** `tests/parser/test_parser_199.json`
+**Métricas:** 567 tokens, 21ms | **Foco:** Arrays 2D, expressões complexas
 
 ```ice
-val t = <wrapper><div></div><span></span></wrapper>
+val matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+val el = <section
+    data-arith={-a * b + matrix[0][0] * matrix[1][1] + matrix[2][2]}
+    data-logic={!!flags[0] && !flags[1] || flags[2]}
+    ...
+>
+    <div><span>{matrix[0][0] + matrix[0][1]}</span></div>
+</section>
 ```
-**Resultado:** ✅ Sucesso - Com elemento pai.
+
+### Teste 200: Multiple Functions with ICEX Returns
+**Arquivo:** `tests/parser/test_parser_200.json`
+**Métricas:** 795 tokens, 19ms | **Foco:** Funções com `items: string[]`, composição
+
+```ice
+func makeLabel(key: string, items: string[], idx: int): string {
+    return <label data-score={items[idx].length}>{key}</label>
+}
+func renderForm(data: Form): string {
+    return <form>{makeField(data, 0)}<button/></form>
+}
+```
+
+### Teste 201: Complex Control Flow
+**Arquivo:** `tests/parser/test_parser_201.json`
+**Métricas:** 664 tokens, 14ms | **Foco:** 16 ifs, 6 continues, 4 breaks
+
+```ice
+while (i < rows && !state.aborted) {
+    for (val k = 0; k < cols && !state.error) {
+        if (val < 0) { skipped++; continue }
+        if (score > peak) { if (proc >= max) { break } }
+    }
+}
+```
+
+### Teste 202: Single ICEX with 16 Extreme Attributes
+**Arquivo:** `tests/parser/test_parser_202.json`
+**Métricas:** 722 tokens, 19ms, 16 attrs | **Foco:** Expressões extremas
+
+```ice
+val el = <input
+    data-j={obj.a.b.c[0].d[1].e(x, y)[0].f > 0 && ...}
+    data-final={-obj.config.limits[0].value * x / (y + z) >= ...}
+/>
+```
+
+### Teste 203: Full Dashboard with HTML Table
+**Arquivo:** `tests/parser/test_parser_203.json`
+**Métricas:** 1711 tokens, 39ms, 26 elementos, 83 attrs | **Foco:** Composição real
+
+```ice
+func renderDashboard(data: Dataset): string {
+    return <div>
+        <header/>
+        <table><thead/><tbody>{row0}{rowN}</tbody><tfoot/></table>
+        <footer><button/><button/></footer>
+    </div>
+}
+```
+
+---
+
+## Bugs Found During Stress Tests
+
+### Bug: Array Types in Function Parameters
+**Commit:** fa0e155 | **Teste:** 200
+
+```typescript
+// Não tratava items: string[] nos parâmetros
+if (this.current().type === TokenType.COLON) {
+  if (this.isValidType(this.current())) {
+    paramType = this.advance() // Não tratava []
+  }
+}
+```
+
+### Bug: continue/break as Expression Terminators
+**Commit:** fa0e155 | **Teste:** 201
+
+```ice
+// Falhava com: skipped = skipped + 1; continue
+if (operator.type === TokenType.KEYWORD && 
+    ['val', 'const', 'if', 'while', 'for', 'func', 'return', 'else'].includes(...)) {
+  break
+}
+// Adicionado: 'break', 'continue'
+```
+
+---
+
+## Resumo Final
+
+| Métrica | Valor |
+|---------|-------|
+| Total de testes | **203** |
+| Total de tokens processados | ~4,519 |
+| Bugs corrigidos | 6 |
+| Tempo total de parsing | ~130ms |
+
+---
+
