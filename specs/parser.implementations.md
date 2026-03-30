@@ -95,6 +95,11 @@ IMPLEMENTADO
   person.age
   Encadeamento: user.profile.name
   Atribuição: user.name = valor
+  Index access: data["config"]["theme"]
+  Mixed: data.config["theme"], data["config"].theme
+  Keywords como property: obj.val, obj.if, obj.return
+  Boolean como property: obj.true, obj.false
+  Null como property: obj.null
 
 Passo 18 IndexExpression               ✅
 IMPLEMENTADO
@@ -318,7 +323,7 @@ src/keywords.ts - KEYWORDS array
 | Componente | Cobertura | Notes |
 |------------|-----------|-------|
 | Statements | ~80% | Falta: try-catch, class, switch |
-| Expressions | ~75% | Falta: ternary, null safety |
+| Expressions | ~85% | Falta: ternary (implementado), null safety |
 | Types | ~70% | Falta: generics, unions |
 | Modules | ~0% | Import/export não implementado |
 | Error Handling | ~20% | Só parsing errors, sem recovery |
@@ -349,7 +354,7 @@ src/keywords.ts - KEYWORDS array
 | 14 | ArgumentList | ✅ |
 | 15 | ExpressionList (Arrays) | ✅ |
 | 16 | AssignmentExpression | ✅ |
-| 17 | MemberExpression | ✅ |
+| 17 | MemberExpression | ✅ (com keywords, bool, null) |
 | 18 | IndexExpression | ✅ |
 | 19 | LogicalExpression | ✅ |
 | 20 | ForStatement | ✅ |
