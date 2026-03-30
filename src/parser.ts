@@ -585,6 +585,7 @@ export class Parser {
       case TokenType.LBRACKET:
         return this.parseArray()
 
+      case TokenType.PLUS:
       case TokenType.MINUS:
       case TokenType.NOT:
         return this.parseUnary()
