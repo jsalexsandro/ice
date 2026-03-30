@@ -498,7 +498,14 @@ export class Parser {
       }
 
       if (operator.type === TokenType.DOT) {
-        const propertyToken = this.expect(TokenType.IDENTIFIER)
+        const token = this.current()
+        if (token.type !== TokenType.IDENTIFIER && 
+            token.type !== TokenType.KEYWORD &&
+            token.type !== TokenType.BOOLEAN &&
+            token.type !== TokenType.NULL) {
+          throw Error(`Expected identifier or keyword after '.' but got '${token.type}'`)
+        }
+        const propertyToken = this.advance()
         left = {
           kind: "Member",
           object: left,

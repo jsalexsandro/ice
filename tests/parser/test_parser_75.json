@@ -2,5 +2,5 @@
   "id": "parser_75",
   "reference": "arquivo parser.test.md - teste 75",
   "code": "user.",
-  "result": "Expected token IDENTIFIER but got EOF"
+  "result": "Expected identifier or keyword after '.' but got 'EOF'"
 }
