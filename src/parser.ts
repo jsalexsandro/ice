@@ -526,6 +526,23 @@ export class Parser {
         continue
       }
 
+      if (operator.type === TokenType.QUESTION_LPAREN) {
+        const args: Expr[] = []
+        
+        if (this.current().type !== TokenType.RPAREN) {
+          args.push(this.parseExpression())
+          
+          while (this.current().type === TokenType.COMMA) {
+            this.advance()
+            args.push(this.parseExpression())
+          }
+        }
+        
+        this.expect(TokenType.RPAREN)
+        
+        continue
+      }
+
       if (operator.type === TokenType.DOT) {
         const token = this.current()
         if (token.type !== TokenType.IDENTIFIER && 

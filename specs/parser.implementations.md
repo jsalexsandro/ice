@@ -56,12 +56,13 @@ Este documento rastreia a implementação do parser Ice Lang.
 | 11 | Array | `[1, 2, 3]` |
 | 12 | Identifier | `name` |
 | 13 | Literal | `"text"`, `123`, `true`, `null` |
+| 14 | Nullish Coalescing | `a ?? b` |
 
 ### Faltantes ❌
 
 | # | Expressão | Sintaxe |
 |---|-----------|---------|
-| 1 | Null Safety | `obj?.prop`, `a ?? b` |
+| 1 | Optional Chaining | `obj?.prop` |
 | 2 | String Interpolation | `$"hello {name}"` |
 | 3 | Spread | `...obj` |
 | 4 | Arrow Functions | `fn(x) => x + 1` |
@@ -144,7 +145,7 @@ async, await            → Async
 
 ### Fase 1: Essentials
 1. Try-Catch
-2. Null Safety (`?.`, `??`)
+2. Null Safety (`??`)
 3. Classes básico
 
 ### Fase 2: Conveniência
