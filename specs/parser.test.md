@@ -1496,3 +1496,420 @@ val t = <div></div><span></span>
 val t = <wrapper><div></div><span></span></wrapper>
 ```
 **Resultado:** ✅ Sucesso - Com elemento pai.
+
+---
+
+## ICEX Tests 165-198: Extended ICEX Features
+
+### Categoria A — ICEX como argumento / return value
+
+### 165. ICEX direto como argumento de função
+```ice
+icerender(<div class="app">Hello</div>)
+```
+**Arquivo:** `tests/parser/test_parser_165.json`
+**Resultado:** ✅ Sucesso
+- `CallExpression { callee: render, args: [IcexElement] }`
+- Parser reconhece `<div` como início de expressão dentro de ArgumentList
+
+### 166. ICEX como segundo argumento
+```ice
+icemount(root, <section id="main"><h1>Title</h1></section>)
+```
+**Arquivo:** `tests/parser/test_parser_166.json`
+**Resultado:** ✅ Sucesso
+- Dois argumentos: `root` (Identifier) + IcexElement aninhado
+
+### 167. ICEX como argumento com interpolação
+```ice
+val name = "World"
+render(<div>Hello {name}!</div>, target)
+```
+**Arquivo:** `tests/parser/test_parser_167.json`
+**Resultado:** ✅ Sucesso
+- ICEX com IcexText + IcexExpression + IcexText como children
+- Seguido de Identifier(target) como segundo arg
+
+### 168. ICEX retornado em return simples
+```ice
+func view(): string {
+    return <main><p>Hello</p></main>
+}
+```
+**Arquivo:** `tests/parser/test_parser_168.json`
+**Resultado:** ✅ Sucesso
+- `ReturnStatement { value: IcexElement }`
+
+### 169. ICEX retornado com expressão antes
+```ice
+func greet(name: string): string {
+    val prefix = "Hello"
+    return <h1>{prefix}, {name}!</h1>
+}
+```
+**Arquivo:** `tests/parser/test_parser_169.json`
+**Resultado:** ✅ Sucesso
+- Múltiplas interpolações no mesmo elemento
+
+### 170. ICEX como valor de val com chamada encadeada depois
+```ice
+val el = <div>content</div>
+render(el)
+```
+**Arquivo:** `tests/parser/test_parser_170.json`
+**Resultado:** ✅ Sucesso
+- Garante que o parser não "engole" o `render(el)` como parte do ICEX
+
+---
+
+### Categoria B — ICEX em expressões lógicas e binárias
+
+### 171. ICEX em lado direito de && (logical)
+```ice
+val show = true
+val result = show && <span>Visible</span>
+```
+**Arquivo:** `tests/parser/test_parser_171.json`
+**Resultado:** ✅ Sucesso
+- `LogicalExpression { left: Identifier(show), op: &&, right: IcexElement }`
+- Pattern de render condicional — comum para o parser
+
+### 172. ICEX em lado direito de ||
+```ice
+val fallback = cached || <div class="loading">Loading...</div>
+```
+**Arquivo:** `tests/parser/test_parser_172.json`
+**Resultado:** ✅ Sucesso
+
+### 173. ICEX com negação antes
+```ice
+val el = !<div>test</div>
+```
+**Arquivo:** `tests/parser/test_parser_173.json`
+**Resultado:** ✅ Sucesso (parse OK)
+- `UnaryExpression { op: !, operand: IcexElement }`
+- Parser aceita — a semântica é responsabilidade do type checker
+
+### 174. ICEX assigned com expressão lógica no atributo
+```ice
+val isOn = true
+val count = 5
+val el = <div data-active={isOn && count > 0}>Content</div>
+```
+**Arquivo:** `tests/parser/test_parser_174.json`
+**Resultado:** ✅ Sucesso
+- Atributo com LogicalExpression completo
+
+---
+
+### Categoria C — ICEX composto (ICEX interpolando outros ICEX)
+
+### 175. ICEX com variável ICEX interpolada
+```ice
+val header = <header>Top</header>
+val page = <div>{header}</div>
+```
+**Arquivo:** `tests/parser/test_parser_175.json`
+**Resultado:** ✅ Sucesso
+- `IcexExpression { expression: Identifier(header) }` dentro de children
+
+### 176. Dois ICEX interpolados no mesmo pai
+```ice
+val nav = <nav>Menu</nav>
+val footer = <footer>Bottom</footer>
+val layout = <div>{nav}{footer}</div>
+```
+**Arquivo:** `tests/parser/test_parser_176.json`
+**Resultado:** ✅ Sucesso
+- Dois IcexExpression consecutivos em children (sem texto entre eles)
+
+### 177. ICEX interpolado entre texto
+```ice
+val badge = <span class="badge">New</span>
+val el = <div>Product {badge} is available</div>
+```
+**Arquivo:** `tests/parser/test_parser_177.json`
+**Resultado:** ✅ Sucesso
+- `[IcexText("Product "), IcexExpression(badge), IcexText(" is available")]`
+
+### 178. ICEX com chamada de função retornando ICEX
+```ice
+func icon(name: string): string {
+    return <i class={name}/>
+}
+val el = <button>{icon("star")} Save</button>
+```
+**Arquivo:** `tests/parser/test_parser_178.json`
+**Resultado:** ✅ Sucesso
+- `IcexExpression { expression: CallExpression(icon, "star") }`
+
+### 179. ICEX aninhado com 5 níveis e interpolações em todos
+```ice
+val a = "alpha"
+val b = "beta"
+val c = "gamma"
+val el = <L1 data-a={a}>
+    <L2 data-b={b}>
+        <L3 data-c={c}>
+            <L4>{a} and {b}</L4>
+        </L3>
+    </L2>
+</L1>
+```
+**Arquivo:** `tests/parser/test_parser_179.json`
+**Resultado:** ✅ Sucesso
+- Teste de profundidade com estado (atributos diferentes em cada nível)
+
+---
+
+### Categoria D — Atributos com expressões extremas
+
+### 180. Atributo com member + index + call encadeado
+```ice
+val el = <div data-value={obj.items[0].getValue()}/>
+```
+**Arquivo:** `tests/parser/test_parser_180.json`
+**Resultado:** ✅ Sucesso
+- Atributo: `Call(Member(Index(Member(obj, items), 0), getValue))`
+
+### 181. Múltiplos data-* com hifens e expressões complexas
+```ice
+val el = <input
+    type="text"
+    data-user-id={user.id}
+    data-is-valid={validator.check(input) && !hasError}
+    data-score={base * factor + bonus[0]}
+    disabled
+/>
+```
+**Arquivo:** `tests/parser/test_parser_181.json`
+**Resultado:** ✅ Sucesso
+- 4 tipos de atributo: string, expr simples, expr lógica, expr aritmética, boolean
+- `data-user-id`, `data-is-valid`, `data-score` todos com hífen
+
+### 182. Atributo com assignment expression
+```ice
+val el = <div data-x={a = 10}/>
+```
+**Arquivo:** `tests/parser/test_parser_182.json`
+**Resultado:** ✅ Sucesso (parse OK)
+- Parser aceita assignment — type checker vai rejeitar no futuro
+
+### 183. Atributo com expressão que usa < e > (ambiguidade máxima)
+```ice
+val el = <div data-check={a < b && c > d}/>
+```
+**Arquivo:** `tests/parser/test_parser_183.json`
+**Resultado:** ✅ Sucesso
+- `<` e `>` dentro de `{}` em atributo ICEX
+- Parser distingue que está dentro de `{}` e trata `<` como comparação, não tag
+
+### 184. Auto-closing com 8 atributos
+```ice
+val el = <input type="email" name="email" id="email-field"
+    placeholder="Enter email" required autocomplete="off"
+    data-validate="true" data-min-length={minLen}/>
+```
+**Arquivo:** `tests/parser/test_parser_184.json`
+**Resultado:** ✅ Sucesso
+- Stress test de parseIcexAttributes — muitos atributos em self-closing
+
+---
+
+### Categoria E — ICEX dentro de controle de fluxo
+
+### 185. ICEX dentro de body de if
+```ice
+val isLogged = true
+if (isLogged) {
+    val view = <dashboard user={currentUser}/>
+}
+```
+**Arquivo:** `tests/parser/test_parser_185.json`
+**Resultado:** ✅ Sucesso
+
+### 186. ICEX em ambos os branches do if/else
+```ice
+val isAdmin = false
+val panel = if (isAdmin) {
+    <admin-panel/>
+} else {
+    <user-panel/>
+}
+```
+**Arquivo:** `tests/parser/test_parser_186.json`
+**Resultado:** ❌ Erro esperado
+- `if` é um statement, não uma expressão na linguagem — não pode ser usado como valor
+
+### 187. ICEX dentro de for acumulando em array
+```ice
+val items = ["a", "b", "c"]
+for (val i = 0; i < 3; i = i + 1) {
+    val el = <li data-index={i}>{items[i]}</li>
+}
+```
+**Arquivo:** `tests/parser/test_parser_187.json`
+**Resultado:** ✅ Sucesso
+- ICEX com duas interpolações de tipos diferentes (int e string[] index)
+
+### 188. Função com ICEX condicional e return
+```ice
+func renderItem(item: string, index: int, isLast: bool): string {
+    val cls = "item"
+    if (isLast) {
+        return <li class="item last" data-index={index}>{item}</li>
+    }
+    return <li class={cls} data-index={index}>{item}</li>
+}
+```
+**Arquivo:** `tests/parser/test_parser_188.json`
+**Resultado:** ✅ Sucesso
+- Dois return com ICEX em caminhos diferentes
+- Mistura de string attribute e expression attribute no mesmo elemento
+
+### 189. ICEX dentro de while (acumulação)
+```ice
+val i = 0
+while (i < items.length) {
+    val row = <tr data-row={i}><td>{items[i].name}</td></tr>
+    i = i + 1
+}
+```
+**Arquivo:** `tests/parser/test_parser_189.json`
+**Resultado:** ✅ Sucesso
+- ICEX com atributo numérico e interpolação de member encadeado
+
+---
+
+### Categoria F — Interpolação ambígua (< e > dentro de { })
+
+### 190. Comparação < e > em interpolação de texto
+```ice
+val el = <div>{a < b}</div>
+```
+**Arquivo:** `tests/parser/test_parser_190.json`
+**Resultado:** ✅ Sucesso
+- `IcexExpression { expression: Binary(a, <, b) }`
+- `<` aqui é operador, não início de tag
+
+### 191. Expressão com < e > em atributo
+```ice
+val el = <div data-check={x > 0 && y < 100}/>
+```
+**Arquivo:** `tests/parser/test_parser_191.json`
+**Resultado:** ✅ Sucesso
+- Parser distingue `>` (operador) de `>` (fim de tag de abertura)
+
+### 192. Interpolação com comparação dupla
+```ice
+val el = <span>{min < value && value < max}</span>
+```
+**Arquivo:** `tests/parser/test_parser_192.json`
+**Resultado:** ✅ Sucesso
+- `Binary(Logical(Binary(min, <, value), &&, Binary(value, <, max)))`
+- Dois `<` dentro de `{}` — nenhum deles é tag
+
+### 193. Interpolação com expressão que começa com < após espaço
+```ice
+val el = <div>Result: {a < b}</div>
+```
+**Arquivo:** `tests/parser/test_parser_193.json`
+**Resultado:** ✅ Sucesso
+- Texto "Result: " seguido de expressão com `<`
+
+---
+
+### Categoria G — Erros esperados
+
+### 194. Tag de fechamento errada
+```ice
+<div>content</span>
+```
+**Arquivo:** `tests/parser/test_parser_194.json`
+**Resultado:** ❌ Erro correto
+- `ParserError: Expected closing tag </div> but got </span>`
+
+### 195. Tag não fechada (EOF)
+```ice
+<div>
+    <span>content
+```
+**Arquivo:** `tests/parser/test_parser_195.json`
+**Resultado:** ❌ Erro correto
+- `ParserError: Unclosed tag <span> — unexpected EOF`
+
+### 196. Atributo com = mas sem valor
+```ice
+<div class=>Text</div>
+```
+**Arquivo:** `tests/parser/test_parser_196.json`
+**Resultado:** ❌ Erro correto
+- `ParserError: Expected expression but got 'GREATER_THAN'`
+
+### 197. Interpolação não fechada
+```ice
+<div>{a + b</div>
+```
+**Arquivo:** `tests/parser/test_parser_197.json`
+**Resultado:** ❌ Erro correto
+- `ParserError: Expected RBRACE but got LESS_THAN (encontrou </div>)`
+
+### 198. Self-closing com tag de fechamento (contradição)
+```ice
+<br/>Hello</br>
+```
+**Arquivo:** `tests/parser/test_parser_198.json`
+**Resultado:** ❌ Erro correto
+- O `<br/>` encerra na primeira tag — `Hello</br>` é código solto
+- `ParserError: Unexpected closing tag </br>`
+
+---
+
+## Parser Bug Fixes
+
+### Fix: Expression Overflow Bug
+
+**Problema:** Expressões estavam "transbordando" e consumindo tokens extras.
+
+```javascript
+// ANTES (bug): parseExpression consumia render(<div></div>, target)
+val name = "World"
+render(<div>Hello</div>, target)
+
+// DEPOIS (corrigido): Para corretamente no COMMA
+```
+
+**Correção em `src/parser.ts` (commit 3faf344):**
+```typescript
+if (operator.type === TokenType.IDENTIFIER ||
+    operator.type === TokenType.NUMBER ||
+    operator.type === TokenType.STRING ||
+    operator.type === TokenType.BOOLEAN ||
+    operator.type === TokenType.NULL) {
+  break
+}
+```
+
+**Explicação:** Adicionada verificação para parar `parseExpression` quando o token atual é um operando (IDENTIFIER, NUMBER, STRING, BOOLEAN, NULL) em vez de um operador. Isso evita que expressões consumam tokens extras indevidamente.
+
+---
+
+### Fix: Precedence of Binary Operators
+
+**Problema:** Precedência de operadores binários estava incorreta.
+
+```javascript
+a + b * c - d / e  // era parsed como: a + ((b * c) - (d / e))
+                    // deveria ser: (a + (b * c)) - (d / e)
+```
+
+**Correção em `src/parser.ts` (commit 4f428a4):**
+```typescript
+// ANTES (errado):
+const nextMinPrecedence = operatorPrecedence
+
+// DEPOIS (correto):
+const nextMinPrecedence = operatorPrecedence + 1
+```
+
+**Explicação:** Para operadores left-associative, o `minPrecedence` deve ser `operatorPrecedence + 1`, garantindo que operadores de mesma precedência sejam agrupados da esquerda para a direita.
