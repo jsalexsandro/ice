@@ -38,6 +38,7 @@ export enum TokenType {
   OR = 'OR',
   NOT = 'NOT',
   QUESTION = 'QUESTION',
+  QUESTION_QUESTION = 'QUESTION_QUESTION',
   ASSIGN = 'ASSIGN',
   EOF = 'EOF',
   ERROR = 'ERROR',
@@ -386,6 +387,10 @@ export class Lexer {
       
       case '?':
         this.readChar()
+        if (this.ch === '?') {
+          this.readChar()
+          return { type: TokenType.QUESTION_QUESTION, value: '??', line: this.line, column: startColumn }
+        }
         return { type: TokenType.QUESTION, value: '?', line: this.line, column: startColumn }
       
       default:

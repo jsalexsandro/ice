@@ -10,6 +10,7 @@
 | 2 | Keywords como Member Access | 650c1bf |
 | 3 | Operador Ternário ? : | 4f79deb |
 | 4 | Objetos literais em interpolação | faf403e |
+| 5 | Nullish Coalescing ?? | (novo commit) |
 
 ---
 

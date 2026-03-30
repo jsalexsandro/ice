@@ -1,0 +1,113 @@
+val name: string = "Hello"
+const age: int = 25
+val isActive: bool = true
+val nothing: null = null
+
+val numbers: int[] = [1, 2, 3, 4, 5]
+val strings: string[] = ["a", "b", "c"]
+val mixed = [1, "two", true, null]
+
+val user = {name: "John", age: 30}
+val config = {color: "blue", size: 10, active: true}
+val nested = {a: {b: {c: 1}}}
+
+val Button = {
+    color: {a: [1, 2, 3, "Good", false]},
+    padding: 10
+}
+
+val styles = {
+    color: "red",
+    backgroundColor: "blue",
+    margin: {top: 10, right: 20, bottom: 30, left: 40},
+    sizes: [10, 20, 30],
+    enabled: true
+}
+
+val data = {
+    users: [
+        {name: "John", age: 25},
+        {name: "Jane", age: 30},
+        {name: "Bob", age: 35}
+    ],
+    config: {
+        theme: "dark",
+        version: 1.0,
+        settings: {autoSave: true, maxItems: 100}
+    }
+}
+
+func greet(msg: string): string {
+    return msg
+}
+
+func add(a: int, b: int): int {
+    return a + b
+}
+
+func sum(numbers: int[]): int {
+    val total = 0
+    for (val i = 0; i < 10; i = i + 1) {
+        total = total + i
+    }
+    return total
+}
+
+if (age > 18) {
+    val message = "Adult"
+}
+
+if (isActive) {
+    val status = "Online"
+} else {
+    val status = "Offline"
+}
+
+val i = 0
+while (i < 10) {
+    i = i + 1
+}
+
+val result = a ? b : c
+val value = x > 0 ? x : -x
+
+val expr = 10 + 5
+val expr2 = 10 - 5
+val expr3 = 10 * 5
+val expr4 = 10 / 5
+
+val comparison = a == b
+val comparison2 = a != c
+val comparison3 = a < b
+val comparison4 = a > b
+
+val logical = a && b
+val logical2 = a || b
+
+val unary = -10
+val unary2 = +10
+val unary3 = !true
+
+val call = greet("Hello")
+val member = user.name
+val index = numbers[0]
+val chained = user.profile.address.city
+
+val html = <div>Hello World</div>
+val withAttr = <div id="app" class="container">Content</div>
+val withExpr = <div>{name}</div>
+val withObj = <div style={{color: "red", padding: 10}}>Text</div>
+val nested = <ul><li>Item 1</li><li>Item 2</li></ul>
+val selfClosing = <img src="photo.jpg"/>
+
+val arr = [1, 2, 3]
+arr[0] = 10
+
+user.name = "Jane"
+user.age = 31
+
+break
+continue
+
+return
+return value

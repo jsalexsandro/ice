@@ -15,6 +15,7 @@ export type Expr =
   | IcexElement
   | ConditionalExpr
   | ObjectExpr
+  | NullishCoalescingExpr
 
 export interface BinaryExpr {
   kind: "Binary"
@@ -167,6 +168,12 @@ export interface ConditionalExpr {
   condition: Expr
   consequent: Expr
   alternate: Expr
+}
+
+export interface NullishCoalescingExpr {
+  kind: "NullishCoalescing"
+  left: Expr
+  right: Expr
 }
 
 export interface IcexElement {

@@ -20,7 +20,9 @@ export class Parser {
     [TokenType.QUESTION, 0],
     [TokenType.OR, 1],
     [TokenType.AND, 2],
+    [TokenType.QUESTION_QUESTION, 1.5],
     [TokenType.EQUAL, 3],
+    [TokenType.NOT_EQUAL, 3],
     [TokenType.NOT_EQUAL, 3],
     [TokenType.LESS_THAN, 4],
     [TokenType.LESS_EQUAL, 4],
@@ -438,6 +440,17 @@ export class Parser {
           condition: left,
           consequent,
           alternate
+        }
+        continue
+      }
+
+      if (operator.type === TokenType.QUESTION_QUESTION) {
+        this.advance()
+        const right = this.parseExpression(2)
+        left = {
+          kind: "NullishCoalescing",
+          left,
+          right
         }
         continue
       }

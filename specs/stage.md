@@ -2,7 +2,7 @@
 
 
 1. O lexer ja foi criado 
-  estude o arquivo @parser.implementations.md nelem está documentada a criação do lexer
+  estude o arquivo @lexer.implementations.md nelem está documentada a criação do lexer
   toda sua estrutura de criação
 
 -- 
