@@ -323,7 +323,7 @@ src/keywords.ts - KEYWORDS array
 | Componente | Cobertura | Notes |
 |------------|-----------|-------|
 | Statements | ~80% | Falta: try-catch, class, switch |
-| Expressions | ~85% | Falta: ternary (implementado), null safety |
+| Expressions | ~70% | Faltam: null safety, string interpolation, spread, arrows |
 | Types | ~70% | Falta: generics, unions |
 | Modules | ~0% | Import/export não implementado |
 | Error Handling | ~20% | Só parsing errors, sem recovery |
@@ -364,3 +364,36 @@ src/keywords.ts - KEYWORDS array
 | 24 | Keywords como Member Access | ✅ |
 | 25 | Operador Ternário | ✅ |
 | 26 | Objetos Literais | ✅ |
+
+---
+
+## Expressões Faltantes para 100%
+
+| # | Expressão | Sintaxe | Status |
+|---|-----------|---------|--------|
+| 1 | Null Safety - Optional Chaining | `obj?.prop` | ❌ Falta |
+| 2 | Null Safety - Nullish Coalescing | `a ?? b` | ❌ Falta |
+| 3 | String Interpolation | `$"hello {name}"` | ❌ Falta |
+| 4 | Spread Operator | `...obj` | ❌ Falta |
+| 5 | Arrow Functions | `fn(x) => x + 1` | ❌ Falta |
+| 6 | Generator/Yield | `yield`, `function*` | ❌ Falta |
+
+---
+
+### Expressões Implementadas ✅
+
+| # | Expressão | Exemplo |
+|---|-----------|---------|
+| 1 | Binary | `+`, `-`, `*`, `/`, `%` |
+| 2 | Unary | `-`, `+`, `!` |
+| 3 | Logical | `&&`, `\|\|` |
+| 4 | Comparison | `==`, `!=`, `<`, `>`, `<=`, `>=` |
+| 5 | Ternary | `a ? b : c` |
+| 6 | Member | `obj.prop`, `obj.if` (keywords) |
+| 7 | Index | `arr[0]`, `obj["key"]` |
+| 8 | Call | `fn(a, b)` |
+| 9 | Group | `(a + b)` |
+| 10 | Object Literal | `{a: 1, b: 2}` |
+| 11 | Array Literal | `[1, 2, 3]` |
+| 12 | Identifier | `name`, `value` |
+| 13 | Literal | `"string"`, `123`, `true`, `null` |
