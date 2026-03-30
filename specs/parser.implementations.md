@@ -62,10 +62,9 @@ Este documento rastreia a implementação do parser Ice Lang.
 
 | # | Expressão | Sintaxe |
 |---|-----------|---------|
-| 1 | Optional Chaining | `obj?.prop` |
-| 2 | String Interpolation | `$"hello {name}"` |
-| 3 | Spread | `...obj` |
-| 4 | Arrow Functions | `fn(x) => x + 1` |
+| 1 | String Interpolation | `$"hello {name}"` |
+| 2 | Spread | `...obj` |
+| 3 | Arrow Functions | `fn(x) => x + 1` |
 
 ---
 
@@ -114,9 +113,6 @@ type IcexChild = IcexElement | IcexText | IcexExpression
 | 6 | Lambdas/Arrow | Alta | Não existe |
 | 7 | Generics | Média | Só arrays `[]` |
 | 8 | Async/Await | Alta | Keywords existem |
-| 9 | Null Safety | Alta | `?.`, `??` |
-| 10 | String Interpolation | Alta | `$""` |
-| 11 | Range/Iterator | Média | `0..10` |
 
 ---
 
@@ -145,8 +141,7 @@ async, await            → Async
 
 ### Fase 1: Essentials
 1. Try-Catch
-2. Null Safety (`??`)
-3. Classes básico
+2. Classes básico
 
 ### Fase 2: Conveniência
 1. String Interpolation (`$""`)
@@ -166,7 +161,7 @@ async, await            → Async
 | Componente | Cobertura |
 |------------|-----------|
 | Statements | ~80% |
-| Expressions | ~70% |
+| Expressions | ~80% |
 | Types | ~70% |
 | Modules | ~0% |
 | Error Handling | ~20% |
