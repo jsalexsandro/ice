@@ -1,0 +1,2827 @@
+{
+  "id": "parser_201",
+  "reference": "Stress test 3 - Loop logic",
+  "description": "Complex control flow with nested loops, break, continue, and ICEX return",
+  "code": "func findPeak(values: int[], threshold: int): int {\n    val peak = 0\n    val i = 0\n    while (i < values.length) {\n        if (values[i] > peak && values[i] > threshold) {\n            peak = values[i]\n        }\n        i = i + 1\n    }\n    return peak\n}\n\nfunc renderMatrix(matrix: Grid, cfg: Config, state: State): string {\n    val peak = findPeak(matrix.values, cfg.threshold)\n    val processed = 0\n    val skipped = 0\n    val total = 0\n    val i = 0\n\n    while (i < matrix.rows && !state.aborted) {\n        val rowScore = 0\n\n        for (val k = 0; k < matrix.cols && !state.error; k = k + 1) {\n            val cellVal = matrix.cells[i][k].value\n            val cellScore = cellVal * cfg.weights[k] - cfg.offsets[k]\n\n            if (cellVal < 0 && !cfg.allowNegative) {\n                skipped = skipped + 1\n                continue\n            }\n\n            if (cellScore > peak && !state.locked) {\n                rowScore = rowScore + cellScore * 2\n                processed = processed + 1\n                if (processed >= cfg.maxProcess) {\n                    break\n                }\n            } else {\n                rowScore = rowScore + cellScore\n            }\n\n            total = total + cellVal\n        }\n\n        if (rowScore < 0 && !cfg.allowNegative) {\n            i = i + 1\n            continue\n        }\n\n        i = i + 1\n    }\n\n    val valid = processed > 0 && total > cfg.threshold && !state.error && !state.aborted\n    val ratio = total * 100 / (matrix.rows * matrix.cols + 1) - skipped\n\n    return <div\n        class=\"matrix-result\"\n        data-rows={matrix.rows}\n        data-cols={matrix.cols}\n        data-peak={peak}\n        data-total={total}\n        data-processed={processed}\n        data-skipped={skipped}\n        data-valid={valid}\n        data-ratio={ratio}\n        data-flag={valid && ratio > cfg.minRatio && processed > skipped}\n        data-above={total > peak * matrix.rows && !state.error && processed > 0}\n    >\n        <header data-peak={peak} data-valid={valid}>\n            <h1>Matrix {matrix.rows}x{matrix.cols}</h1>\n            <span data-val={peak}>Peak: {peak}</span>\n            <span data-val={total}>Total: {total}</span>\n        </header>\n        <section\n            data-processed={processed}\n            data-skipped={skipped}\n            data-ratio={processed * 100 / (processed + skipped + 1)}\n        >\n            <p>Processed: {processed}, Skipped: {skipped}</p>\n            <p>Coverage: {processed * 100 / (matrix.rows * matrix.cols + 1)}</p>\n        </section>\n        <footer\n            data-valid={valid}\n            data-flag={valid && processed > 0 && ratio > 0 && !state.aborted}\n        >\n            <span data-ok={valid && !state.error}>\n                {processed} of {matrix.rows * matrix.cols} cells processed\n            </span>\n        </footer>\n    </div>\n}",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "FunctionStmt",
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "findPeak",
+          "line": 1,
+          "column": 5
+        },
+        "params": [
+          {
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "values",
+              "line": 1,
+              "column": 14
+            },
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int[]",
+              "line": 1,
+              "column": 22
+            }
+          },
+          {
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "threshold",
+              "line": 1,
+              "column": 29
+            },
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 1,
+              "column": 40
+            }
+          }
+        ],
+        "returnType": {
+          "type": "TYPE_INT",
+          "value": "int",
+          "line": 1,
+          "column": 46
+        },
+        "body": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "VarStmt",
+              "type": "val",
+              "typeAnnotation": null,
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "peak",
+                "line": 2,
+                "column": 8
+              },
+              "initializer": {
+                "kind": "Literal",
+                "value": 0
+              }
+            },
+            {
+              "kind": "VarStmt",
+              "type": "val",
+              "typeAnnotation": null,
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "i",
+                "line": 3,
+                "column": 8
+              },
+              "initializer": {
+                "kind": "Literal",
+                "value": 0
+              }
+            },
+            {
+              "kind": "WhileStmt",
+              "condition": {
+                "kind": "Binary",
+                "left": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "i",
+                    "line": 4,
+                    "column": 11
+                  }
+                },
+                "operator": {
+                  "type": "LESS_THAN",
+                  "value": "<",
+                  "line": 4,
+                  "column": 13
+                },
+                "right": {
+                  "kind": "Member",
+                  "object": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "values",
+                      "line": 4,
+                      "column": 15
+                    }
+                  },
+                  "property": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "length",
+                      "line": 4,
+                      "column": 22
+                    }
+                  }
+                }
+              },
+              "body": {
+                "kind": "BlockStmt",
+                "statements": [
+                  {
+                    "kind": "IfStmt",
+                    "condition": {
+                      "kind": "Logical",
+                      "left": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Index",
+                          "object": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "values",
+                              "line": 5,
+                              "column": 12
+                            }
+                          },
+                          "index": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "i",
+                              "line": 5,
+                              "column": 19
+                            }
+                          }
+                        },
+                        "operator": {
+                          "type": "GREATER_THAN",
+                          "value": ">",
+                          "line": 5,
+                          "column": 22
+                        },
+                        "right": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "peak",
+                            "line": 5,
+                            "column": 24
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "AND",
+                        "value": "&&",
+                        "line": 5,
+                        "column": 29
+                      },
+                      "right": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Index",
+                          "object": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "values",
+                              "line": 5,
+                              "column": 32
+                            }
+                          },
+                          "index": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "i",
+                              "line": 5,
+                              "column": 39
+                            }
+                          }
+                        },
+                        "operator": {
+                          "type": "GREATER_THAN",
+                          "value": ">",
+                          "line": 5,
+                          "column": 42
+                        },
+                        "right": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "threshold",
+                            "line": 5,
+                            "column": 44
+                          }
+                        }
+                      }
+                    },
+                    "thenBranch": {
+                      "kind": "BlockStmt",
+                      "statements": [
+                        {
+                          "kind": "ExpressionStmt",
+                          "expression": {
+                            "kind": "Assign",
+                            "name": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "peak",
+                                "line": 6,
+                                "column": 12
+                              }
+                            },
+                            "value": {
+                              "kind": "Index",
+                              "object": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "values",
+                                  "line": 6,
+                                  "column": 19
+                                }
+                              },
+                              "index": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "i",
+                                  "line": 6,
+                                  "column": 26
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "ExpressionStmt",
+                    "expression": {
+                      "kind": "Assign",
+                      "name": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "i",
+                          "line": 8,
+                          "column": 8
+                        }
+                      },
+                      "value": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "i",
+                            "line": 8,
+                            "column": 12
+                          }
+                        },
+                        "operator": {
+                          "type": "PLUS",
+                          "value": "+",
+                          "line": 8,
+                          "column": 14
+                        },
+                        "right": {
+                          "kind": "Literal",
+                          "value": 1
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "ReturnStmt",
+              "value": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "peak",
+                  "line": 11,
+                  "column": 11
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "kind": "FunctionStmt",
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "renderMatrix",
+          "line": 13,
+          "column": 5
+        },
+        "params": [
+          {
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "matrix",
+              "line": 13,
+              "column": 18
+            },
+            "type": {
+              "type": "IDENTIFIER",
+              "value": "Grid",
+              "line": 13,
+              "column": 26
+            }
+          },
+          {
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "cfg",
+              "line": 13,
+              "column": 32
+            },
+            "type": {
+              "type": "IDENTIFIER",
+              "value": "Config",
+              "line": 13,
+              "column": 37
+            }
+          },
+          {
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "state",
+              "line": 13,
+              "column": 45
+            },
+            "type": {
+              "type": "IDENTIFIER",
+              "value": "State",
+              "line": 13,
+              "column": 52
+            }
+          }
+        ],
+        "returnType": {
+          "type": "TYPE_STRING",
+          "value": "string",
+          "line": 13,
+          "column": 60
+        },
+        "body": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "VarStmt",
+              "type": "val",
+              "typeAnnotation": null,
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "peak",
+                "line": 14,
+                "column": 8
+              },
+              "initializer": {
+                "kind": "Call",
+                "callee": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "findPeak",
+                    "line": 14,
+                    "column": 15
+                  }
+                },
+                "args": [
+                  {
+                    "kind": "Member",
+                    "object": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "matrix",
+                        "line": 14,
+                        "column": 24
+                      }
+                    },
+                    "property": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "values",
+                        "line": 14,
+                        "column": 31
+                      }
+                    }
+                  },
+                  {
+                    "kind": "Member",
+                    "object": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "cfg",
+                        "line": 14,
+                        "column": 39
+                      }
+                    },
+                    "property": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "threshold",
+                        "line": 14,
+                        "column": 43
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "VarStmt",
+              "type": "val",
+              "typeAnnotation": null,
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "processed",
+                "line": 15,
+                "column": 8
+              },
+              "initializer": {
+                "kind": "Literal",
+                "value": 0
+              }
+            },
+            {
+              "kind": "VarStmt",
+              "type": "val",
+              "typeAnnotation": null,
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "skipped",
+                "line": 16,
+                "column": 8
+              },
+              "initializer": {
+                "kind": "Literal",
+                "value": 0
+              }
+            },
+            {
+              "kind": "VarStmt",
+              "type": "val",
+              "typeAnnotation": null,
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "total",
+                "line": 17,
+                "column": 8
+              },
+              "initializer": {
+                "kind": "Literal",
+                "value": 0
+              }
+            },
+            {
+              "kind": "VarStmt",
+              "type": "val",
+              "typeAnnotation": null,
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "i",
+                "line": 18,
+                "column": 8
+              },
+              "initializer": {
+                "kind": "Literal",
+                "value": 0
+              }
+            },
+            {
+              "kind": "WhileStmt",
+              "condition": {
+                "kind": "Logical",
+                "left": {
+                  "kind": "Binary",
+                  "left": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "i",
+                      "line": 20,
+                      "column": 11
+                    }
+                  },
+                  "operator": {
+                    "type": "LESS_THAN",
+                    "value": "<",
+                    "line": 20,
+                    "column": 13
+                  },
+                  "right": {
+                    "kind": "Member",
+                    "object": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "matrix",
+                        "line": 20,
+                        "column": 15
+                      }
+                    },
+                    "property": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "rows",
+                        "line": 20,
+                        "column": 22
+                      }
+                    }
+                  }
+                },
+                "operator": {
+                  "type": "AND",
+                  "value": "&&",
+                  "line": 20,
+                  "column": 27
+                },
+                "right": {
+                  "kind": "Unary",
+                  "operator": {
+                    "type": "NOT",
+                    "value": "!",
+                    "line": 20,
+                    "column": 30
+                  },
+                  "right": {
+                    "kind": "Member",
+                    "object": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "state",
+                        "line": 20,
+                        "column": 31
+                      }
+                    },
+                    "property": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "aborted",
+                        "line": 20,
+                        "column": 37
+                      }
+                    }
+                  }
+                }
+              },
+              "body": {
+                "kind": "BlockStmt",
+                "statements": [
+                  {
+                    "kind": "VarStmt",
+                    "type": "val",
+                    "typeAnnotation": null,
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "rowScore",
+                      "line": 21,
+                      "column": 12
+                    },
+                    "initializer": {
+                      "kind": "Literal",
+                      "value": 0
+                    }
+                  },
+                  {
+                    "kind": "ForStmt",
+                    "initializer": {
+                      "kind": "VarStmt",
+                      "type": "val",
+                      "typeAnnotation": null,
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "k",
+                        "line": 23,
+                        "column": 17
+                      },
+                      "initializer": {
+                        "kind": "Literal",
+                        "value": 0
+                      }
+                    },
+                    "condition": {
+                      "kind": "Logical",
+                      "left": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "k",
+                            "line": 23,
+                            "column": 24
+                          }
+                        },
+                        "operator": {
+                          "type": "LESS_THAN",
+                          "value": "<",
+                          "line": 23,
+                          "column": 26
+                        },
+                        "right": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "matrix",
+                              "line": 23,
+                              "column": 28
+                            }
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "cols",
+                              "line": 23,
+                              "column": 35
+                            }
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "AND",
+                        "value": "&&",
+                        "line": 23,
+                        "column": 40
+                      },
+                      "right": {
+                        "kind": "Unary",
+                        "operator": {
+                          "type": "NOT",
+                          "value": "!",
+                          "line": 23,
+                          "column": 43
+                        },
+                        "right": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "state",
+                              "line": 23,
+                              "column": 44
+                            }
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "error",
+                              "line": 23,
+                              "column": 50
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "update": {
+                      "kind": "Assign",
+                      "name": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "k",
+                          "line": 23,
+                          "column": 57
+                        }
+                      },
+                      "value": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "k",
+                            "line": 23,
+                            "column": 61
+                          }
+                        },
+                        "operator": {
+                          "type": "PLUS",
+                          "value": "+",
+                          "line": 23,
+                          "column": 63
+                        },
+                        "right": {
+                          "kind": "Literal",
+                          "value": 1
+                        }
+                      }
+                    },
+                    "body": {
+                      "kind": "BlockStmt",
+                      "statements": [
+                        {
+                          "kind": "VarStmt",
+                          "type": "val",
+                          "typeAnnotation": null,
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "cellVal",
+                            "line": 24,
+                            "column": 16
+                          },
+                          "initializer": {
+                            "kind": "Member",
+                            "object": {
+                              "kind": "Index",
+                              "object": {
+                                "kind": "Index",
+                                "object": {
+                                  "kind": "Member",
+                                  "object": {
+                                    "kind": "Identifier",
+                                    "name": {
+                                      "type": "IDENTIFIER",
+                                      "value": "matrix",
+                                      "line": 24,
+                                      "column": 26
+                                    }
+                                  },
+                                  "property": {
+                                    "kind": "Identifier",
+                                    "name": {
+                                      "type": "IDENTIFIER",
+                                      "value": "cells",
+                                      "line": 24,
+                                      "column": 33
+                                    }
+                                  }
+                                },
+                                "index": {
+                                  "kind": "Identifier",
+                                  "name": {
+                                    "type": "IDENTIFIER",
+                                    "value": "i",
+                                    "line": 24,
+                                    "column": 39
+                                  }
+                                }
+                              },
+                              "index": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "k",
+                                  "line": 24,
+                                  "column": 42
+                                }
+                              }
+                            },
+                            "property": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "value",
+                                "line": 25,
+                                "column": 45
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "kind": "VarStmt",
+                          "type": "val",
+                          "typeAnnotation": null,
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "cellScore",
+                            "line": 25,
+                            "column": 16
+                          },
+                          "initializer": {
+                            "kind": "Binary",
+                            "left": {
+                              "kind": "Binary",
+                              "left": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "cellVal",
+                                  "line": 25,
+                                  "column": 28
+                                }
+                              },
+                              "operator": {
+                                "type": "STAR",
+                                "value": "*",
+                                "line": 25,
+                                "column": 36
+                              },
+                              "right": {
+                                "kind": "Index",
+                                "object": {
+                                  "kind": "Member",
+                                  "object": {
+                                    "kind": "Identifier",
+                                    "name": {
+                                      "type": "IDENTIFIER",
+                                      "value": "cfg",
+                                      "line": 25,
+                                      "column": 38
+                                    }
+                                  },
+                                  "property": {
+                                    "kind": "Identifier",
+                                    "name": {
+                                      "type": "IDENTIFIER",
+                                      "value": "weights",
+                                      "line": 25,
+                                      "column": 42
+                                    }
+                                  }
+                                },
+                                "index": {
+                                  "kind": "Identifier",
+                                  "name": {
+                                    "type": "IDENTIFIER",
+                                    "value": "k",
+                                    "line": 25,
+                                    "column": 50
+                                  }
+                                }
+                              }
+                            },
+                            "operator": {
+                              "type": "MINUS",
+                              "value": "-",
+                              "line": 25,
+                              "column": 53
+                            },
+                            "right": {
+                              "kind": "Index",
+                              "object": {
+                                "kind": "Member",
+                                "object": {
+                                  "kind": "Identifier",
+                                  "name": {
+                                    "type": "IDENTIFIER",
+                                    "value": "cfg",
+                                    "line": 25,
+                                    "column": 55
+                                  }
+                                },
+                                "property": {
+                                  "kind": "Identifier",
+                                  "name": {
+                                    "type": "IDENTIFIER",
+                                    "value": "offsets",
+                                    "line": 25,
+                                    "column": 59
+                                  }
+                                }
+                              },
+                              "index": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "k",
+                                  "line": 25,
+                                  "column": 67
+                                }
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "kind": "IfStmt",
+                          "condition": {
+                            "kind": "Logical",
+                            "left": {
+                              "kind": "Binary",
+                              "left": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "cellVal",
+                                  "line": 27,
+                                  "column": 16
+                                }
+                              },
+                              "operator": {
+                                "type": "LESS_THAN",
+                                "value": "<",
+                                "line": 27,
+                                "column": 24
+                              },
+                              "right": {
+                                "kind": "Literal",
+                                "value": 0
+                              }
+                            },
+                            "operator": {
+                              "type": "AND",
+                              "value": "&&",
+                              "line": 27,
+                              "column": 28
+                            },
+                            "right": {
+                              "kind": "Unary",
+                              "operator": {
+                                "type": "NOT",
+                                "value": "!",
+                                "line": 27,
+                                "column": 31
+                              },
+                              "right": {
+                                "kind": "Member",
+                                "object": {
+                                  "kind": "Identifier",
+                                  "name": {
+                                    "type": "IDENTIFIER",
+                                    "value": "cfg",
+                                    "line": 27,
+                                    "column": 32
+                                  }
+                                },
+                                "property": {
+                                  "kind": "Identifier",
+                                  "name": {
+                                    "type": "IDENTIFIER",
+                                    "value": "allowNegative",
+                                    "line": 27,
+                                    "column": 36
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "thenBranch": {
+                            "kind": "BlockStmt",
+                            "statements": [
+                              {
+                                "kind": "ExpressionStmt",
+                                "expression": {
+                                  "kind": "Assign",
+                                  "name": {
+                                    "kind": "Identifier",
+                                    "name": {
+                                      "type": "IDENTIFIER",
+                                      "value": "skipped",
+                                      "line": 28,
+                                      "column": 16
+                                    }
+                                  },
+                                  "value": {
+                                    "kind": "Binary",
+                                    "left": {
+                                      "kind": "Identifier",
+                                      "name": {
+                                        "type": "IDENTIFIER",
+                                        "value": "skipped",
+                                        "line": 28,
+                                        "column": 26
+                                      }
+                                    },
+                                    "operator": {
+                                      "type": "PLUS",
+                                      "value": "+",
+                                      "line": 28,
+                                      "column": 34
+                                    },
+                                    "right": {
+                                      "kind": "Literal",
+                                      "value": 1
+                                    }
+                                  }
+                                }
+                              },
+                              {
+                                "kind": "ContinueStmt"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "IfStmt",
+                          "condition": {
+                            "kind": "Logical",
+                            "left": {
+                              "kind": "Binary",
+                              "left": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "cellScore",
+                                  "line": 32,
+                                  "column": 16
+                                }
+                              },
+                              "operator": {
+                                "type": "GREATER_THAN",
+                                "value": ">",
+                                "line": 32,
+                                "column": 26
+                              },
+                              "right": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "peak",
+                                  "line": 32,
+                                  "column": 28
+                                }
+                              }
+                            },
+                            "operator": {
+                              "type": "AND",
+                              "value": "&&",
+                              "line": 32,
+                              "column": 33
+                            },
+                            "right": {
+                              "kind": "Unary",
+                              "operator": {
+                                "type": "NOT",
+                                "value": "!",
+                                "line": 32,
+                                "column": 36
+                              },
+                              "right": {
+                                "kind": "Member",
+                                "object": {
+                                  "kind": "Identifier",
+                                  "name": {
+                                    "type": "IDENTIFIER",
+                                    "value": "state",
+                                    "line": 32,
+                                    "column": 37
+                                  }
+                                },
+                                "property": {
+                                  "kind": "Identifier",
+                                  "name": {
+                                    "type": "IDENTIFIER",
+                                    "value": "locked",
+                                    "line": 32,
+                                    "column": 43
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "thenBranch": {
+                            "kind": "BlockStmt",
+                            "statements": [
+                              {
+                                "kind": "ExpressionStmt",
+                                "expression": {
+                                  "kind": "Assign",
+                                  "name": {
+                                    "kind": "Identifier",
+                                    "name": {
+                                      "type": "IDENTIFIER",
+                                      "value": "rowScore",
+                                      "line": 33,
+                                      "column": 16
+                                    }
+                                  },
+                                  "value": {
+                                    "kind": "Binary",
+                                    "left": {
+                                      "kind": "Identifier",
+                                      "name": {
+                                        "type": "IDENTIFIER",
+                                        "value": "rowScore",
+                                        "line": 33,
+                                        "column": 27
+                                      }
+                                    },
+                                    "operator": {
+                                      "type": "PLUS",
+                                      "value": "+",
+                                      "line": 33,
+                                      "column": 36
+                                    },
+                                    "right": {
+                                      "kind": "Binary",
+                                      "left": {
+                                        "kind": "Identifier",
+                                        "name": {
+                                          "type": "IDENTIFIER",
+                                          "value": "cellScore",
+                                          "line": 33,
+                                          "column": 38
+                                        }
+                                      },
+                                      "operator": {
+                                        "type": "STAR",
+                                        "value": "*",
+                                        "line": 33,
+                                        "column": 48
+                                      },
+                                      "right": {
+                                        "kind": "Literal",
+                                        "value": 2
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              {
+                                "kind": "ExpressionStmt",
+                                "expression": {
+                                  "kind": "Assign",
+                                  "name": {
+                                    "kind": "Identifier",
+                                    "name": {
+                                      "type": "IDENTIFIER",
+                                      "value": "processed",
+                                      "line": 34,
+                                      "column": 16
+                                    }
+                                  },
+                                  "value": {
+                                    "kind": "Binary",
+                                    "left": {
+                                      "kind": "Identifier",
+                                      "name": {
+                                        "type": "IDENTIFIER",
+                                        "value": "processed",
+                                        "line": 34,
+                                        "column": 28
+                                      }
+                                    },
+                                    "operator": {
+                                      "type": "PLUS",
+                                      "value": "+",
+                                      "line": 34,
+                                      "column": 38
+                                    },
+                                    "right": {
+                                      "kind": "Literal",
+                                      "value": 1
+                                    }
+                                  }
+                                }
+                              },
+                              {
+                                "kind": "IfStmt",
+                                "condition": {
+                                  "kind": "Binary",
+                                  "left": {
+                                    "kind": "Identifier",
+                                    "name": {
+                                      "type": "IDENTIFIER",
+                                      "value": "processed",
+                                      "line": 35,
+                                      "column": 20
+                                    }
+                                  },
+                                  "operator": {
+                                    "type": "GREATER_EQUAL",
+                                    "value": ">=",
+                                    "line": 35,
+                                    "column": 30
+                                  },
+                                  "right": {
+                                    "kind": "Member",
+                                    "object": {
+                                      "kind": "Identifier",
+                                      "name": {
+                                        "type": "IDENTIFIER",
+                                        "value": "cfg",
+                                        "line": 35,
+                                        "column": 33
+                                      }
+                                    },
+                                    "property": {
+                                      "kind": "Identifier",
+                                      "name": {
+                                        "type": "IDENTIFIER",
+                                        "value": "maxProcess",
+                                        "line": 35,
+                                        "column": 37
+                                      }
+                                    }
+                                  }
+                                },
+                                "thenBranch": {
+                                  "kind": "BlockStmt",
+                                  "statements": [
+                                    {
+                                      "kind": "BreakStmt"
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          },
+                          "elseBranch": {
+                            "kind": "BlockStmt",
+                            "statements": [
+                              {
+                                "kind": "ExpressionStmt",
+                                "expression": {
+                                  "kind": "Assign",
+                                  "name": {
+                                    "kind": "Identifier",
+                                    "name": {
+                                      "type": "IDENTIFIER",
+                                      "value": "rowScore",
+                                      "line": 39,
+                                      "column": 16
+                                    }
+                                  },
+                                  "value": {
+                                    "kind": "Binary",
+                                    "left": {
+                                      "kind": "Identifier",
+                                      "name": {
+                                        "type": "IDENTIFIER",
+                                        "value": "rowScore",
+                                        "line": 39,
+                                        "column": 27
+                                      }
+                                    },
+                                    "operator": {
+                                      "type": "PLUS",
+                                      "value": "+",
+                                      "line": 39,
+                                      "column": 36
+                                    },
+                                    "right": {
+                                      "kind": "Identifier",
+                                      "name": {
+                                        "type": "IDENTIFIER",
+                                        "value": "cellScore",
+                                        "line": 40,
+                                        "column": 38
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "ExpressionStmt",
+                          "expression": {
+                            "kind": "Assign",
+                            "name": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "total",
+                                "line": 42,
+                                "column": 12
+                              }
+                            },
+                            "value": {
+                              "kind": "Binary",
+                              "left": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "total",
+                                  "line": 42,
+                                  "column": 20
+                                }
+                              },
+                              "operator": {
+                                "type": "PLUS",
+                                "value": "+",
+                                "line": 42,
+                                "column": 26
+                              },
+                              "right": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "cellVal",
+                                  "line": 43,
+                                  "column": 28
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "IfStmt",
+                    "condition": {
+                      "kind": "Logical",
+                      "left": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "rowScore",
+                            "line": 45,
+                            "column": 12
+                          }
+                        },
+                        "operator": {
+                          "type": "LESS_THAN",
+                          "value": "<",
+                          "line": 45,
+                          "column": 21
+                        },
+                        "right": {
+                          "kind": "Literal",
+                          "value": 0
+                        }
+                      },
+                      "operator": {
+                        "type": "AND",
+                        "value": "&&",
+                        "line": 45,
+                        "column": 25
+                      },
+                      "right": {
+                        "kind": "Unary",
+                        "operator": {
+                          "type": "NOT",
+                          "value": "!",
+                          "line": 45,
+                          "column": 28
+                        },
+                        "right": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "cfg",
+                              "line": 45,
+                              "column": 29
+                            }
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "allowNegative",
+                              "line": 45,
+                              "column": 33
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "thenBranch": {
+                      "kind": "BlockStmt",
+                      "statements": [
+                        {
+                          "kind": "ExpressionStmt",
+                          "expression": {
+                            "kind": "Assign",
+                            "name": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "i",
+                                "line": 46,
+                                "column": 12
+                              }
+                            },
+                            "value": {
+                              "kind": "Binary",
+                              "left": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "i",
+                                  "line": 46,
+                                  "column": 16
+                                }
+                              },
+                              "operator": {
+                                "type": "PLUS",
+                                "value": "+",
+                                "line": 46,
+                                "column": 18
+                              },
+                              "right": {
+                                "kind": "Literal",
+                                "value": 1
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "kind": "ContinueStmt"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "ExpressionStmt",
+                    "expression": {
+                      "kind": "Assign",
+                      "name": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "i",
+                          "line": 50,
+                          "column": 8
+                        }
+                      },
+                      "value": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "i",
+                            "line": 50,
+                            "column": 12
+                          }
+                        },
+                        "operator": {
+                          "type": "PLUS",
+                          "value": "+",
+                          "line": 50,
+                          "column": 14
+                        },
+                        "right": {
+                          "kind": "Literal",
+                          "value": 1
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "VarStmt",
+              "type": "val",
+              "typeAnnotation": null,
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "valid",
+                "line": 53,
+                "column": 8
+              },
+              "initializer": {
+                "kind": "Logical",
+                "left": {
+                  "kind": "Logical",
+                  "left": {
+                    "kind": "Logical",
+                    "left": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "processed",
+                          "line": 53,
+                          "column": 16
+                        }
+                      },
+                      "operator": {
+                        "type": "GREATER_THAN",
+                        "value": ">",
+                        "line": 53,
+                        "column": 26
+                      },
+                      "right": {
+                        "kind": "Literal",
+                        "value": 0
+                      }
+                    },
+                    "operator": {
+                      "type": "AND",
+                      "value": "&&",
+                      "line": 53,
+                      "column": 30
+                    },
+                    "right": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "total",
+                          "line": 53,
+                          "column": 33
+                        }
+                      },
+                      "operator": {
+                        "type": "GREATER_THAN",
+                        "value": ">",
+                        "line": 53,
+                        "column": 39
+                      },
+                      "right": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "cfg",
+                            "line": 53,
+                            "column": 41
+                          }
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "threshold",
+                            "line": 53,
+                            "column": 45
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "operator": {
+                    "type": "AND",
+                    "value": "&&",
+                    "line": 53,
+                    "column": 55
+                  },
+                  "right": {
+                    "kind": "Unary",
+                    "operator": {
+                      "type": "NOT",
+                      "value": "!",
+                      "line": 53,
+                      "column": 58
+                    },
+                    "right": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "state",
+                          "line": 53,
+                          "column": 59
+                        }
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "error",
+                          "line": 53,
+                          "column": 65
+                        }
+                      }
+                    }
+                  }
+                },
+                "operator": {
+                  "type": "AND",
+                  "value": "&&",
+                  "line": 53,
+                  "column": 71
+                },
+                "right": {
+                  "kind": "Unary",
+                  "operator": {
+                    "type": "NOT",
+                    "value": "!",
+                    "line": 53,
+                    "column": 74
+                  },
+                  "right": {
+                    "kind": "Member",
+                    "object": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "state",
+                        "line": 53,
+                        "column": 75
+                      }
+                    },
+                    "property": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "aborted",
+                        "line": 54,
+                        "column": 81
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "kind": "VarStmt",
+              "type": "val",
+              "typeAnnotation": null,
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "ratio",
+                "line": 54,
+                "column": 8
+              },
+              "initializer": {
+                "kind": "Binary",
+                "left": {
+                  "kind": "Binary",
+                  "left": {
+                    "kind": "Binary",
+                    "left": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "total",
+                        "line": 54,
+                        "column": 16
+                      }
+                    },
+                    "operator": {
+                      "type": "STAR",
+                      "value": "*",
+                      "line": 54,
+                      "column": 22
+                    },
+                    "right": {
+                      "kind": "Literal",
+                      "value": 100
+                    }
+                  },
+                  "operator": {
+                    "type": "SLASH",
+                    "value": "/",
+                    "line": 54,
+                    "column": 28
+                  },
+                  "right": {
+                    "kind": "Group",
+                    "expression": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "matrix",
+                              "line": 54,
+                              "column": 31
+                            }
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "rows",
+                              "line": 54,
+                              "column": 38
+                            }
+                          }
+                        },
+                        "operator": {
+                          "type": "STAR",
+                          "value": "*",
+                          "line": 54,
+                          "column": 43
+                        },
+                        "right": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "matrix",
+                              "line": 54,
+                              "column": 45
+                            }
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "cols",
+                              "line": 54,
+                              "column": 52
+                            }
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "PLUS",
+                        "value": "+",
+                        "line": 54,
+                        "column": 57
+                      },
+                      "right": {
+                        "kind": "Literal",
+                        "value": 1
+                      }
+                    }
+                  }
+                },
+                "operator": {
+                  "type": "MINUS",
+                  "value": "-",
+                  "line": 54,
+                  "column": 62
+                },
+                "right": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "skipped",
+                    "line": 55,
+                    "column": 64
+                  }
+                }
+              }
+            },
+            {
+              "kind": "ReturnStmt",
+              "value": {
+                "kind": "IcexElement",
+                "tag": "div",
+                "attributes": [
+                  {
+                    "name": "class",
+                    "value": "matrix-result"
+                  },
+                  {
+                    "name": "data-rows",
+                    "value": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "matrix",
+                          "line": 58,
+                          "column": 19
+                        }
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "rows",
+                          "line": 58,
+                          "column": 26
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "name": "data-cols",
+                    "value": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "matrix",
+                          "line": 59,
+                          "column": 19
+                        }
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "cols",
+                          "line": 59,
+                          "column": 26
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "name": "data-peak",
+                    "value": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "peak",
+                        "line": 60,
+                        "column": 19
+                      }
+                    }
+                  },
+                  {
+                    "name": "data-total",
+                    "value": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "total",
+                        "line": 61,
+                        "column": 20
+                      }
+                    }
+                  },
+                  {
+                    "name": "data-processed",
+                    "value": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "processed",
+                        "line": 62,
+                        "column": 24
+                      }
+                    }
+                  },
+                  {
+                    "name": "data-skipped",
+                    "value": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "skipped",
+                        "line": 63,
+                        "column": 22
+                      }
+                    }
+                  },
+                  {
+                    "name": "data-valid",
+                    "value": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "valid",
+                        "line": 64,
+                        "column": 20
+                      }
+                    }
+                  },
+                  {
+                    "name": "data-ratio",
+                    "value": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "ratio",
+                        "line": 65,
+                        "column": 20
+                      }
+                    }
+                  },
+                  {
+                    "name": "data-flag",
+                    "value": {
+                      "kind": "Logical",
+                      "left": {
+                        "kind": "Logical",
+                        "left": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "valid",
+                            "line": 66,
+                            "column": 19
+                          }
+                        },
+                        "operator": {
+                          "type": "AND",
+                          "value": "&&",
+                          "line": 66,
+                          "column": 25
+                        },
+                        "right": {
+                          "kind": "Binary",
+                          "left": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "ratio",
+                              "line": 66,
+                              "column": 28
+                            }
+                          },
+                          "operator": {
+                            "type": "GREATER_THAN",
+                            "value": ">",
+                            "line": 66,
+                            "column": 34
+                          },
+                          "right": {
+                            "kind": "Member",
+                            "object": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "cfg",
+                                "line": 66,
+                                "column": 36
+                              }
+                            },
+                            "property": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "minRatio",
+                                "line": 66,
+                                "column": 40
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "AND",
+                        "value": "&&",
+                        "line": 66,
+                        "column": 49
+                      },
+                      "right": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "processed",
+                            "line": 66,
+                            "column": 52
+                          }
+                        },
+                        "operator": {
+                          "type": "GREATER_THAN",
+                          "value": ">",
+                          "line": 66,
+                          "column": 62
+                        },
+                        "right": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "skipped",
+                            "line": 66,
+                            "column": 64
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "name": "data-above",
+                    "value": {
+                      "kind": "Logical",
+                      "left": {
+                        "kind": "Logical",
+                        "left": {
+                          "kind": "Binary",
+                          "left": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "total",
+                              "line": 67,
+                              "column": 20
+                            }
+                          },
+                          "operator": {
+                            "type": "GREATER_THAN",
+                            "value": ">",
+                            "line": 67,
+                            "column": 26
+                          },
+                          "right": {
+                            "kind": "Binary",
+                            "left": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "peak",
+                                "line": 67,
+                                "column": 28
+                              }
+                            },
+                            "operator": {
+                              "type": "STAR",
+                              "value": "*",
+                              "line": 67,
+                              "column": 33
+                            },
+                            "right": {
+                              "kind": "Member",
+                              "object": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "matrix",
+                                  "line": 67,
+                                  "column": 35
+                                }
+                              },
+                              "property": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "rows",
+                                  "line": 67,
+                                  "column": 42
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "operator": {
+                          "type": "AND",
+                          "value": "&&",
+                          "line": 67,
+                          "column": 47
+                        },
+                        "right": {
+                          "kind": "Unary",
+                          "operator": {
+                            "type": "NOT",
+                            "value": "!",
+                            "line": 67,
+                            "column": 50
+                          },
+                          "right": {
+                            "kind": "Member",
+                            "object": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "state",
+                                "line": 67,
+                                "column": 51
+                              }
+                            },
+                            "property": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "error",
+                                "line": 67,
+                                "column": 57
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "AND",
+                        "value": "&&",
+                        "line": 67,
+                        "column": 63
+                      },
+                      "right": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "processed",
+                            "line": 67,
+                            "column": 66
+                          }
+                        },
+                        "operator": {
+                          "type": "GREATER_THAN",
+                          "value": ">",
+                          "line": 67,
+                          "column": 76
+                        },
+                        "right": {
+                          "kind": "Literal",
+                          "value": 0
+                        }
+                      }
+                    }
+                  }
+                ],
+                "children": [
+                  {
+                    "kind": "IcexElement",
+                    "tag": "header",
+                    "attributes": [
+                      {
+                        "name": "data-peak",
+                        "value": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "peak",
+                            "line": 69,
+                            "column": 27
+                          }
+                        }
+                      },
+                      {
+                        "name": "data-valid",
+                        "value": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "valid",
+                            "line": 69,
+                            "column": 45
+                          }
+                        }
+                      }
+                    ],
+                    "children": [
+                      {
+                        "kind": "IcexElement",
+                        "tag": "h1",
+                        "attributes": [],
+                        "children": [
+                          {
+                            "kind": "IcexText",
+                            "value": "Matrix"
+                          },
+                          {
+                            "kind": "IcexExpression",
+                            "expression": {
+                              "kind": "Member",
+                              "object": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "matrix",
+                                  "line": 70,
+                                  "column": 24
+                                }
+                              },
+                              "property": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "rows",
+                                  "line": 70,
+                                  "column": 31
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "kind": "IcexText",
+                            "value": "x"
+                          },
+                          {
+                            "kind": "IcexExpression",
+                            "expression": {
+                              "kind": "Member",
+                              "object": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "matrix",
+                                  "line": 70,
+                                  "column": 38
+                                }
+                              },
+                              "property": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "cols",
+                                  "line": 70,
+                                  "column": 45
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "isSelfClosing": false
+                      },
+                      {
+                        "kind": "IcexElement",
+                        "tag": "span",
+                        "attributes": [
+                          {
+                            "name": "data-val",
+                            "value": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "peak",
+                                "line": 71,
+                                "column": 28
+                              }
+                            }
+                          }
+                        ],
+                        "children": [
+                          {
+                            "kind": "IcexText",
+                            "value": "Peak:"
+                          },
+                          {
+                            "kind": "IcexExpression",
+                            "expression": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "peak",
+                                "line": 71,
+                                "column": 41
+                              }
+                            }
+                          }
+                        ],
+                        "isSelfClosing": false
+                      },
+                      {
+                        "kind": "IcexElement",
+                        "tag": "span",
+                        "attributes": [
+                          {
+                            "name": "data-val",
+                            "value": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "total",
+                                "line": 72,
+                                "column": 28
+                              }
+                            }
+                          }
+                        ],
+                        "children": [
+                          {
+                            "kind": "IcexText",
+                            "value": "Total:"
+                          },
+                          {
+                            "kind": "IcexExpression",
+                            "expression": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "total",
+                                "line": 72,
+                                "column": 43
+                              }
+                            }
+                          }
+                        ],
+                        "isSelfClosing": false
+                      }
+                    ],
+                    "isSelfClosing": false
+                  },
+                  {
+                    "kind": "IcexElement",
+                    "tag": "section",
+                    "attributes": [
+                      {
+                        "name": "data-processed",
+                        "value": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "processed",
+                            "line": 75,
+                            "column": 28
+                          }
+                        }
+                      },
+                      {
+                        "name": "data-skipped",
+                        "value": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "skipped",
+                            "line": 76,
+                            "column": 26
+                          }
+                        }
+                      },
+                      {
+                        "name": "data-ratio",
+                        "value": {
+                          "kind": "Binary",
+                          "left": {
+                            "kind": "Binary",
+                            "left": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "processed",
+                                "line": 77,
+                                "column": 24
+                              }
+                            },
+                            "operator": {
+                              "type": "STAR",
+                              "value": "*",
+                              "line": 77,
+                              "column": 34
+                            },
+                            "right": {
+                              "kind": "Literal",
+                              "value": 100
+                            }
+                          },
+                          "operator": {
+                            "type": "SLASH",
+                            "value": "/",
+                            "line": 77,
+                            "column": 40
+                          },
+                          "right": {
+                            "kind": "Group",
+                            "expression": {
+                              "kind": "Binary",
+                              "left": {
+                                "kind": "Binary",
+                                "left": {
+                                  "kind": "Identifier",
+                                  "name": {
+                                    "type": "IDENTIFIER",
+                                    "value": "processed",
+                                    "line": 77,
+                                    "column": 43
+                                  }
+                                },
+                                "operator": {
+                                  "type": "PLUS",
+                                  "value": "+",
+                                  "line": 77,
+                                  "column": 53
+                                },
+                                "right": {
+                                  "kind": "Identifier",
+                                  "name": {
+                                    "type": "IDENTIFIER",
+                                    "value": "skipped",
+                                    "line": 77,
+                                    "column": 55
+                                  }
+                                }
+                              },
+                              "operator": {
+                                "type": "PLUS",
+                                "value": "+",
+                                "line": 77,
+                                "column": 63
+                              },
+                              "right": {
+                                "kind": "Literal",
+                                "value": 1
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ],
+                    "children": [
+                      {
+                        "kind": "IcexElement",
+                        "tag": "p",
+                        "attributes": [],
+                        "children": [
+                          {
+                            "kind": "IcexText",
+                            "value": "Processed:"
+                          },
+                          {
+                            "kind": "IcexExpression",
+                            "expression": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "processed",
+                                "line": 79,
+                                "column": 27
+                              }
+                            }
+                          },
+                          {
+                            "kind": "IcexText",
+                            "value": ", Skipped:"
+                          },
+                          {
+                            "kind": "IcexExpression",
+                            "expression": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "skipped",
+                                "line": 79,
+                                "column": 49
+                              }
+                            }
+                          }
+                        ],
+                        "isSelfClosing": false
+                      },
+                      {
+                        "kind": "IcexElement",
+                        "tag": "p",
+                        "attributes": [],
+                        "children": [
+                          {
+                            "kind": "IcexText",
+                            "value": "Coverage:"
+                          },
+                          {
+                            "kind": "IcexExpression",
+                            "expression": {
+                              "kind": "Binary",
+                              "left": {
+                                "kind": "Binary",
+                                "left": {
+                                  "kind": "Identifier",
+                                  "name": {
+                                    "type": "IDENTIFIER",
+                                    "value": "processed",
+                                    "line": 80,
+                                    "column": 26
+                                  }
+                                },
+                                "operator": {
+                                  "type": "STAR",
+                                  "value": "*",
+                                  "line": 80,
+                                  "column": 36
+                                },
+                                "right": {
+                                  "kind": "Literal",
+                                  "value": 100
+                                }
+                              },
+                              "operator": {
+                                "type": "SLASH",
+                                "value": "/",
+                                "line": 80,
+                                "column": 42
+                              },
+                              "right": {
+                                "kind": "Group",
+                                "expression": {
+                                  "kind": "Binary",
+                                  "left": {
+                                    "kind": "Binary",
+                                    "left": {
+                                      "kind": "Member",
+                                      "object": {
+                                        "kind": "Identifier",
+                                        "name": {
+                                          "type": "IDENTIFIER",
+                                          "value": "matrix",
+                                          "line": 80,
+                                          "column": 45
+                                        }
+                                      },
+                                      "property": {
+                                        "kind": "Identifier",
+                                        "name": {
+                                          "type": "IDENTIFIER",
+                                          "value": "rows",
+                                          "line": 80,
+                                          "column": 52
+                                        }
+                                      }
+                                    },
+                                    "operator": {
+                                      "type": "STAR",
+                                      "value": "*",
+                                      "line": 80,
+                                      "column": 57
+                                    },
+                                    "right": {
+                                      "kind": "Member",
+                                      "object": {
+                                        "kind": "Identifier",
+                                        "name": {
+                                          "type": "IDENTIFIER",
+                                          "value": "matrix",
+                                          "line": 80,
+                                          "column": 59
+                                        }
+                                      },
+                                      "property": {
+                                        "kind": "Identifier",
+                                        "name": {
+                                          "type": "IDENTIFIER",
+                                          "value": "cols",
+                                          "line": 80,
+                                          "column": 66
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "operator": {
+                                    "type": "PLUS",
+                                    "value": "+",
+                                    "line": 80,
+                                    "column": 71
+                                  },
+                                  "right": {
+                                    "kind": "Literal",
+                                    "value": 1
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "isSelfClosing": false
+                      }
+                    ],
+                    "isSelfClosing": false
+                  },
+                  {
+                    "kind": "IcexElement",
+                    "tag": "footer",
+                    "attributes": [
+                      {
+                        "name": "data-valid",
+                        "value": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "valid",
+                            "line": 83,
+                            "column": 24
+                          }
+                        }
+                      },
+                      {
+                        "name": "data-flag",
+                        "value": {
+                          "kind": "Logical",
+                          "left": {
+                            "kind": "Logical",
+                            "left": {
+                              "kind": "Logical",
+                              "left": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "valid",
+                                  "line": 84,
+                                  "column": 23
+                                }
+                              },
+                              "operator": {
+                                "type": "AND",
+                                "value": "&&",
+                                "line": 84,
+                                "column": 29
+                              },
+                              "right": {
+                                "kind": "Binary",
+                                "left": {
+                                  "kind": "Identifier",
+                                  "name": {
+                                    "type": "IDENTIFIER",
+                                    "value": "processed",
+                                    "line": 84,
+                                    "column": 32
+                                  }
+                                },
+                                "operator": {
+                                  "type": "GREATER_THAN",
+                                  "value": ">",
+                                  "line": 84,
+                                  "column": 42
+                                },
+                                "right": {
+                                  "kind": "Literal",
+                                  "value": 0
+                                }
+                              }
+                            },
+                            "operator": {
+                              "type": "AND",
+                              "value": "&&",
+                              "line": 84,
+                              "column": 46
+                            },
+                            "right": {
+                              "kind": "Binary",
+                              "left": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "ratio",
+                                  "line": 84,
+                                  "column": 49
+                                }
+                              },
+                              "operator": {
+                                "type": "GREATER_THAN",
+                                "value": ">",
+                                "line": 84,
+                                "column": 55
+                              },
+                              "right": {
+                                "kind": "Literal",
+                                "value": 0
+                              }
+                            }
+                          },
+                          "operator": {
+                            "type": "AND",
+                            "value": "&&",
+                            "line": 84,
+                            "column": 59
+                          },
+                          "right": {
+                            "kind": "Unary",
+                            "operator": {
+                              "type": "NOT",
+                              "value": "!",
+                              "line": 84,
+                              "column": 62
+                            },
+                            "right": {
+                              "kind": "Member",
+                              "object": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "state",
+                                  "line": 84,
+                                  "column": 63
+                                }
+                              },
+                              "property": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "aborted",
+                                  "line": 84,
+                                  "column": 69
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ],
+                    "children": [
+                      {
+                        "kind": "IcexElement",
+                        "tag": "span",
+                        "attributes": [
+                          {
+                            "name": "data-ok",
+                            "value": {
+                              "kind": "Logical",
+                              "left": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "valid",
+                                  "line": 86,
+                                  "column": 27
+                                }
+                              },
+                              "operator": {
+                                "type": "AND",
+                                "value": "&&",
+                                "line": 86,
+                                "column": 33
+                              },
+                              "right": {
+                                "kind": "Unary",
+                                "operator": {
+                                  "type": "NOT",
+                                  "value": "!",
+                                  "line": 86,
+                                  "column": 36
+                                },
+                                "right": {
+                                  "kind": "Member",
+                                  "object": {
+                                    "kind": "Identifier",
+                                    "name": {
+                                      "type": "IDENTIFIER",
+                                      "value": "state",
+                                      "line": 86,
+                                      "column": 37
+                                    }
+                                  },
+                                  "property": {
+                                    "kind": "Identifier",
+                                    "name": {
+                                      "type": "IDENTIFIER",
+                                      "value": "error",
+                                      "line": 86,
+                                      "column": 43
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "children": [
+                          {
+                            "kind": "IcexExpression",
+                            "expression": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "processed",
+                                "line": 87,
+                                "column": 17
+                              }
+                            }
+                          },
+                          {
+                            "kind": "IcexText",
+                            "value": "of"
+                          },
+                          {
+                            "kind": "IcexExpression",
+                            "expression": {
+                              "kind": "Binary",
+                              "left": {
+                                "kind": "Member",
+                                "object": {
+                                  "kind": "Identifier",
+                                  "name": {
+                                    "type": "IDENTIFIER",
+                                    "value": "matrix",
+                                    "line": 87,
+                                    "column": 32
+                                  }
+                                },
+                                "property": {
+                                  "kind": "Identifier",
+                                  "name": {
+                                    "type": "IDENTIFIER",
+                                    "value": "rows",
+                                    "line": 87,
+                                    "column": 39
+                                  }
+                                }
+                              },
+                              "operator": {
+                                "type": "STAR",
+                                "value": "*",
+                                "line": 87,
+                                "column": 44
+                              },
+                              "right": {
+                                "kind": "Member",
+                                "object": {
+                                  "kind": "Identifier",
+                                  "name": {
+                                    "type": "IDENTIFIER",
+                                    "value": "matrix",
+                                    "line": 87,
+                                    "column": 46
+                                  }
+                                },
+                                "property": {
+                                  "kind": "Identifier",
+                                  "name": {
+                                    "type": "IDENTIFIER",
+                                    "value": "cols",
+                                    "line": 87,
+                                    "column": 53
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "kind": "IcexText",
+                            "value": "cells processed"
+                          }
+                        ],
+                        "isSelfClosing": false
+                      }
+                    ],
+                    "isSelfClosing": false
+                  }
+                ],
+                "isSelfClosing": false
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

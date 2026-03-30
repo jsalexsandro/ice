@@ -1478,24 +1478,6 @@ func renderDashboard(data: Dashboard, cfg: Config): string {
 
 ---
 
-## ICEX Limitations
-
-### Objetos literais não suportados
-```ice
-val t = <div>{ { name: "John" } }</div>
-```
-**Resultado:** ❌ Erro - Objetos literais `{ key: value }` não são suportados pela linguagem ainda.
-
-### Múltiplas tags consecutivas sem pai
-```ice
-val t = <div></div><span></span>
-```
-**Resultado:** ❌ Erro - Múltiplas tags ICEX no mesmo nível requerem um elemento pai (como no JSX).
-
-```ice
-val t = <wrapper><div></div><span></span></wrapper>
-```
-**Resultado:** ✅ Sucesso - Com elemento pai.
 
 ---
 
@@ -1913,3 +1895,23 @@ const nextMinPrecedence = operatorPrecedence + 1
 ```
 
 **Explicação:** Para operadores left-associative, o `minPrecedence` deve ser `operatorPrecedence + 1`, garantindo que operadores de mesma precedência sejam agrupados da esquerda para a direita.
+
+
+## ICEX Limitations
+
+### Objetos literais não suportados
+```ice
+val t = <div>{ { name: "John" } }</div>
+```
+**Resultado:** ❌ Erro - Objetos literais `{ key: value }` não são suportados pela linguagem ainda.
+
+### Múltiplas tags consecutivas sem pai
+```ice
+val t = <div></div><span></span>
+```
+**Resultado:** ❌ Erro - Múltiplas tags ICEX no mesmo nível requerem um elemento pai (como no JSX).
+
+```ice
+val t = <wrapper><div></div><span></span></wrapper>
+```
+**Resultado:** ✅ Sucesso - Com elemento pai.

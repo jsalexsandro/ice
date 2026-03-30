@@ -240,7 +240,15 @@ export class Parser {
       if (this.current().type === TokenType.COLON) {
         this.advance()
         if (this.isValidType(this.current())) {
-          paramType = this.advance()
+          let typeToken = this.advance()
+          
+          if (this.current().type === TokenType.LBRACKET) {
+            this.advance()
+            this.expect(TokenType.RBRACKET)
+            paramType = { ...typeToken, value: typeToken.value + '[]' }
+          } else {
+            paramType = typeToken
+          }
         } else {
           throw new Error(`Invalid type '${this.current().value}' at line ${this.current().line}, column ${this.current().column}`)
         }
@@ -256,7 +264,15 @@ export class Parser {
         if (this.current().type === TokenType.COLON) {
           this.advance()
           if (this.isValidType(this.current())) {
-            pType = this.advance()
+            let typeToken = this.advance()
+            
+            if (this.current().type === TokenType.LBRACKET) {
+              this.advance()
+              this.expect(TokenType.RBRACKET)
+              pType = { ...typeToken, value: typeToken.value + '[]' }
+            } else {
+              pType = typeToken
+            }
           } else {
             throw new Error(`Invalid type '${this.current().value}' at line ${this.current().line}, column ${this.current().column}`)
           }
@@ -425,7 +441,7 @@ export class Parser {
       }
 
       if (operator.type === TokenType.KEYWORD && 
-          ['val', 'const', 'if', 'while', 'for', 'func', 'return', 'else'].includes(operator.value as string)) {
+          ['val', 'const', 'if', 'while', 'for', 'func', 'return', 'else', 'break', 'continue'].includes(operator.value as string)) {
         break
       }
 
