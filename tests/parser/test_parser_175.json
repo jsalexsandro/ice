@@ -1,0 +1,64 @@
+{
+  "id": "parser_175",
+  "description": "ICEX interpolando variável ICEX",
+  "code": "val header = <header>Top</header>\nval page = <div>{header}</div>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "header",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "header",
+          "attributes": [],
+          "children": [
+            {
+              "kind": "IcexText",
+              "value": "Top"
+            }
+          ],
+          "isSelfClosing": false
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "page",
+          "line": 2,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "div",
+          "attributes": [],
+          "children": [
+            {
+              "kind": "IcexExpression",
+              "expression": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "header",
+                  "line": 2,
+                  "column": 17
+                }
+              }
+            }
+          ],
+          "isSelfClosing": false
+        }
+      }
+    ]
+  }
+}

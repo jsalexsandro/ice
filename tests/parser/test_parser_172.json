@@ -1,0 +1,56 @@
+{
+  "id": "parser_172",
+  "description": "ICEX em lado direito de ||",
+  "code": "val fallback = cached || <div class=\"loading\">Loading...</div>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "fallback",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Logical",
+          "left": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "cached",
+              "line": 1,
+              "column": 15
+            }
+          },
+          "operator": {
+            "type": "OR",
+            "value": "||",
+            "line": 1,
+            "column": 22
+          },
+          "right": {
+            "kind": "IcexElement",
+            "tag": "div",
+            "attributes": [
+              {
+                "name": "class",
+                "value": "loading"
+              }
+            ],
+            "children": [
+              {
+                "kind": "IcexText",
+                "value": "Loading..."
+              }
+            ],
+            "isSelfClosing": false
+          }
+        }
+      }
+    ]
+  }
+}

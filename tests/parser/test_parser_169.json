@@ -1,0 +1,104 @@
+{
+  "id": "parser_169",
+  "description": "ICEX retornado com interpolação",
+  "code": "func greet(name: string): string {\n    val prefix = \"Hello\"\n    return <h1>{prefix}, {name}!</h1>\n}",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "FunctionStmt",
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "greet",
+          "line": 1,
+          "column": 5
+        },
+        "params": [
+          {
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "name",
+              "line": 1,
+              "column": 11
+            },
+            "type": {
+              "type": "TYPE_STRING",
+              "value": "string",
+              "line": 1,
+              "column": 17
+            }
+          }
+        ],
+        "returnType": {
+          "type": "TYPE_STRING",
+          "value": "string",
+          "line": 1,
+          "column": 26
+        },
+        "body": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "VarStmt",
+              "type": "val",
+              "typeAnnotation": null,
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "prefix",
+                "line": 2,
+                "column": 8
+              },
+              "initializer": {
+                "kind": "Literal",
+                "value": "Hello"
+              }
+            },
+            {
+              "kind": "ReturnStmt",
+              "value": {
+                "kind": "IcexElement",
+                "tag": "h1",
+                "attributes": [],
+                "children": [
+                  {
+                    "kind": "IcexExpression",
+                    "expression": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "prefix",
+                        "line": 3,
+                        "column": 16
+                      }
+                    }
+                  },
+                  {
+                    "kind": "IcexText",
+                    "value": ","
+                  },
+                  {
+                    "kind": "IcexExpression",
+                    "expression": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "name",
+                        "line": 3,
+                        "column": 26
+                      }
+                    }
+                  },
+                  {
+                    "kind": "IcexText",
+                    "value": "!"
+                  }
+                ],
+                "isSelfClosing": false
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

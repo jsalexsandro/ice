@@ -1,0 +1,54 @@
+{
+  "id": "parser_168",
+  "description": "ICEX retornado em return simples",
+  "code": "func view(): string {\n    return <main><p>Hello</p></main>\n}",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "FunctionStmt",
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "view",
+          "line": 1,
+          "column": 5
+        },
+        "params": [],
+        "returnType": {
+          "type": "TYPE_STRING",
+          "value": "string",
+          "line": 1,
+          "column": 13
+        },
+        "body": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "ReturnStmt",
+              "value": {
+                "kind": "IcexElement",
+                "tag": "main",
+                "attributes": [],
+                "children": [
+                  {
+                    "kind": "IcexElement",
+                    "tag": "p",
+                    "attributes": [],
+                    "children": [
+                      {
+                        "kind": "IcexText",
+                        "value": "Hello"
+                      }
+                    ],
+                    "isSelfClosing": false
+                  }
+                ],
+                "isSelfClosing": false
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

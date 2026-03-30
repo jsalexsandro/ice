@@ -1,0 +1,73 @@
+{
+  "id": "parser_185",
+  "description": "ICEX dentro de body de if",
+  "code": "val isLogged = true\nif (isLogged) {\n    val view = <dashboard user={currentUser}/>\n}",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "isLogged",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Literal",
+          "value": true
+        }
+      },
+      {
+        "kind": "IfStmt",
+        "condition": {
+          "kind": "Identifier",
+          "name": {
+            "type": "IDENTIFIER",
+            "value": "isLogged",
+            "line": 2,
+            "column": 4
+          }
+        },
+        "thenBranch": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "VarStmt",
+              "type": "val",
+              "typeAnnotation": null,
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "view",
+                "line": 3,
+                "column": 8
+              },
+              "initializer": {
+                "kind": "IcexElement",
+                "tag": "dashboard",
+                "attributes": [
+                  {
+                    "name": "user",
+                    "value": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "currentUser",
+                        "line": 3,
+                        "column": 32
+                      }
+                    }
+                  }
+                ],
+                "children": [],
+                "isSelfClosing": true
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

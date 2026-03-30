@@ -1,0 +1,165 @@
+{
+  "id": "parser_179",
+  "description": "ICEX aninhado com 5 níveis",
+  "code": "val a = \"alpha\"\nval b = \"beta\"\nval c = \"gamma\"\nval el = <L1 data-a={a}><L2 data-b={b}><L3 data-c={c}><L4>{a} and {b}</L4></L3></L2></L1>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "a",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Literal",
+          "value": "alpha"
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "b",
+          "line": 2,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Literal",
+          "value": "beta"
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "c",
+          "line": 3,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Literal",
+          "value": "gamma"
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "el",
+          "line": 4,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "L1",
+          "attributes": [
+            {
+              "name": "data-a",
+              "value": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "a",
+                  "line": 4,
+                  "column": 21
+                }
+              }
+            }
+          ],
+          "children": [
+            {
+              "kind": "IcexElement",
+              "tag": "L2",
+              "attributes": [
+                {
+                  "name": "data-b",
+                  "value": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "b",
+                      "line": 4,
+                      "column": 36
+                    }
+                  }
+                }
+              ],
+              "children": [
+                {
+                  "kind": "IcexElement",
+                  "tag": "L3",
+                  "attributes": [
+                    {
+                      "name": "data-c",
+                      "value": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "c",
+                          "line": 4,
+                          "column": 51
+                        }
+                      }
+                    }
+                  ],
+                  "children": [
+                    {
+                      "kind": "IcexElement",
+                      "tag": "L4",
+                      "attributes": [],
+                      "children": [
+                        {
+                          "kind": "IcexExpression",
+                          "expression": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "a",
+                              "line": 4,
+                              "column": 59
+                            }
+                          }
+                        },
+                        {
+                          "kind": "IcexText",
+                          "value": "and"
+                        },
+                        {
+                          "kind": "IcexExpression",
+                          "expression": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "b",
+                              "line": 4,
+                              "column": 67
+                            }
+                          }
+                        }
+                      ],
+                      "isSelfClosing": false
+                    }
+                  ],
+                  "isSelfClosing": false
+                }
+              ],
+              "isSelfClosing": false
+            }
+          ],
+          "isSelfClosing": false
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,181 @@
+{
+  "id": "parser_181",
+  "description": "Múltiplos data-* com expressões",
+  "code": "val el = <input type=\"text\" data-user-id={user.id} data-is-valid={validator.check(input) && !hasError} data-score={base * factor + bonus[0]} disabled/>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "el",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "input",
+          "attributes": [
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "data-user-id",
+              "value": {
+                "kind": "Member",
+                "object": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "user",
+                    "line": 1,
+                    "column": 42
+                  }
+                },
+                "property": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "id",
+                    "line": 1,
+                    "column": 47
+                  }
+                }
+              }
+            },
+            {
+              "name": "data-is-valid",
+              "value": {
+                "kind": "Logical",
+                "left": {
+                  "kind": "Call",
+                  "callee": {
+                    "kind": "Member",
+                    "object": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "validator",
+                        "line": 1,
+                        "column": 66
+                      }
+                    },
+                    "property": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "check",
+                        "line": 1,
+                        "column": 76
+                      }
+                    }
+                  },
+                  "args": [
+                    {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "input",
+                        "line": 1,
+                        "column": 82
+                      }
+                    }
+                  ]
+                },
+                "operator": {
+                  "type": "AND",
+                  "value": "&&",
+                  "line": 1,
+                  "column": 89
+                },
+                "right": {
+                  "kind": "Unary",
+                  "operator": {
+                    "type": "NOT",
+                    "value": "!",
+                    "line": 1,
+                    "column": 92
+                  },
+                  "right": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "hasError",
+                      "line": 1,
+                      "column": 93
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "data-score",
+              "value": {
+                "kind": "Binary",
+                "left": {
+                  "kind": "Binary",
+                  "left": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "base",
+                      "line": 1,
+                      "column": 115
+                    }
+                  },
+                  "operator": {
+                    "type": "STAR",
+                    "value": "*",
+                    "line": 1,
+                    "column": 120
+                  },
+                  "right": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "factor",
+                      "line": 1,
+                      "column": 122
+                    }
+                  }
+                },
+                "operator": {
+                  "type": "PLUS",
+                  "value": "+",
+                  "line": 1,
+                  "column": 129
+                },
+                "right": {
+                  "kind": "Index",
+                  "object": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "bonus",
+                      "line": 1,
+                      "column": 131
+                    }
+                  },
+                  "index": {
+                    "kind": "Literal",
+                    "value": 0
+                  }
+                }
+              }
+            },
+            {
+              "name": "disabled",
+              "value": true
+            }
+          ],
+          "children": [],
+          "isSelfClosing": true
+        }
+      }
+    ]
+  }
+}

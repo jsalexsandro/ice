@@ -1,0 +1,59 @@
+{
+  "id": "parser_170",
+  "description": "ICEX em val + chamada depois",
+  "code": "val el = <div>content</div>\nrender(el)",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "el",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "div",
+          "attributes": [],
+          "children": [
+            {
+              "kind": "IcexText",
+              "value": "content"
+            }
+          ],
+          "isSelfClosing": false
+        }
+      },
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "Call",
+          "callee": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "render",
+              "line": 2,
+              "column": 0
+            }
+          },
+          "args": [
+            {
+              "kind": "Identifier",
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "el",
+                "line": 2,
+                "column": 7
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

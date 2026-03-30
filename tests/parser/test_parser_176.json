@@ -1,0 +1,99 @@
+{
+  "id": "parser_176",
+  "description": "Dois ICEX interpolados consecutivos",
+  "code": "val nav = <nav>Menu</nav>\nval footer = <footer>Bottom</footer>\nval layout = <div>{nav}{footer}</div>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "nav",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "nav",
+          "attributes": [],
+          "children": [
+            {
+              "kind": "IcexText",
+              "value": "Menu"
+            }
+          ],
+          "isSelfClosing": false
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "footer",
+          "line": 2,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "footer",
+          "attributes": [],
+          "children": [
+            {
+              "kind": "IcexText",
+              "value": "Bottom"
+            }
+          ],
+          "isSelfClosing": false
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "layout",
+          "line": 3,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "div",
+          "attributes": [],
+          "children": [
+            {
+              "kind": "IcexExpression",
+              "expression": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "nav",
+                  "line": 3,
+                  "column": 19
+                }
+              }
+            },
+            {
+              "kind": "IcexExpression",
+              "expression": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "footer",
+                  "line": 3,
+                  "column": 24
+                }
+              }
+            }
+          ],
+          "isSelfClosing": false
+        }
+      }
+    ]
+  }
+}

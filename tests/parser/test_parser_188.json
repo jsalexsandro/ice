@@ -1,0 +1,194 @@
+{
+  "id": "parser_188",
+  "description": "Função com ICEX condicional",
+  "code": "func renderItem(item: string, index: int, isLast: bool): string {\n    val cls = \"item\"\n    if (isLast) {\n        return <li class=\"item last\" data-index={index}>{item}</li>\n    }\n    return <li class={cls} data-index={index}>{item}</li>\n}",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "FunctionStmt",
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "renderItem",
+          "line": 1,
+          "column": 5
+        },
+        "params": [
+          {
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "item",
+              "line": 1,
+              "column": 16
+            },
+            "type": {
+              "type": "TYPE_STRING",
+              "value": "string",
+              "line": 1,
+              "column": 22
+            }
+          },
+          {
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "index",
+              "line": 1,
+              "column": 30
+            },
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 1,
+              "column": 37
+            }
+          },
+          {
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "isLast",
+              "line": 1,
+              "column": 42
+            },
+            "type": {
+              "type": "TYPE_BOOL",
+              "value": "bool",
+              "line": 1,
+              "column": 50
+            }
+          }
+        ],
+        "returnType": {
+          "type": "TYPE_STRING",
+          "value": "string",
+          "line": 1,
+          "column": 57
+        },
+        "body": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "VarStmt",
+              "type": "val",
+              "typeAnnotation": null,
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "cls",
+                "line": 2,
+                "column": 8
+              },
+              "initializer": {
+                "kind": "Literal",
+                "value": "item"
+              }
+            },
+            {
+              "kind": "IfStmt",
+              "condition": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "isLast",
+                  "line": 3,
+                  "column": 8
+                }
+              },
+              "thenBranch": {
+                "kind": "BlockStmt",
+                "statements": [
+                  {
+                    "kind": "ReturnStmt",
+                    "value": {
+                      "kind": "IcexElement",
+                      "tag": "li",
+                      "attributes": [
+                        {
+                          "name": "class",
+                          "value": "item last"
+                        },
+                        {
+                          "name": "data-index",
+                          "value": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "index",
+                              "line": 4,
+                              "column": 49
+                            }
+                          }
+                        }
+                      ],
+                      "children": [
+                        {
+                          "kind": "IcexExpression",
+                          "expression": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "item",
+                              "line": 4,
+                              "column": 57
+                            }
+                          }
+                        }
+                      ],
+                      "isSelfClosing": false
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "ReturnStmt",
+              "value": {
+                "kind": "IcexElement",
+                "tag": "li",
+                "attributes": [
+                  {
+                    "name": "class",
+                    "value": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "cls",
+                        "line": 6,
+                        "column": 22
+                      }
+                    }
+                  },
+                  {
+                    "name": "data-index",
+                    "value": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "index",
+                        "line": 6,
+                        "column": 39
+                      }
+                    }
+                  }
+                ],
+                "children": [
+                  {
+                    "kind": "IcexExpression",
+                    "expression": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "item",
+                        "line": 6,
+                        "column": 47
+                      }
+                    }
+                  }
+                ],
+                "isSelfClosing": false
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

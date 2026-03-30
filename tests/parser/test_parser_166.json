@@ -1,0 +1,61 @@
+{
+  "id": "parser_166",
+  "description": "ICEX como segundo argumento",
+  "code": "icemount(root, <section id=\"main\"><h1>Title</h1></section>)",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "Call",
+          "callee": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "icemount",
+              "line": 1,
+              "column": 0
+            }
+          },
+          "args": [
+            {
+              "kind": "Identifier",
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "root",
+                "line": 1,
+                "column": 9
+              }
+            },
+            {
+              "kind": "IcexElement",
+              "tag": "section",
+              "attributes": [
+                {
+                  "name": "id",
+                  "value": "main"
+                }
+              ],
+              "children": [
+                {
+                  "kind": "IcexElement",
+                  "tag": "h1",
+                  "attributes": [],
+                  "children": [
+                    {
+                      "kind": "IcexText",
+                      "value": "Title"
+                    }
+                  ],
+                  "isSelfClosing": false
+                }
+              ],
+              "isSelfClosing": false
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

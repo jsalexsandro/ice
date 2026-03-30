@@ -1,0 +1,85 @@
+{
+  "id": "parser_191",
+  "description": "Expressão com < e > em atributo",
+  "code": "val el = <div data-check={x > 0 && y < 100}/>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "el",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "div",
+          "attributes": [
+            {
+              "name": "data-check",
+              "value": {
+                "kind": "Logical",
+                "left": {
+                  "kind": "Binary",
+                  "left": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "x",
+                      "line": 1,
+                      "column": 26
+                    }
+                  },
+                  "operator": {
+                    "type": "GREATER_THAN",
+                    "value": ">",
+                    "line": 1,
+                    "column": 28
+                  },
+                  "right": {
+                    "kind": "Literal",
+                    "value": 0
+                  }
+                },
+                "operator": {
+                  "type": "AND",
+                  "value": "&&",
+                  "line": 1,
+                  "column": 32
+                },
+                "right": {
+                  "kind": "Binary",
+                  "left": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "y",
+                      "line": 1,
+                      "column": 35
+                    }
+                  },
+                  "operator": {
+                    "type": "LESS_THAN",
+                    "value": "<",
+                    "line": 1,
+                    "column": 37
+                  },
+                  "right": {
+                    "kind": "Literal",
+                    "value": 100
+                  }
+                }
+              }
+            }
+          ],
+          "children": [],
+          "isSelfClosing": true
+        }
+      }
+    ]
+  }
+}

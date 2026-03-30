@@ -1,0 +1,44 @@
+{
+  "id": "parser_165",
+  "description": "ICEX como argumento de função",
+  "code": "icerender(<div class=\"app\">Hello</div>)",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "Call",
+          "callee": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "icerender",
+              "line": 1,
+              "column": 0
+            }
+          },
+          "args": [
+            {
+              "kind": "IcexElement",
+              "tag": "div",
+              "attributes": [
+                {
+                  "name": "class",
+                  "value": "app"
+                }
+              ],
+              "children": [
+                {
+                  "kind": "IcexText",
+                  "value": "Hello"
+                }
+              ],
+              "isSelfClosing": false
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

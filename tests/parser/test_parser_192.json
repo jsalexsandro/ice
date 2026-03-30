@@ -1,0 +1,95 @@
+{
+  "id": "parser_192",
+  "description": "Interpolação com comparação dupla",
+  "code": "val el = <span>{min < value && value < max}</span>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "el",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "span",
+          "attributes": [],
+          "children": [
+            {
+              "kind": "IcexExpression",
+              "expression": {
+                "kind": "Logical",
+                "left": {
+                  "kind": "Binary",
+                  "left": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "min",
+                      "line": 1,
+                      "column": 16
+                    }
+                  },
+                  "operator": {
+                    "type": "LESS_THAN",
+                    "value": "<",
+                    "line": 1,
+                    "column": 20
+                  },
+                  "right": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "value",
+                      "line": 1,
+                      "column": 22
+                    }
+                  }
+                },
+                "operator": {
+                  "type": "AND",
+                  "value": "&&",
+                  "line": 1,
+                  "column": 28
+                },
+                "right": {
+                  "kind": "Binary",
+                  "left": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "value",
+                      "line": 1,
+                      "column": 31
+                    }
+                  },
+                  "operator": {
+                    "type": "LESS_THAN",
+                    "value": "<",
+                    "line": 1,
+                    "column": 37
+                  },
+                  "right": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "max",
+                      "line": 1,
+                      "column": 39
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "isSelfClosing": false
+        }
+      }
+    ]
+  }
+}

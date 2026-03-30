@@ -1,0 +1,107 @@
+{
+  "id": "parser_174",
+  "description": "ICEX com expressão lógica no atributo",
+  "code": "val isOn = true\nval count = 5\nval el = <div data-active={isOn && count > 0}>Content</div>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "isOn",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Literal",
+          "value": true
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "count",
+          "line": 2,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Literal",
+          "value": 5
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "el",
+          "line": 3,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "div",
+          "attributes": [
+            {
+              "name": "data-active",
+              "value": {
+                "kind": "Logical",
+                "left": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "isOn",
+                    "line": 3,
+                    "column": 27
+                  }
+                },
+                "operator": {
+                  "type": "AND",
+                  "value": "&&",
+                  "line": 3,
+                  "column": 32
+                },
+                "right": {
+                  "kind": "Binary",
+                  "left": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "count",
+                      "line": 3,
+                      "column": 35
+                    }
+                  },
+                  "operator": {
+                    "type": "GREATER_THAN",
+                    "value": ">",
+                    "line": 3,
+                    "column": 41
+                  },
+                  "right": {
+                    "kind": "Literal",
+                    "value": 0
+                  }
+                }
+              }
+            }
+          ],
+          "children": [
+            {
+              "kind": "IcexText",
+              "value": "Content"
+            }
+          ],
+          "isSelfClosing": false
+        }
+      }
+    ]
+  }
+}

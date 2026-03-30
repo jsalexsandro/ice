@@ -1,0 +1,66 @@
+{
+  "id": "parser_171",
+  "description": "ICEX em lado direito de &&",
+  "code": "val show = true\nval result = show && <span>Visible</span>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "show",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Literal",
+          "value": true
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "result",
+          "line": 2,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Logical",
+          "left": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "show",
+              "line": 2,
+              "column": 13
+            }
+          },
+          "operator": {
+            "type": "AND",
+            "value": "&&",
+            "line": 2,
+            "column": 18
+          },
+          "right": {
+            "kind": "IcexElement",
+            "tag": "span",
+            "attributes": [],
+            "children": [
+              {
+                "kind": "IcexText",
+                "value": "Visible"
+              }
+            ],
+            "isSelfClosing": false
+          }
+        }
+      }
+    ]
+  }
+}

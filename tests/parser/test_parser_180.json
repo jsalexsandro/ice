@@ -1,0 +1,76 @@
+{
+  "id": "parser_180",
+  "description": "Atributo com member + index + call",
+  "code": "val el = <div data-value={obj.items[0].getValue()}/>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "el",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "div",
+          "attributes": [
+            {
+              "name": "data-value",
+              "value": {
+                "kind": "Call",
+                "callee": {
+                  "kind": "Member",
+                  "object": {
+                    "kind": "Index",
+                    "object": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "obj",
+                          "line": 1,
+                          "column": 26
+                        }
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "items",
+                          "line": 1,
+                          "column": 30
+                        }
+                      }
+                    },
+                    "index": {
+                      "kind": "Literal",
+                      "value": 0
+                    }
+                  },
+                  "property": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "getValue",
+                      "line": 1,
+                      "column": 39
+                    }
+                  }
+                },
+                "args": []
+              }
+            }
+          ],
+          "children": [],
+          "isSelfClosing": true
+        }
+      }
+    ]
+  }
+}

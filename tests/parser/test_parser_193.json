@@ -1,0 +1,63 @@
+{
+  "id": "parser_193",
+  "description": "Interpolação após texto",
+  "code": "val el = <div>Result: {a < b}</div>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "el",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "div",
+          "attributes": [],
+          "children": [
+            {
+              "kind": "IcexText",
+              "value": "Result:"
+            },
+            {
+              "kind": "IcexExpression",
+              "expression": {
+                "kind": "Binary",
+                "left": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "a",
+                    "line": 1,
+                    "column": 23
+                  }
+                },
+                "operator": {
+                  "type": "LESS_THAN",
+                  "value": "<",
+                  "line": 1,
+                  "column": 25
+                },
+                "right": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "b",
+                    "line": 1,
+                    "column": 27
+                  }
+                }
+              }
+            }
+          ],
+          "isSelfClosing": false
+        }
+      }
+    ]
+  }
+}

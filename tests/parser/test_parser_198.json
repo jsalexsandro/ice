@@ -1,0 +1,6 @@
+{
+  "id": "parser_198",
+  "description": "Self-closing com tag de fechamento",
+  "code": "<br/>Hello</br>",
+  "result": "Parser Error: Expected expression but got 'SLASH' at line 1, column 11"
+}

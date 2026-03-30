@@ -1,0 +1,65 @@
+{
+  "id": "parser_184",
+  "description": "Self-closing com 8 atributos",
+  "code": "val el = <input type=\"email\" name=\"email\" id=\"email-field\" placeholder=\"Enter email\" required autocomplete=\"off\" data-validate=\"true\" data-min-length={minLen}/>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "el",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "input",
+          "attributes": [
+            {
+              "name": "type",
+              "value": "email"
+            },
+            {
+              "name": "name",
+              "value": "email"
+            },
+            {
+              "name": "id",
+              "value": "email-field"
+            },
+            {
+              "name": "placeholder",
+              "value": "Enter email"
+            },
+            {
+              "name": "required-autocomplete",
+              "value": "off"
+            },
+            {
+              "name": "data-validate",
+              "value": "true"
+            },
+            {
+              "name": "data-min-length",
+              "value": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "minLen",
+                  "line": 1,
+                  "column": 151
+                }
+              }
+            }
+          ],
+          "children": [],
+          "isSelfClosing": true
+        }
+      }
+    ]
+  }
+}

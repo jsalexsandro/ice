@@ -1,0 +1,77 @@
+{
+  "id": "parser_177",
+  "description": "ICEX interpolado entre texto",
+  "code": "val badge = <span class=\"badge\">New</span>\nval el = <div>Product {badge} is available</div>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "badge",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "span",
+          "attributes": [
+            {
+              "name": "class",
+              "value": "badge"
+            }
+          ],
+          "children": [
+            {
+              "kind": "IcexText",
+              "value": "New"
+            }
+          ],
+          "isSelfClosing": false
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "el",
+          "line": 2,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "div",
+          "attributes": [],
+          "children": [
+            {
+              "kind": "IcexText",
+              "value": "Product"
+            },
+            {
+              "kind": "IcexExpression",
+              "expression": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "badge",
+                  "line": 2,
+                  "column": 23
+                }
+              }
+            },
+            {
+              "kind": "IcexText",
+              "value": "is available"
+            }
+          ],
+          "isSelfClosing": false
+        }
+      }
+    ]
+  }
+}

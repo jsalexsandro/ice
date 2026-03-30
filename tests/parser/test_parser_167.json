@@ -1,0 +1,79 @@
+{
+  "id": "parser_167",
+  "description": "ICEX com interpolação como argumento",
+  "code": "val name = \"World\"\nrender(<div>Hello {name}!</div>, target)",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "name",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Literal",
+          "value": "World"
+        }
+      },
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "Call",
+          "callee": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "render",
+              "line": 2,
+              "column": 0
+            }
+          },
+          "args": [
+            {
+              "kind": "IcexElement",
+              "tag": "div",
+              "attributes": [],
+              "children": [
+                {
+                  "kind": "IcexText",
+                  "value": "Hello"
+                },
+                {
+                  "kind": "IcexExpression",
+                  "expression": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "name",
+                      "line": 2,
+                      "column": 19
+                    }
+                  }
+                },
+                {
+                  "kind": "IcexText",
+                  "value": "!"
+                }
+              ],
+              "isSelfClosing": false
+            },
+            {
+              "kind": "Identifier",
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "target",
+                "line": 2,
+                "column": 33
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

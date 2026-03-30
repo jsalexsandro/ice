@@ -1,0 +1,48 @@
+{
+  "id": "parser_182",
+  "description": "Atributo com assignment expression",
+  "code": "val el = <div data-x={a = 10}/>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "el",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "div",
+          "attributes": [
+            {
+              "name": "data-x",
+              "value": {
+                "kind": "Assign",
+                "name": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "a",
+                    "line": 1,
+                    "column": 22
+                  }
+                },
+                "value": {
+                  "kind": "Literal",
+                  "value": 10
+                }
+              }
+            }
+          ],
+          "children": [],
+          "isSelfClosing": true
+        }
+      }
+    ]
+  }
+}

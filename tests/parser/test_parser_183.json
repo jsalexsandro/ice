@@ -1,0 +1,95 @@
+{
+  "id": "parser_183",
+  "description": "Atributo com < e > (ambiguidade)",
+  "code": "val el = <div data-check={a < b && c > d}/>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "el",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "div",
+          "attributes": [
+            {
+              "name": "data-check",
+              "value": {
+                "kind": "Logical",
+                "left": {
+                  "kind": "Binary",
+                  "left": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "a",
+                      "line": 1,
+                      "column": 26
+                    }
+                  },
+                  "operator": {
+                    "type": "LESS_THAN",
+                    "value": "<",
+                    "line": 1,
+                    "column": 28
+                  },
+                  "right": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "b",
+                      "line": 1,
+                      "column": 30
+                    }
+                  }
+                },
+                "operator": {
+                  "type": "AND",
+                  "value": "&&",
+                  "line": 1,
+                  "column": 32
+                },
+                "right": {
+                  "kind": "Binary",
+                  "left": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "c",
+                      "line": 1,
+                      "column": 35
+                    }
+                  },
+                  "operator": {
+                    "type": "GREATER_THAN",
+                    "value": ">",
+                    "line": 1,
+                    "column": 37
+                  },
+                  "right": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "d",
+                      "line": 1,
+                      "column": 39
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "children": [],
+          "isSelfClosing": true
+        }
+      }
+    ]
+  }
+}

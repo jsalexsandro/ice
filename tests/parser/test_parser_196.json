@@ -1,0 +1,6 @@
+{
+  "id": "parser_196",
+  "description": "Atributo com = mas sem valor",
+  "code": "<div class=>Text</div>",
+  "result": "Parser Error: Expected expression but got 'GREATER_THAN' at line 1, column 11"
+}

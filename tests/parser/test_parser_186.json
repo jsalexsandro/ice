@@ -1,0 +1,6 @@
+{
+  "id": "parser_186",
+  "description": "ICEX em ambos os branches if/else",
+  "code": "val isAdmin = false\nval panel = if (isAdmin) {\n    <admin-panel/>\n} else {\n    <user-panel/>\n}",
+  "result": "Parser Error: Expected expression but got 'KEYWORD' at line 2, column 12"
+}
