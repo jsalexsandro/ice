@@ -605,6 +605,9 @@ export class Parser {
       case TokenType.LPAREN:
         return this.parseGroup()
 
+      case TokenType.LBRACE:
+        return this.parseObjectLiteral()
+
       case TokenType.LBRACKET:
         return this.parseArray()
 
@@ -642,6 +645,60 @@ export class Parser {
     return {
       kind: "Array",
       elements
+    }
+  }
+
+  private parseObjectLiteral(): Expr {
+    const properties: { key: string; value: Expr }[] = []
+
+    if (this.current().type === TokenType.LBRACE) {
+      this.advance()
+      
+      while (this.current().type !== TokenType.RBRACE) {
+        const keyToken = this.expect(TokenType.IDENTIFIER)
+        this.expect(TokenType.COLON)
+        const value = this.parseExpression()
+        properties.push({ key: keyToken.value as string, value })
+
+        if (this.current().type === TokenType.COMMA) {
+          this.advance()
+        } else {
+          break
+        }
+      }
+      
+      this.expect(TokenType.RBRACE)
+    } else {
+      const token = this.current()
+      if (token.type !== TokenType.IDENTIFIER && token.type !== TokenType.KEYWORD) {
+        throw new Error(`Expected identifier or keyword for object key but got '${token.type}'`)
+      }
+      this.advance()
+      this.expect(TokenType.COLON)
+      const value = this.parseExpression()
+      properties.push({ key: token.value as string, value })
+
+      if (this.current().type === TokenType.COMMA) {
+        this.advance()
+        while (this.current().type !== TokenType.RBRACE) {
+          const nextKeyToken = this.expect(TokenType.IDENTIFIER)
+          this.expect(TokenType.COLON)
+          const nextValue = this.parseExpression()
+          properties.push({ key: nextKeyToken.value as string, value: nextValue })
+
+          if (this.current().type === TokenType.COMMA) {
+            this.advance()
+          } else {
+            break
+          }
+        }
+        this.expect(TokenType.RBRACE)
+      }
+    }
+
+    return {
+      kind: "Object",
+      properties
     }
   }
 
@@ -897,8 +954,22 @@ export class Parser {
         }
 
         this.advance()
-        const expr = this.parseExpression()
-        this.expect(TokenType.RBRACE)
+        
+        const isObjectLiteral = (
+          (this.current().type === TokenType.KEYWORD && 
+           ['val', 'const'].includes(this.current().value as string)) ||
+          this.current().type === TokenType.LBRACE ||
+          this.current().type === TokenType.IDENTIFIER
+        ) && this.peek().type === TokenType.COLON
+
+        let expr: Expr
+        if (isObjectLiteral) {
+          expr = this.parseObjectLiteral()
+        } else {
+          expr = this.parseExpression()
+          this.expect(TokenType.RBRACE)
+        }
+        
         children.push({ kind: "IcexExpression", expression: expr })
         continue
       }

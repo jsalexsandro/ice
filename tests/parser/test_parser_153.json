@@ -2,6 +2,56 @@
   "id": "parser_153",
   "reference": "arquivo parser.test.md - teste 153",
   "description": "ICEX - member access in interpolation",
-  "code": "val user = { name: \"John\" }\n// member access not supported yet\nval t = <div>test</div>",
-  "result": "Parser Error: Expected expression but got 'LBRACE' at line 1, column 11"
+  "code": "val user = { name: \"John\" }\nval t = <div>test</div>",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "user",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Object",
+          "properties": [
+            {
+              "key": "name",
+              "value": {
+                "kind": "Literal",
+                "value": "John"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "t",
+          "line": 2,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "IcexElement",
+          "tag": "div",
+          "attributes": [],
+          "children": [
+            {
+              "kind": "IcexText",
+              "value": "test"
+            }
+          ],
+          "isSelfClosing": false
+        }
+      }
+    ]
+  }
 }

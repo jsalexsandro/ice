@@ -14,6 +14,7 @@ export type Expr =
   | IndexExpr
   | IcexElement
   | ConditionalExpr
+  | ObjectExpr
 
 export interface BinaryExpr {
   kind: "Binary"
@@ -65,6 +66,11 @@ export interface CallExpr {
 export interface ArrayExpr {
   kind: "Array"
   elements: Expr[]
+}
+
+export interface ObjectExpr {
+  kind: "Object"
+  properties: { key: string; value: Expr }[]
 }
 
 export interface MemberExpr {
