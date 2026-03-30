@@ -13,6 +13,7 @@ export type Expr =
   | MemberExpr
   | IndexExpr
   | IcexElement
+  | ConditionalExpr
 
 export interface BinaryExpr {
   kind: "Binary"
@@ -153,6 +154,13 @@ export interface FunctionStmt {
 export interface ReturnStmt {
   kind: "ReturnStmt"
   value?: Expr
+}
+
+export interface ConditionalExpr {
+  kind: "Conditional"
+  condition: Expr
+  consequent: Expr
+  alternate: Expr
 }
 
 export interface IcexElement {

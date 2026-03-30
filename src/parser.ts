@@ -17,6 +17,7 @@ export class Parser {
   */
 
   private precedence: Map<string, number> = new Map([
+    [TokenType.QUESTION, 0],
     [TokenType.OR, 1],
     [TokenType.AND, 2],
     [TokenType.EQUAL, 3],
@@ -426,6 +427,20 @@ export class Parser {
 
     while (true) {
       const operator = this.current()
+
+      if (operator.type === TokenType.QUESTION) {
+        this.advance()
+        const consequent = this.parseExpression(0)
+        this.expect(TokenType.COLON)
+        const alternate = this.parseExpression(0)
+        left = {
+          kind: "Conditional",
+          condition: left,
+          consequent,
+          alternate
+        }
+        continue
+      }
       
       const statementTerminators = [
         TokenType.EOF,
@@ -434,6 +449,7 @@ export class Parser {
         TokenType.RPAREN,
         TokenType.RBRACKET,
         TokenType.COMMA,
+        TokenType.COLON,
       ]
       
       if (statementTerminators.includes(operator.type)) {
