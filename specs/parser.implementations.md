@@ -251,9 +251,7 @@ Adicionar `<` e `>` com alta precedência (como DOT, LBRACKET) para permitir:
 - Anonimus functions
 - arrow function
 - ?? 
-- ?: ternario
 - Try/Catch
-- Operador ternário
 - Import/require
 
 ---
@@ -268,7 +266,7 @@ Adicionar `<` e `>` com alta precedência (como DOT, LBRACKET) para permitir:
 | 2 | Switch/Match | ❌ Falta | Média | Não existe, útil para match de valores |
 | 3 | Classes | ⚠️ Parcial | Alta | Keywords existem (`class`, `new`, `this`), não são parsed |
 | 4 | Import/Export | ⚠️ Parcial | Alta | Keywords existem, não são parsed |
-| 5 | Ternary `? :` | ❌ Falta | Alta | Operador condicional essencial |
+| 5 | Ternary `? :` | ✅ Implementado | Alta | Operador condicional essencial |
 | 6 | Do-While | ❌ Falta | Baixa | Só tem `while` |
 | 7 | Lambdas | ❌ Falta | Alta | Arrow functions para callbacks |
 | 8 | Generics `<T>` | ❌ Falta | Média | Só arrays `[]` por enquanto |
@@ -357,3 +355,7 @@ src/keywords.ts - KEYWORDS array
 | 20 | ForStatement | ✅ |
 | 21 | BreakStatement | ✅ |
 | 22 | ContinueStatement | ✅ |
+| 23 | Operador Unário + | ✅ |
+| 24 | Keywords como Member Access | ✅ |
+| 25 | Operador Ternário | ✅ |
+| 26 | Objetos Literais | ✅ |
