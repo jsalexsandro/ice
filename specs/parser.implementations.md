@@ -34,8 +34,29 @@ Este documento rastreia a implementação do parser Ice Lang.
 | 24 | ForStatement | `for (val i = 0; ...)` |
 | 25 | BreakStatement | `break` |
 | 26 | ContinueStatement | `continue` |
+| 27 | ClassStatement | `class` |
+| 28 | ThisExpr | `this` |
 
 ---
+
+
+## Class Features Added
+✓ basic class
+✓ property
+✓ public/private/protected
+✓ static property
+✓ static with default
+✓ constructor
+✓ constructor with body
+✓ method
+✓ static method
+✓ extends
+✓ extends with props
+✓ new expression
+✓ new with args
+✓ super in constructor
+✓ full class
+
 
 ## Expressões
 
@@ -107,12 +128,11 @@ type IcexChild = IcexElement | IcexText | IcexExpression
 |---|---------|------------|-------|
 | 1 | Try-Catch | Alta | Keywords existem, não parseado |
 | 2 | Switch/Match | Média | Não existe |
-| 3 | Classes | Alta | Keywords existem, não parseado |
-| 4 | Import/Export | Alta | Keywords existem, não parseado |
-| 5 | Do-While | Baixa | Só tem `while` |
-| 6 | Lambdas/Arrow | Alta | Não existe |
-| 7 | Generics | Média | Só arrays `[]` |
-| 8 | Async/Await | Alta | Keywords existem |
+| 3 | Import/Export | Alta | Keywords existem, não parseado |
+| 4 | Do-While | Baixa | Só tem `while` |
+| 5 | Lambdas/Arrow | Alta | Não existe |
+| 6 | Generics | Média | Só arrays `[]` |
+| 7 | Async/Await | Alta | Keywords existem |
 
 ---
 
@@ -130,18 +150,65 @@ type IcexChild = IcexElement | IcexText | IcexExpression
 
 ```
 try, catch, throw       → Error handling
-class, new, this        → OOP
+new                     → OOP (instanciar classes)
 import, export, from    → Módulos
 async, await            → Async
 ```
 
 ---
 
+## Classes ✅ Implementado
+
+### Tipos AST
+
+```typescript
+interface ClassExpr {
+  kind: "Class"
+  name: string
+  extends?: string
+  properties: ClassProperty[]
+  methods: ClassMethod[]
+}
+
+interface ClassProperty {
+  name: string
+  type?: Token
+  visibility: "public" | "private" | "protected" | null
+  isStatic: boolean
+  initializer?: Expr
+}
+
+interface ClassMethod {
+  name: string
+  params: { name: Token; type?: Token }[]
+  returnType?: Token
+  body: BlockStmt
+  visibility: "public" | "private" | "protected" | null
+  isStatic: boolean
+}
+```
+
+### Sintaxe Suportada
+
+| Feature | Exemplo |
+|---------|---------|
+| Classe básica | `class User { }` |
+| Propriedade | `name: string` |
+| Propriedade com valor | `count: int = 0` |
+| Visibilidade | `public`, `private`, `protected` |
+| Static | `static count: int` |
+| Herança | `class User extends Person { }` |
+| Construtor | `constructor(name: string) { }` |
+| Método | `getName(): string { return "test" }` |
+| This | `this.name = name` |
+
+---
+
 ## Plano de Implementação
 
 ### Fase 1: Essentials
-1. Try-Catch
-2. Classes básico
+1. ~~Classes básico~~ ✅
+2. Try-Catch
 
 ### Fase 2: Conveniência
 1. String Interpolation (`$""`)
@@ -160,8 +227,9 @@ async, await            → Async
 
 | Componente | Cobertura |
 |------------|-----------|
-| Statements | ~80% |
+| Statements | ~85% |
 | Expressions | ~80% |
 | Types | ~70% |
+| Classes | ~90% |
 | Modules | ~0% |
 | Error Handling | ~20% |

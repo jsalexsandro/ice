@@ -7,6 +7,9 @@ export type Expr =
   | UnaryExpr
   | LogicalExpr
   | IdentifierExpr
+  | ThisExpr
+  | SuperExpr
+  | NewExpr
   | AssignExpr
   | CallExpr
   | ArrayExpr
@@ -16,6 +19,7 @@ export type Expr =
   | ConditionalExpr
   | ObjectExpr
   | NullishCoalescingExpr
+  | ClassExpr
 
 export interface BinaryExpr {
   kind: "Binary"
@@ -50,6 +54,20 @@ export interface LogicalExpr {
 export interface IdentifierExpr {
   kind: "Identifier"
   name: Token
+}
+
+export interface ThisExpr {
+  kind: "This"
+}
+
+export interface SuperExpr {
+  kind: "Super"
+}
+
+export interface NewExpr {
+  kind: "New"
+  callee: Expr
+  args: Expr[]
 }
 
 export interface AssignExpr {
@@ -199,4 +217,29 @@ export interface IcexText {
 export interface IcexExpression {
   kind: "IcexExpression"
   expression: Expr
+}
+
+export interface ClassExpr {
+  kind: "Class"
+  name: string
+  extends?: string
+  properties: ClassProperty[]
+  methods: ClassMethod[]
+}
+
+export interface ClassProperty {
+  name: string
+  type?: Token
+  visibility: "public" | "private" | "protected" | null
+  isStatic: boolean
+  initializer?: Expr
+}
+
+export interface ClassMethod {
+  name: string
+  params: { name: Token; type?: Token }[]
+  returnType?: Token
+  body: BlockStmt
+  visibility: "public" | "private" | "protected" | null
+  isStatic: boolean
 }

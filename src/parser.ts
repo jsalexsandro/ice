@@ -122,6 +122,9 @@ export class Parser {
       if (token.value === 'func') {
         return this.parseFunctionStatement()
       }
+      if (token.value === 'class') {
+        return this.parseClassStatement()
+      }
       if (token.value === 'return') {
         return this.parseReturnStatement()
       }
@@ -309,6 +312,197 @@ export class Parser {
       params,
       returnType,
       body
+    }
+  }
+
+  private parseClassStatement(): any {
+    this.expect(TokenType.KEYWORD)
+    const className = this.expect(TokenType.IDENTIFIER)
+    
+    let extendsName: string | undefined = undefined
+    const isExtends = (t: any) => 
+      (t.type === TokenType.KEYWORD || t.type === TokenType.IDENTIFIER) &&
+      t.value === 'extends'
+    if (isExtends(this.current())) {
+      this.advance()
+      extendsName = this.expect(TokenType.IDENTIFIER).value as string
+    }
+    
+    this.expect(TokenType.LBRACE)
+    
+    const properties: any[] = []
+    const methods: any[] = []
+    
+    while (this.current().type !== TokenType.RBRACE) {
+      if (this.current().type === TokenType.EOF) {
+        throw new Error(`Class ${className.value} not closed`)
+      }
+      
+      let visibility: "public" | "private" | "protected" | null = null
+      let isStatic = false
+      
+      const isAccessModifier = (t: any) => 
+        (t.type === TokenType.KEYWORD || t.type === TokenType.IDENTIFIER) &&
+        ['public', 'private', 'protected'].includes(t.value)
+      
+      const isStaticKeyword = (t: any) => 
+        (t.type === TokenType.KEYWORD || t.type === TokenType.IDENTIFIER) &&
+        t.value === 'static'
+      
+      if (isAccessModifier(this.current())) {
+        visibility = this.current().value as any
+        this.advance()
+      }
+      
+      if (isStaticKeyword(this.current())) {
+        isStatic = true
+        this.advance()
+      }
+      
+      const isConstructor = (t: any) =>
+        (t.type === TokenType.KEYWORD || t.type === TokenType.IDENTIFIER) &&
+        t.value === 'constructor'
+      
+      if (isConstructor(this.current())) {
+        this.advance()
+        this.expect(TokenType.LPAREN)
+        
+        const params: { name: Token; type?: Token }[] = []
+        if (this.current().type !== TokenType.RPAREN) {
+          const paramName = this.expect(TokenType.IDENTIFIER)
+          let paramType: Token | undefined = undefined
+          
+          if (this.current().type === TokenType.COLON) {
+            this.advance()
+            paramType = this.advance()
+          }
+          
+          params.push({ name: paramName, type: paramType })
+          
+          while (this.current().type === TokenType.COMMA) {
+            this.advance()
+            const pName = this.expect(TokenType.IDENTIFIER)
+            let pType: Token | undefined = undefined
+            
+            if (this.current().type === TokenType.COLON) {
+              this.advance()
+              pType = this.advance()
+            }
+            
+            params.push({ name: pName, type: pType })
+          }
+        }
+        
+        this.expect(TokenType.RPAREN)
+        const body = this.parseBlockStatement()
+        
+        methods.push({
+          name: 'constructor',
+          params,
+          body,
+          visibility: 'public',
+          isStatic: false
+        })
+        continue
+      }
+      
+      if (this.current().type !== TokenType.IDENTIFIER) {
+        this.advance()
+        continue
+      }
+      
+      const propName = this.advance()
+      let propType: Token | undefined = undefined
+      let initializer: Expr | undefined = undefined
+      
+      if (this.current().type === TokenType.COLON) {
+        this.advance()
+        if (this.isValidType(this.current())) {
+          propType = this.advance()
+          
+          if (this.current().type === TokenType.LBRACKET) {
+            this.advance()
+            this.expect(TokenType.RBRACKET)
+            propType = { ...propType, value: propType.value + '[]' }
+          }
+        }
+      }
+      
+      if (this.current().type === TokenType.ASSIGN) {
+        this.advance()
+        initializer = this.parseExpression()
+      }
+      
+      if (this.current().type === TokenType.SEMICOLON) {
+        this.advance()
+      }
+      
+      if (this.current().type === TokenType.LPAREN) {
+        this.expect(TokenType.LPAREN)
+        
+        const params: { name: Token; type?: Token }[] = []
+        if (this.current().type !== TokenType.RPAREN) {
+          const paramName = this.expect(TokenType.IDENTIFIER)
+          let paramType: Token | undefined = undefined
+          
+          if (this.current().type === TokenType.COLON) {
+            this.advance()
+            paramType = this.advance()
+          }
+          
+          params.push({ name: paramName, type: paramType })
+          
+          while (this.current().type === TokenType.COMMA) {
+            this.advance()
+            const pName = this.expect(TokenType.IDENTIFIER)
+            let pType: Token | undefined = undefined
+            
+            if (this.current().type === TokenType.COLON) {
+              this.advance()
+              pType = this.advance()
+            }
+            
+            params.push({ name: pName, type: pType })
+          }
+        }
+        
+        this.expect(TokenType.RPAREN)
+        
+        let returnType: Token | undefined = undefined
+        if (this.current().type === TokenType.COLON) {
+          this.advance()
+          returnType = this.advance()
+        }
+        
+        const body = this.parseBlockStatement()
+        
+        methods.push({
+          name: propName.value,
+          params,
+          returnType,
+          body,
+          visibility,
+          isStatic
+        })
+      } else {
+        properties.push({
+          name: propName.value,
+          type: propType,
+          visibility,
+          isStatic,
+          initializer
+        })
+      }
+    }
+    
+    this.expect(TokenType.RBRACE)
+    
+    return {
+      kind: "Class",
+      name: className.value,
+      extends: extendsName,
+      properties,
+      methods
     }
   }
 
@@ -630,7 +824,38 @@ export class Parser {
         return this.parseLiteral()
 
       case TokenType.IDENTIFIER:
+        if (token.value === 'super') {
+          this.advance()
+          return { kind: "Super" }
+        }
         return this.parseIdentifier()
+
+      case TokenType.KEYWORD:
+        if (token.value === 'this') {
+          this.advance()
+          return { kind: "This" }
+        }
+        if (token.value === 'super') {
+          this.advance()
+          return { kind: "Super" }
+        }
+        if (token.value === 'new') {
+          this.advance()
+          const nameToken = this.expect(TokenType.IDENTIFIER)
+          const callee: Expr = { kind: "Identifier", name: nameToken }
+          this.expect(TokenType.LPAREN)
+          const args: Expr[] = []
+          if (this.current().type !== TokenType.RPAREN) {
+            args.push(this.parseExpression())
+            while (this.current().type === TokenType.COMMA) {
+              this.advance()
+              args.push(this.parseExpression())
+            }
+          }
+          this.expect(TokenType.RPAREN)
+          return { kind: "New", callee, args }
+        }
+        throw ErrorMessages.expectedExpression(token)
 
       case TokenType.LPAREN:
         return this.parseGroup()
