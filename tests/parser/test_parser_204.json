@@ -1,0 +1,176 @@
+{
+  "id": "parser_204",
+  "reference": "arquivo parser.test.md - teste 204",
+  "description": "class with method returning this.property access",
+  "code": "\nclass UserService {\n    private users: User[]\n    \n    getUser(id: int): User {\n        return this.users[id]\n    }\n}\n\nfunc UserCard(user: User): icex {\n    return <div class=\"card\">\n        <h2>{user.name}</h2>\n    </div>\n}\n",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "Class",
+        "name": "UserService",
+        "properties": [
+          {
+            "name": "users",
+            "type": {
+              "type": "IDENTIFIER",
+              "value": "User[]",
+              "line": 3,
+              "column": 19
+            },
+            "visibility": "private",
+            "isStatic": false
+          }
+        ],
+        "methods": [
+          {
+            "name": "getUser",
+            "params": [
+              {
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "id",
+                  "line": 5,
+                  "column": 12
+                },
+                "type": {
+                  "type": "TYPE_INT",
+                  "value": "int",
+                  "line": 5,
+                  "column": 16
+                }
+              }
+            ],
+            "returnType": {
+              "type": "IDENTIFIER",
+              "value": "User",
+              "line": 5,
+              "column": 22
+            },
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "ReturnStmt",
+                  "value": {
+                    "kind": "Index",
+                    "object": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "users",
+                          "line": 6,
+                          "column": 20
+                        }
+                      }
+                    },
+                    "index": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "id",
+                        "line": 6,
+                        "column": 26
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": null,
+            "isStatic": false
+          }
+        ]
+      },
+      {
+        "kind": "FunctionStmt",
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "UserCard",
+          "line": 10,
+          "column": 5
+        },
+        "params": [
+          {
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "user",
+              "line": 10,
+              "column": 14
+            },
+            "type": {
+              "type": "IDENTIFIER",
+              "value": "User",
+              "line": 10,
+              "column": 20
+            }
+          }
+        ],
+        "returnType": {
+          "type": "IDENTIFIER",
+          "value": "icex",
+          "line": 10,
+          "column": 27
+        },
+        "body": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "ReturnStmt",
+              "value": {
+                "kind": "IcexElement",
+                "tag": "div",
+                "attributes": [
+                  {
+                    "name": "class",
+                    "value": "card"
+                  }
+                ],
+                "children": [
+                  {
+                    "kind": "IcexElement",
+                    "tag": "h2",
+                    "attributes": [],
+                    "children": [
+                      {
+                        "kind": "IcexExpression",
+                        "expression": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "user",
+                              "line": 12,
+                              "column": 13
+                            }
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "name",
+                              "line": 12,
+                              "column": 18
+                            }
+                          }
+                        }
+                      }
+                    ],
+                    "isSelfClosing": false
+                  }
+                ],
+                "isSelfClosing": false
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

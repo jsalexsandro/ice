@@ -1,0 +1,3890 @@
+{
+  "id": "parser_208",
+  "reference": "arquivo parser.test.md - teste 208",
+  "description": "class with while, for, continue, break and complex control flow",
+  "code": "class DataProcessor {\n    public data: int[]\n    public weights: int[]\n    protected threshold: int\n    private _processed: int = 0\n    private _skipped: int = 0\n    static totalProcessed: int = 0\n\n    constructor(data: int[], weights: int[], threshold: int) {\n        this.data = data\n        this.weights = weights\n        this.threshold = threshold\n    }\n\n    isValid(idx: int): bool {\n        return idx < this.data.length && this.data[idx] >= 0 && idx < this.weights.length\n    }\n\n    computeItem(idx: int): int {\n        return this.data[idx] * this.weights[idx] - this.threshold\n    }\n\n    process(): int {\n        val total = 0\n        val i = 0\n        while (i < this.data.length) {\n            if (!this.isValid(i)) {\n                this._skipped = this._skipped + 1\n                i = i + 1\n                continue\n            }\n            val item = this.computeItem(i)\n            if (item < 0 && this.threshold > 0) {\n                i = i + 1\n                continue\n            }\n            total = total + item\n            this._processed = this._processed + 1\n            DataProcessor.totalProcessed = DataProcessor.totalProcessed + 1\n            if (this._processed >= this.data.length * 2) {\n                break\n            }\n            i = i + 1\n        }\n        return total\n    }\n\n    getStats(): int {\n        return this._processed * this.threshold - this._skipped * this.weights[0] + DataProcessor.totalProcessed\n    }\n}\n\nclass PipelineProcessor extends DataProcessor {\n    public stages: int[]\n    public maxStages: int\n    private _stageResults: int[]\n    protected multiplier: int\n    static pipelineRuns: int = 0\n\n    constructor(data: int[], weights: int[], threshold: int, stages: int[], multiplier: int) {\n        super(data, weights, threshold)\n        this.stages = stages\n        this.maxStages = stages.length\n        this.multiplier = multiplier\n        this._stageResults = stages\n    }\n\n    runStage(stageIdx: int, input: int): int {\n        if (stageIdx >= this.maxStages || !this.isValid(stageIdx)) {\n            return input\n        }\n        val stageWeight = this.stages[stageIdx] * this.weights[stageIdx] - this.threshold\n        return input * stageWeight - this.computeItem(stageIdx) + this.multiplier\n    }\n\n    runPipeline(): int {\n        PipelineProcessor.pipelineRuns = PipelineProcessor.pipelineRuns + 1\n        val result = this.process()\n        val i = 0\n        while (i < this.maxStages && i < this.data.length) {\n            val stageResult = this.runStage(i, result)\n            if (stageResult < 0 && this.threshold > 0) {\n                this._stageResults[i] = 0\n                i = i + 1\n                continue\n            }\n            this._stageResults[i] = stageResult\n            val k = 0\n            for (val k = 0; k < i && k < this.maxStages; k = k + 1) {\n                val prev = this._stageResults[k] * this.multiplier - stageResult\n                if (prev > this.threshold * this.maxStages) {\n                    this._stageResults[k] = prev\n                    if (this._stageResults[k] > this.threshold * this.data.length) {\n                        break\n                    }\n                } else {\n                    this._stageResults[k] = this._stageResults[k] + stageResult\n                }\n            }\n            result = stageResult + this.getStats()\n            i = i + 1\n            if (result > this.threshold * this.maxStages * this.multiplier) {\n                break\n            }\n        }\n        return result\n    }\n\n    getFinalScore(): int {\n        val pipeScore = this.runPipeline() * this.multiplier\n        val stageSum = this._stageResults[0] * this.stages[0] - this._stageResults[this.maxStages - 1]\n        val statsFactor = this.getStats() * PipelineProcessor.pipelineRuns - DataProcessor.totalProcessed\n        return pipeScore + stageSum - statsFactor + this.process()\n    }\n}\n\nval proc = new PipelineProcessor(\n    [10, 20, 30, 40, 50],\n    [1, 2, 3, 4, 5],\n    15,\n    [100, 200, 300, 400, 500],\n    3\n)\n\nval score = proc.getFinalScore() * proc.multiplier - DataProcessor.totalProcessed + PipelineProcessor.pipelineRuns\nval valid = score > proc.threshold && !PipelineProcessor.pipelineRuns == 0 && proc.isValid(0)",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "Class",
+        "name": "DataProcessor",
+        "properties": [
+          {
+            "name": "data",
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int[]",
+              "line": 2,
+              "column": 17
+            },
+            "visibility": "public",
+            "isStatic": false
+          },
+          {
+            "name": "weights",
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int[]",
+              "line": 3,
+              "column": 20
+            },
+            "visibility": "public",
+            "isStatic": false
+          },
+          {
+            "name": "threshold",
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 5,
+              "column": 25
+            },
+            "visibility": "protected",
+            "isStatic": false
+          },
+          {
+            "name": "_processed",
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 5,
+              "column": 24
+            },
+            "visibility": "private",
+            "isStatic": false,
+            "initializer": {
+              "kind": "Literal",
+              "value": 0
+            }
+          },
+          {
+            "name": "_skipped",
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 6,
+              "column": 22
+            },
+            "visibility": "private",
+            "isStatic": false,
+            "initializer": {
+              "kind": "Literal",
+              "value": 0
+            }
+          },
+          {
+            "name": "totalProcessed",
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 7,
+              "column": 27
+            },
+            "visibility": null,
+            "isStatic": true,
+            "initializer": {
+              "kind": "Literal",
+              "value": 0
+            }
+          }
+        ],
+        "methods": [
+          {
+            "name": "constructor",
+            "params": [
+              {
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "data",
+                  "line": 9,
+                  "column": 16
+                },
+                "type": {
+                  "type": "TYPE_INT",
+                  "value": "int[]",
+                  "line": 9,
+                  "column": 22
+                }
+              },
+              {
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "weights",
+                  "line": 9,
+                  "column": 29
+                },
+                "type": {
+                  "type": "TYPE_INT",
+                  "value": "int[]",
+                  "line": 9,
+                  "column": 38
+                }
+              },
+              {
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "threshold",
+                  "line": 9,
+                  "column": 45
+                },
+                "type": {
+                  "type": "TYPE_INT",
+                  "value": "int",
+                  "line": 9,
+                  "column": 56
+                }
+              }
+            ],
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "data",
+                          "line": 10,
+                          "column": 13
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "data",
+                        "line": 11,
+                        "column": 20
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "weights",
+                          "line": 11,
+                          "column": 13
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "weights",
+                        "line": 12,
+                        "column": 23
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "threshold",
+                          "line": 12,
+                          "column": 13
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "threshold",
+                        "line": 13,
+                        "column": 25
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": "public",
+            "isStatic": false
+          },
+          {
+            "name": "isValid",
+            "params": [
+              {
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "idx",
+                  "line": 15,
+                  "column": 12
+                },
+                "type": {
+                  "type": "TYPE_INT",
+                  "value": "int",
+                  "line": 15,
+                  "column": 17
+                }
+              }
+            ],
+            "returnType": {
+              "type": "TYPE_BOOL",
+              "value": "bool",
+              "line": 15,
+              "column": 23
+            },
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "ReturnStmt",
+                  "value": {
+                    "kind": "Logical",
+                    "left": {
+                      "kind": "Logical",
+                      "left": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "idx",
+                            "line": 16,
+                            "column": 15
+                          }
+                        },
+                        "operator": {
+                          "type": "LESS_THAN",
+                          "value": "<",
+                          "line": 16,
+                          "column": 19
+                        },
+                        "right": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "Member",
+                            "object": {
+                              "kind": "This"
+                            },
+                            "property": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "data",
+                                "line": 16,
+                                "column": 26
+                              }
+                            }
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "length",
+                              "line": 16,
+                              "column": 31
+                            }
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "AND",
+                        "value": "&&",
+                        "line": 16,
+                        "column": 38
+                      },
+                      "right": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Index",
+                          "object": {
+                            "kind": "Member",
+                            "object": {
+                              "kind": "This"
+                            },
+                            "property": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "data",
+                                "line": 16,
+                                "column": 46
+                              }
+                            }
+                          },
+                          "index": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "idx",
+                              "line": 16,
+                              "column": 51
+                            }
+                          }
+                        },
+                        "operator": {
+                          "type": "GREATER_EQUAL",
+                          "value": ">=",
+                          "line": 16,
+                          "column": 56
+                        },
+                        "right": {
+                          "kind": "Literal",
+                          "value": 0
+                        }
+                      }
+                    },
+                    "operator": {
+                      "type": "AND",
+                      "value": "&&",
+                      "line": 16,
+                      "column": 61
+                    },
+                    "right": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "idx",
+                          "line": 16,
+                          "column": 64
+                        }
+                      },
+                      "operator": {
+                        "type": "LESS_THAN",
+                        "value": "<",
+                        "line": 16,
+                        "column": 68
+                      },
+                      "right": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "weights",
+                              "line": 16,
+                              "column": 75
+                            }
+                          }
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "length",
+                            "line": 17,
+                            "column": 83
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": null,
+            "isStatic": false
+          },
+          {
+            "name": "computeItem",
+            "params": [
+              {
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "idx",
+                  "line": 19,
+                  "column": 16
+                },
+                "type": {
+                  "type": "TYPE_INT",
+                  "value": "int",
+                  "line": 19,
+                  "column": 21
+                }
+              }
+            ],
+            "returnType": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 19,
+              "column": 27
+            },
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "ReturnStmt",
+                  "value": {
+                    "kind": "Binary",
+                    "left": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Index",
+                        "object": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "data",
+                              "line": 20,
+                              "column": 20
+                            }
+                          }
+                        },
+                        "index": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "idx",
+                            "line": 20,
+                            "column": 25
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "STAR",
+                        "value": "*",
+                        "line": 20,
+                        "column": 30
+                      },
+                      "right": {
+                        "kind": "Index",
+                        "object": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "weights",
+                              "line": 20,
+                              "column": 37
+                            }
+                          }
+                        },
+                        "index": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "idx",
+                            "line": 20,
+                            "column": 45
+                          }
+                        }
+                      }
+                    },
+                    "operator": {
+                      "type": "MINUS",
+                      "value": "-",
+                      "line": 20,
+                      "column": 50
+                    },
+                    "right": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "threshold",
+                          "line": 21,
+                          "column": 57
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": null,
+            "isStatic": false
+          },
+          {
+            "name": "process",
+            "params": [],
+            "returnType": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 23,
+              "column": 15
+            },
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "VarStmt",
+                  "type": "val",
+                  "typeAnnotation": null,
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "total",
+                    "line": 24,
+                    "column": 12
+                  },
+                  "initializer": {
+                    "kind": "Literal",
+                    "value": 0
+                  }
+                },
+                {
+                  "kind": "VarStmt",
+                  "type": "val",
+                  "typeAnnotation": null,
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "i",
+                    "line": 25,
+                    "column": 12
+                  },
+                  "initializer": {
+                    "kind": "Literal",
+                    "value": 0
+                  }
+                },
+                {
+                  "kind": "WhileStmt",
+                  "condition": {
+                    "kind": "Binary",
+                    "left": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "i",
+                        "line": 26,
+                        "column": 15
+                      }
+                    },
+                    "operator": {
+                      "type": "LESS_THAN",
+                      "value": "<",
+                      "line": 26,
+                      "column": 17
+                    },
+                    "right": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "This"
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "data",
+                            "line": 26,
+                            "column": 24
+                          }
+                        }
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "length",
+                          "line": 26,
+                          "column": 29
+                        }
+                      }
+                    }
+                  },
+                  "body": {
+                    "kind": "BlockStmt",
+                    "statements": [
+                      {
+                        "kind": "IfStmt",
+                        "condition": {
+                          "kind": "Unary",
+                          "operator": {
+                            "type": "NOT",
+                            "value": "!",
+                            "line": 27,
+                            "column": 16
+                          },
+                          "right": {
+                            "kind": "Call",
+                            "callee": {
+                              "kind": "Member",
+                              "object": {
+                                "kind": "This"
+                              },
+                              "property": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "isValid",
+                                  "line": 27,
+                                  "column": 22
+                                }
+                              }
+                            },
+                            "args": [
+                              {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "i",
+                                  "line": 27,
+                                  "column": 30
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "thenBranch": {
+                          "kind": "BlockStmt",
+                          "statements": [
+                            {
+                              "kind": "ExpressionStmt",
+                              "expression": {
+                                "kind": "Assign",
+                                "name": {
+                                  "kind": "Member",
+                                  "object": {
+                                    "kind": "This"
+                                  },
+                                  "property": {
+                                    "kind": "Identifier",
+                                    "name": {
+                                      "type": "IDENTIFIER",
+                                      "value": "_skipped",
+                                      "line": 28,
+                                      "column": 21
+                                    }
+                                  }
+                                },
+                                "value": {
+                                  "kind": "Binary",
+                                  "left": {
+                                    "kind": "Member",
+                                    "object": {
+                                      "kind": "This"
+                                    },
+                                    "property": {
+                                      "kind": "Identifier",
+                                      "name": {
+                                        "type": "IDENTIFIER",
+                                        "value": "_skipped",
+                                        "line": 28,
+                                        "column": 37
+                                      }
+                                    }
+                                  },
+                                  "operator": {
+                                    "type": "PLUS",
+                                    "value": "+",
+                                    "line": 28,
+                                    "column": 46
+                                  },
+                                  "right": {
+                                    "kind": "Literal",
+                                    "value": 1
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "kind": "ExpressionStmt",
+                              "expression": {
+                                "kind": "Assign",
+                                "name": {
+                                  "kind": "Identifier",
+                                  "name": {
+                                    "type": "IDENTIFIER",
+                                    "value": "i",
+                                    "line": 29,
+                                    "column": 16
+                                  }
+                                },
+                                "value": {
+                                  "kind": "Binary",
+                                  "left": {
+                                    "kind": "Identifier",
+                                    "name": {
+                                      "type": "IDENTIFIER",
+                                      "value": "i",
+                                      "line": 29,
+                                      "column": 20
+                                    }
+                                  },
+                                  "operator": {
+                                    "type": "PLUS",
+                                    "value": "+",
+                                    "line": 29,
+                                    "column": 22
+                                  },
+                                  "right": {
+                                    "kind": "Literal",
+                                    "value": 1
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "kind": "ContinueStmt"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "VarStmt",
+                        "type": "val",
+                        "typeAnnotation": null,
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "item",
+                          "line": 32,
+                          "column": 16
+                        },
+                        "initializer": {
+                          "kind": "Call",
+                          "callee": {
+                            "kind": "Member",
+                            "object": {
+                              "kind": "This"
+                            },
+                            "property": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "computeItem",
+                                "line": 32,
+                                "column": 28
+                              }
+                            }
+                          },
+                          "args": [
+                            {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "i",
+                                "line": 32,
+                                "column": 40
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "IfStmt",
+                        "condition": {
+                          "kind": "Logical",
+                          "left": {
+                            "kind": "Binary",
+                            "left": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "item",
+                                "line": 33,
+                                "column": 16
+                              }
+                            },
+                            "operator": {
+                              "type": "LESS_THAN",
+                              "value": "<",
+                              "line": 33,
+                              "column": 21
+                            },
+                            "right": {
+                              "kind": "Literal",
+                              "value": 0
+                            }
+                          },
+                          "operator": {
+                            "type": "AND",
+                            "value": "&&",
+                            "line": 33,
+                            "column": 25
+                          },
+                          "right": {
+                            "kind": "Binary",
+                            "left": {
+                              "kind": "Member",
+                              "object": {
+                                "kind": "This"
+                              },
+                              "property": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "threshold",
+                                  "line": 33,
+                                  "column": 33
+                                }
+                              }
+                            },
+                            "operator": {
+                              "type": "GREATER_THAN",
+                              "value": ">",
+                              "line": 33,
+                              "column": 43
+                            },
+                            "right": {
+                              "kind": "Literal",
+                              "value": 0
+                            }
+                          }
+                        },
+                        "thenBranch": {
+                          "kind": "BlockStmt",
+                          "statements": [
+                            {
+                              "kind": "ExpressionStmt",
+                              "expression": {
+                                "kind": "Assign",
+                                "name": {
+                                  "kind": "Identifier",
+                                  "name": {
+                                    "type": "IDENTIFIER",
+                                    "value": "i",
+                                    "line": 34,
+                                    "column": 16
+                                  }
+                                },
+                                "value": {
+                                  "kind": "Binary",
+                                  "left": {
+                                    "kind": "Identifier",
+                                    "name": {
+                                      "type": "IDENTIFIER",
+                                      "value": "i",
+                                      "line": 34,
+                                      "column": 20
+                                    }
+                                  },
+                                  "operator": {
+                                    "type": "PLUS",
+                                    "value": "+",
+                                    "line": 34,
+                                    "column": 22
+                                  },
+                                  "right": {
+                                    "kind": "Literal",
+                                    "value": 1
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "kind": "ContinueStmt"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "ExpressionStmt",
+                        "expression": {
+                          "kind": "Assign",
+                          "name": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "total",
+                              "line": 37,
+                              "column": 12
+                            }
+                          },
+                          "value": {
+                            "kind": "Binary",
+                            "left": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "total",
+                                "line": 37,
+                                "column": 20
+                              }
+                            },
+                            "operator": {
+                              "type": "PLUS",
+                              "value": "+",
+                              "line": 37,
+                              "column": 26
+                            },
+                            "right": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "item",
+                                "line": 38,
+                                "column": 28
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "kind": "ExpressionStmt",
+                        "expression": {
+                          "kind": "Assign",
+                          "name": {
+                            "kind": "Member",
+                            "object": {
+                              "kind": "This"
+                            },
+                            "property": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "_processed",
+                                "line": 38,
+                                "column": 17
+                              }
+                            }
+                          },
+                          "value": {
+                            "kind": "Binary",
+                            "left": {
+                              "kind": "Member",
+                              "object": {
+                                "kind": "This"
+                              },
+                              "property": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "_processed",
+                                  "line": 38,
+                                  "column": 35
+                                }
+                              }
+                            },
+                            "operator": {
+                              "type": "PLUS",
+                              "value": "+",
+                              "line": 38,
+                              "column": 46
+                            },
+                            "right": {
+                              "kind": "Literal",
+                              "value": 1
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "kind": "ExpressionStmt",
+                        "expression": {
+                          "kind": "Assign",
+                          "name": {
+                            "kind": "Member",
+                            "object": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "DataProcessor",
+                                "line": 39,
+                                "column": 12
+                              }
+                            },
+                            "property": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "totalProcessed",
+                                "line": 39,
+                                "column": 26
+                              }
+                            }
+                          },
+                          "value": {
+                            "kind": "Binary",
+                            "left": {
+                              "kind": "Member",
+                              "object": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "DataProcessor",
+                                  "line": 39,
+                                  "column": 43
+                                }
+                              },
+                              "property": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "totalProcessed",
+                                  "line": 39,
+                                  "column": 57
+                                }
+                              }
+                            },
+                            "operator": {
+                              "type": "PLUS",
+                              "value": "+",
+                              "line": 39,
+                              "column": 72
+                            },
+                            "right": {
+                              "kind": "Literal",
+                              "value": 1
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "kind": "IfStmt",
+                        "condition": {
+                          "kind": "Binary",
+                          "left": {
+                            "kind": "Member",
+                            "object": {
+                              "kind": "This"
+                            },
+                            "property": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "_processed",
+                                "line": 40,
+                                "column": 21
+                              }
+                            }
+                          },
+                          "operator": {
+                            "type": "GREATER_EQUAL",
+                            "value": ">=",
+                            "line": 40,
+                            "column": 32
+                          },
+                          "right": {
+                            "kind": "Binary",
+                            "left": {
+                              "kind": "Member",
+                              "object": {
+                                "kind": "Member",
+                                "object": {
+                                  "kind": "This"
+                                },
+                                "property": {
+                                  "kind": "Identifier",
+                                  "name": {
+                                    "type": "IDENTIFIER",
+                                    "value": "data",
+                                    "line": 40,
+                                    "column": 40
+                                  }
+                                }
+                              },
+                              "property": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "length",
+                                  "line": 40,
+                                  "column": 45
+                                }
+                              }
+                            },
+                            "operator": {
+                              "type": "STAR",
+                              "value": "*",
+                              "line": 40,
+                              "column": 52
+                            },
+                            "right": {
+                              "kind": "Literal",
+                              "value": 2
+                            }
+                          }
+                        },
+                        "thenBranch": {
+                          "kind": "BlockStmt",
+                          "statements": [
+                            {
+                              "kind": "BreakStmt"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "ExpressionStmt",
+                        "expression": {
+                          "kind": "Assign",
+                          "name": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "i",
+                              "line": 43,
+                              "column": 12
+                            }
+                          },
+                          "value": {
+                            "kind": "Binary",
+                            "left": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "i",
+                                "line": 43,
+                                "column": 16
+                              }
+                            },
+                            "operator": {
+                              "type": "PLUS",
+                              "value": "+",
+                              "line": 43,
+                              "column": 18
+                            },
+                            "right": {
+                              "kind": "Literal",
+                              "value": 1
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "ReturnStmt",
+                  "value": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "total",
+                      "line": 46,
+                      "column": 15
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": null,
+            "isStatic": false
+          },
+          {
+            "name": "getStats",
+            "params": [],
+            "returnType": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 48,
+              "column": 16
+            },
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "ReturnStmt",
+                  "value": {
+                    "kind": "Binary",
+                    "left": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "_processed",
+                              "line": 49,
+                              "column": 20
+                            }
+                          }
+                        },
+                        "operator": {
+                          "type": "STAR",
+                          "value": "*",
+                          "line": 49,
+                          "column": 31
+                        },
+                        "right": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "threshold",
+                              "line": 49,
+                              "column": 38
+                            }
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "MINUS",
+                        "value": "-",
+                        "line": 49,
+                        "column": 48
+                      },
+                      "right": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "_skipped",
+                              "line": 49,
+                              "column": 55
+                            }
+                          }
+                        },
+                        "operator": {
+                          "type": "STAR",
+                          "value": "*",
+                          "line": 49,
+                          "column": 64
+                        },
+                        "right": {
+                          "kind": "Index",
+                          "object": {
+                            "kind": "Member",
+                            "object": {
+                              "kind": "This"
+                            },
+                            "property": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "weights",
+                                "line": 49,
+                                "column": 71
+                              }
+                            }
+                          },
+                          "index": {
+                            "kind": "Literal",
+                            "value": 0
+                          }
+                        }
+                      }
+                    },
+                    "operator": {
+                      "type": "PLUS",
+                      "value": "+",
+                      "line": 49,
+                      "column": 82
+                    },
+                    "right": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "DataProcessor",
+                          "line": 49,
+                          "column": 84
+                        }
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "totalProcessed",
+                          "line": 50,
+                          "column": 98
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": null,
+            "isStatic": false
+          }
+        ]
+      },
+      {
+        "kind": "Class",
+        "name": "PipelineProcessor",
+        "extends": "DataProcessor",
+        "properties": [
+          {
+            "name": "stages",
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int[]",
+              "line": 54,
+              "column": 19
+            },
+            "visibility": "public",
+            "isStatic": false
+          },
+          {
+            "name": "maxStages",
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 56,
+              "column": 22
+            },
+            "visibility": "public",
+            "isStatic": false
+          },
+          {
+            "name": "_stageResults",
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int[]",
+              "line": 56,
+              "column": 27
+            },
+            "visibility": "private",
+            "isStatic": false
+          },
+          {
+            "name": "multiplier",
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 58,
+              "column": 26
+            },
+            "visibility": "protected",
+            "isStatic": false
+          },
+          {
+            "name": "pipelineRuns",
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 58,
+              "column": 25
+            },
+            "visibility": null,
+            "isStatic": true,
+            "initializer": {
+              "kind": "Literal",
+              "value": 0
+            }
+          }
+        ],
+        "methods": [
+          {
+            "name": "constructor",
+            "params": [
+              {
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "data",
+                  "line": 60,
+                  "column": 16
+                },
+                "type": {
+                  "type": "TYPE_INT",
+                  "value": "int[]",
+                  "line": 60,
+                  "column": 22
+                }
+              },
+              {
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "weights",
+                  "line": 60,
+                  "column": 29
+                },
+                "type": {
+                  "type": "TYPE_INT",
+                  "value": "int[]",
+                  "line": 60,
+                  "column": 38
+                }
+              },
+              {
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "threshold",
+                  "line": 60,
+                  "column": 45
+                },
+                "type": {
+                  "type": "TYPE_INT",
+                  "value": "int",
+                  "line": 60,
+                  "column": 56
+                }
+              },
+              {
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "stages",
+                  "line": 60,
+                  "column": 61
+                },
+                "type": {
+                  "type": "TYPE_INT",
+                  "value": "int[]",
+                  "line": 60,
+                  "column": 69
+                }
+              },
+              {
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "multiplier",
+                  "line": 60,
+                  "column": 76
+                },
+                "type": {
+                  "type": "TYPE_INT",
+                  "value": "int",
+                  "line": 60,
+                  "column": 88
+                }
+              }
+            ],
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Call",
+                    "callee": {
+                      "kind": "Super"
+                    },
+                    "args": [
+                      {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "data",
+                          "line": 61,
+                          "column": 14
+                        }
+                      },
+                      {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "weights",
+                          "line": 61,
+                          "column": 20
+                        }
+                      },
+                      {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "threshold",
+                          "line": 61,
+                          "column": 29
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "stages",
+                          "line": 62,
+                          "column": 13
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "stages",
+                        "line": 63,
+                        "column": 22
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "maxStages",
+                          "line": 63,
+                          "column": 13
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "stages",
+                          "line": 63,
+                          "column": 25
+                        }
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "length",
+                          "line": 64,
+                          "column": 32
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "multiplier",
+                          "line": 64,
+                          "column": 13
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "multiplier",
+                        "line": 65,
+                        "column": 26
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "_stageResults",
+                          "line": 65,
+                          "column": 13
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "stages",
+                        "line": 66,
+                        "column": 29
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": "public",
+            "isStatic": false
+          },
+          {
+            "name": "runStage",
+            "params": [
+              {
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "stageIdx",
+                  "line": 68,
+                  "column": 13
+                },
+                "type": {
+                  "type": "TYPE_INT",
+                  "value": "int",
+                  "line": 68,
+                  "column": 23
+                }
+              },
+              {
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "input",
+                  "line": 68,
+                  "column": 28
+                },
+                "type": {
+                  "type": "TYPE_INT",
+                  "value": "int",
+                  "line": 68,
+                  "column": 35
+                }
+              }
+            ],
+            "returnType": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 68,
+              "column": 41
+            },
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "IfStmt",
+                  "condition": {
+                    "kind": "Logical",
+                    "left": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "stageIdx",
+                          "line": 69,
+                          "column": 12
+                        }
+                      },
+                      "operator": {
+                        "type": "GREATER_EQUAL",
+                        "value": ">=",
+                        "line": 69,
+                        "column": 21
+                      },
+                      "right": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "This"
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "maxStages",
+                            "line": 69,
+                            "column": 29
+                          }
+                        }
+                      }
+                    },
+                    "operator": {
+                      "type": "OR",
+                      "value": "||",
+                      "line": 69,
+                      "column": 39
+                    },
+                    "right": {
+                      "kind": "Unary",
+                      "operator": {
+                        "type": "NOT",
+                        "value": "!",
+                        "line": 69,
+                        "column": 42
+                      },
+                      "right": {
+                        "kind": "Call",
+                        "callee": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "isValid",
+                              "line": 69,
+                              "column": 48
+                            }
+                          }
+                        },
+                        "args": [
+                          {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "stageIdx",
+                              "line": 69,
+                              "column": 56
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "thenBranch": {
+                    "kind": "BlockStmt",
+                    "statements": [
+                      {
+                        "kind": "ReturnStmt",
+                        "value": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "input",
+                            "line": 71,
+                            "column": 19
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "VarStmt",
+                  "type": "val",
+                  "typeAnnotation": null,
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "stageWeight",
+                    "line": 72,
+                    "column": 12
+                  },
+                  "initializer": {
+                    "kind": "Binary",
+                    "left": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Index",
+                        "object": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "stages",
+                              "line": 72,
+                              "column": 31
+                            }
+                          }
+                        },
+                        "index": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "stageIdx",
+                            "line": 72,
+                            "column": 38
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "STAR",
+                        "value": "*",
+                        "line": 72,
+                        "column": 48
+                      },
+                      "right": {
+                        "kind": "Index",
+                        "object": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "weights",
+                              "line": 72,
+                              "column": 55
+                            }
+                          }
+                        },
+                        "index": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "stageIdx",
+                            "line": 72,
+                            "column": 63
+                          }
+                        }
+                      }
+                    },
+                    "operator": {
+                      "type": "MINUS",
+                      "value": "-",
+                      "line": 72,
+                      "column": 73
+                    },
+                    "right": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "threshold",
+                          "line": 73,
+                          "column": 80
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "ReturnStmt",
+                  "value": {
+                    "kind": "Binary",
+                    "left": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "input",
+                            "line": 73,
+                            "column": 15
+                          }
+                        },
+                        "operator": {
+                          "type": "STAR",
+                          "value": "*",
+                          "line": 73,
+                          "column": 21
+                        },
+                        "right": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "stageWeight",
+                            "line": 73,
+                            "column": 23
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "MINUS",
+                        "value": "-",
+                        "line": 73,
+                        "column": 35
+                      },
+                      "right": {
+                        "kind": "Call",
+                        "callee": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "computeItem",
+                              "line": 73,
+                              "column": 42
+                            }
+                          }
+                        },
+                        "args": [
+                          {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "stageIdx",
+                              "line": 73,
+                              "column": 54
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "operator": {
+                      "type": "PLUS",
+                      "value": "+",
+                      "line": 73,
+                      "column": 64
+                    },
+                    "right": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "multiplier",
+                          "line": 74,
+                          "column": 71
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": null,
+            "isStatic": false
+          },
+          {
+            "name": "runPipeline",
+            "params": [],
+            "returnType": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 76,
+              "column": 19
+            },
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "PipelineProcessor",
+                          "line": 77,
+                          "column": 8
+                        }
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "pipelineRuns",
+                          "line": 77,
+                          "column": 26
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "PipelineProcessor",
+                            "line": 77,
+                            "column": 41
+                          }
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "pipelineRuns",
+                            "line": 77,
+                            "column": 59
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "PLUS",
+                        "value": "+",
+                        "line": 77,
+                        "column": 72
+                      },
+                      "right": {
+                        "kind": "Literal",
+                        "value": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "VarStmt",
+                  "type": "val",
+                  "typeAnnotation": null,
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "result",
+                    "line": 78,
+                    "column": 12
+                  },
+                  "initializer": {
+                    "kind": "Call",
+                    "callee": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "process",
+                          "line": 78,
+                          "column": 26
+                        }
+                      }
+                    },
+                    "args": []
+                  }
+                },
+                {
+                  "kind": "VarStmt",
+                  "type": "val",
+                  "typeAnnotation": null,
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "i",
+                    "line": 79,
+                    "column": 12
+                  },
+                  "initializer": {
+                    "kind": "Literal",
+                    "value": 0
+                  }
+                },
+                {
+                  "kind": "WhileStmt",
+                  "condition": {
+                    "kind": "Logical",
+                    "left": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "i",
+                          "line": 80,
+                          "column": 15
+                        }
+                      },
+                      "operator": {
+                        "type": "LESS_THAN",
+                        "value": "<",
+                        "line": 80,
+                        "column": 17
+                      },
+                      "right": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "This"
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "maxStages",
+                            "line": 80,
+                            "column": 24
+                          }
+                        }
+                      }
+                    },
+                    "operator": {
+                      "type": "AND",
+                      "value": "&&",
+                      "line": 80,
+                      "column": 34
+                    },
+                    "right": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "i",
+                          "line": 80,
+                          "column": 37
+                        }
+                      },
+                      "operator": {
+                        "type": "LESS_THAN",
+                        "value": "<",
+                        "line": 80,
+                        "column": 39
+                      },
+                      "right": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "data",
+                              "line": 80,
+                              "column": 46
+                            }
+                          }
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "length",
+                            "line": 80,
+                            "column": 51
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "body": {
+                    "kind": "BlockStmt",
+                    "statements": [
+                      {
+                        "kind": "VarStmt",
+                        "type": "val",
+                        "typeAnnotation": null,
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "stageResult",
+                          "line": 81,
+                          "column": 16
+                        },
+                        "initializer": {
+                          "kind": "Call",
+                          "callee": {
+                            "kind": "Member",
+                            "object": {
+                              "kind": "This"
+                            },
+                            "property": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "runStage",
+                                "line": 81,
+                                "column": 35
+                              }
+                            }
+                          },
+                          "args": [
+                            {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "i",
+                                "line": 81,
+                                "column": 44
+                              }
+                            },
+                            {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "result",
+                                "line": 81,
+                                "column": 47
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "IfStmt",
+                        "condition": {
+                          "kind": "Logical",
+                          "left": {
+                            "kind": "Binary",
+                            "left": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "stageResult",
+                                "line": 82,
+                                "column": 16
+                              }
+                            },
+                            "operator": {
+                              "type": "LESS_THAN",
+                              "value": "<",
+                              "line": 82,
+                              "column": 28
+                            },
+                            "right": {
+                              "kind": "Literal",
+                              "value": 0
+                            }
+                          },
+                          "operator": {
+                            "type": "AND",
+                            "value": "&&",
+                            "line": 82,
+                            "column": 32
+                          },
+                          "right": {
+                            "kind": "Binary",
+                            "left": {
+                              "kind": "Member",
+                              "object": {
+                                "kind": "This"
+                              },
+                              "property": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "threshold",
+                                  "line": 82,
+                                  "column": 40
+                                }
+                              }
+                            },
+                            "operator": {
+                              "type": "GREATER_THAN",
+                              "value": ">",
+                              "line": 82,
+                              "column": 50
+                            },
+                            "right": {
+                              "kind": "Literal",
+                              "value": 0
+                            }
+                          }
+                        },
+                        "thenBranch": {
+                          "kind": "BlockStmt",
+                          "statements": [
+                            {
+                              "kind": "ExpressionStmt",
+                              "expression": {
+                                "kind": "Assign",
+                                "name": {
+                                  "kind": "Index",
+                                  "object": {
+                                    "kind": "Member",
+                                    "object": {
+                                      "kind": "This"
+                                    },
+                                    "property": {
+                                      "kind": "Identifier",
+                                      "name": {
+                                        "type": "IDENTIFIER",
+                                        "value": "_stageResults",
+                                        "line": 83,
+                                        "column": 21
+                                      }
+                                    }
+                                  },
+                                  "index": {
+                                    "kind": "Identifier",
+                                    "name": {
+                                      "type": "IDENTIFIER",
+                                      "value": "i",
+                                      "line": 83,
+                                      "column": 35
+                                    }
+                                  }
+                                },
+                                "value": {
+                                  "kind": "Literal",
+                                  "value": 0
+                                }
+                              }
+                            },
+                            {
+                              "kind": "ExpressionStmt",
+                              "expression": {
+                                "kind": "Assign",
+                                "name": {
+                                  "kind": "Identifier",
+                                  "name": {
+                                    "type": "IDENTIFIER",
+                                    "value": "i",
+                                    "line": 84,
+                                    "column": 16
+                                  }
+                                },
+                                "value": {
+                                  "kind": "Binary",
+                                  "left": {
+                                    "kind": "Identifier",
+                                    "name": {
+                                      "type": "IDENTIFIER",
+                                      "value": "i",
+                                      "line": 84,
+                                      "column": 20
+                                    }
+                                  },
+                                  "operator": {
+                                    "type": "PLUS",
+                                    "value": "+",
+                                    "line": 84,
+                                    "column": 22
+                                  },
+                                  "right": {
+                                    "kind": "Literal",
+                                    "value": 1
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "kind": "ContinueStmt"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "ExpressionStmt",
+                        "expression": {
+                          "kind": "Assign",
+                          "name": {
+                            "kind": "Index",
+                            "object": {
+                              "kind": "Member",
+                              "object": {
+                                "kind": "This"
+                              },
+                              "property": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "_stageResults",
+                                  "line": 87,
+                                  "column": 17
+                                }
+                              }
+                            },
+                            "index": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "i",
+                                "line": 87,
+                                "column": 31
+                              }
+                            }
+                          },
+                          "value": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "stageResult",
+                              "line": 88,
+                              "column": 36
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "kind": "VarStmt",
+                        "type": "val",
+                        "typeAnnotation": null,
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "k",
+                          "line": 88,
+                          "column": 16
+                        },
+                        "initializer": {
+                          "kind": "Literal",
+                          "value": 0
+                        }
+                      },
+                      {
+                        "kind": "ForStmt",
+                        "initializer": {
+                          "kind": "VarStmt",
+                          "type": "val",
+                          "typeAnnotation": null,
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "k",
+                            "line": 89,
+                            "column": 21
+                          },
+                          "initializer": {
+                            "kind": "Literal",
+                            "value": 0
+                          }
+                        },
+                        "condition": {
+                          "kind": "Logical",
+                          "left": {
+                            "kind": "Binary",
+                            "left": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "k",
+                                "line": 89,
+                                "column": 28
+                              }
+                            },
+                            "operator": {
+                              "type": "LESS_THAN",
+                              "value": "<",
+                              "line": 89,
+                              "column": 30
+                            },
+                            "right": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "i",
+                                "line": 89,
+                                "column": 32
+                              }
+                            }
+                          },
+                          "operator": {
+                            "type": "AND",
+                            "value": "&&",
+                            "line": 89,
+                            "column": 34
+                          },
+                          "right": {
+                            "kind": "Binary",
+                            "left": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "k",
+                                "line": 89,
+                                "column": 37
+                              }
+                            },
+                            "operator": {
+                              "type": "LESS_THAN",
+                              "value": "<",
+                              "line": 89,
+                              "column": 39
+                            },
+                            "right": {
+                              "kind": "Member",
+                              "object": {
+                                "kind": "This"
+                              },
+                              "property": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "maxStages",
+                                  "line": 89,
+                                  "column": 46
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "update": {
+                          "kind": "Assign",
+                          "name": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "k",
+                              "line": 89,
+                              "column": 57
+                            }
+                          },
+                          "value": {
+                            "kind": "Binary",
+                            "left": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "k",
+                                "line": 89,
+                                "column": 61
+                              }
+                            },
+                            "operator": {
+                              "type": "PLUS",
+                              "value": "+",
+                              "line": 89,
+                              "column": 63
+                            },
+                            "right": {
+                              "kind": "Literal",
+                              "value": 1
+                            }
+                          }
+                        },
+                        "body": {
+                          "kind": "BlockStmt",
+                          "statements": [
+                            {
+                              "kind": "VarStmt",
+                              "type": "val",
+                              "typeAnnotation": null,
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "prev",
+                                "line": 90,
+                                "column": 20
+                              },
+                              "initializer": {
+                                "kind": "Binary",
+                                "left": {
+                                  "kind": "Binary",
+                                  "left": {
+                                    "kind": "Index",
+                                    "object": {
+                                      "kind": "Member",
+                                      "object": {
+                                        "kind": "This"
+                                      },
+                                      "property": {
+                                        "kind": "Identifier",
+                                        "name": {
+                                          "type": "IDENTIFIER",
+                                          "value": "_stageResults",
+                                          "line": 90,
+                                          "column": 32
+                                        }
+                                      }
+                                    },
+                                    "index": {
+                                      "kind": "Identifier",
+                                      "name": {
+                                        "type": "IDENTIFIER",
+                                        "value": "k",
+                                        "line": 90,
+                                        "column": 46
+                                      }
+                                    }
+                                  },
+                                  "operator": {
+                                    "type": "STAR",
+                                    "value": "*",
+                                    "line": 90,
+                                    "column": 49
+                                  },
+                                  "right": {
+                                    "kind": "Member",
+                                    "object": {
+                                      "kind": "This"
+                                    },
+                                    "property": {
+                                      "kind": "Identifier",
+                                      "name": {
+                                        "type": "IDENTIFIER",
+                                        "value": "multiplier",
+                                        "line": 90,
+                                        "column": 56
+                                      }
+                                    }
+                                  }
+                                },
+                                "operator": {
+                                  "type": "MINUS",
+                                  "value": "-",
+                                  "line": 90,
+                                  "column": 67
+                                },
+                                "right": {
+                                  "kind": "Identifier",
+                                  "name": {
+                                    "type": "IDENTIFIER",
+                                    "value": "stageResult",
+                                    "line": 91,
+                                    "column": 69
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "kind": "IfStmt",
+                              "condition": {
+                                "kind": "Binary",
+                                "left": {
+                                  "kind": "Identifier",
+                                  "name": {
+                                    "type": "IDENTIFIER",
+                                    "value": "prev",
+                                    "line": 91,
+                                    "column": 20
+                                  }
+                                },
+                                "operator": {
+                                  "type": "GREATER_THAN",
+                                  "value": ">",
+                                  "line": 91,
+                                  "column": 25
+                                },
+                                "right": {
+                                  "kind": "Binary",
+                                  "left": {
+                                    "kind": "Member",
+                                    "object": {
+                                      "kind": "This"
+                                    },
+                                    "property": {
+                                      "kind": "Identifier",
+                                      "name": {
+                                        "type": "IDENTIFIER",
+                                        "value": "threshold",
+                                        "line": 91,
+                                        "column": 32
+                                      }
+                                    }
+                                  },
+                                  "operator": {
+                                    "type": "STAR",
+                                    "value": "*",
+                                    "line": 91,
+                                    "column": 42
+                                  },
+                                  "right": {
+                                    "kind": "Member",
+                                    "object": {
+                                      "kind": "This"
+                                    },
+                                    "property": {
+                                      "kind": "Identifier",
+                                      "name": {
+                                        "type": "IDENTIFIER",
+                                        "value": "maxStages",
+                                        "line": 91,
+                                        "column": 49
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "thenBranch": {
+                                "kind": "BlockStmt",
+                                "statements": [
+                                  {
+                                    "kind": "ExpressionStmt",
+                                    "expression": {
+                                      "kind": "Assign",
+                                      "name": {
+                                        "kind": "Index",
+                                        "object": {
+                                          "kind": "Member",
+                                          "object": {
+                                            "kind": "This"
+                                          },
+                                          "property": {
+                                            "kind": "Identifier",
+                                            "name": {
+                                              "type": "IDENTIFIER",
+                                              "value": "_stageResults",
+                                              "line": 92,
+                                              "column": 25
+                                            }
+                                          }
+                                        },
+                                        "index": {
+                                          "kind": "Identifier",
+                                          "name": {
+                                            "type": "IDENTIFIER",
+                                            "value": "k",
+                                            "line": 92,
+                                            "column": 39
+                                          }
+                                        }
+                                      },
+                                      "value": {
+                                        "kind": "Identifier",
+                                        "name": {
+                                          "type": "IDENTIFIER",
+                                          "value": "prev",
+                                          "line": 93,
+                                          "column": 44
+                                        }
+                                      }
+                                    }
+                                  },
+                                  {
+                                    "kind": "IfStmt",
+                                    "condition": {
+                                      "kind": "Binary",
+                                      "left": {
+                                        "kind": "Index",
+                                        "object": {
+                                          "kind": "Member",
+                                          "object": {
+                                            "kind": "This"
+                                          },
+                                          "property": {
+                                            "kind": "Identifier",
+                                            "name": {
+                                              "type": "IDENTIFIER",
+                                              "value": "_stageResults",
+                                              "line": 93,
+                                              "column": 29
+                                            }
+                                          }
+                                        },
+                                        "index": {
+                                          "kind": "Identifier",
+                                          "name": {
+                                            "type": "IDENTIFIER",
+                                            "value": "k",
+                                            "line": 93,
+                                            "column": 43
+                                          }
+                                        }
+                                      },
+                                      "operator": {
+                                        "type": "GREATER_THAN",
+                                        "value": ">",
+                                        "line": 93,
+                                        "column": 46
+                                      },
+                                      "right": {
+                                        "kind": "Binary",
+                                        "left": {
+                                          "kind": "Member",
+                                          "object": {
+                                            "kind": "This"
+                                          },
+                                          "property": {
+                                            "kind": "Identifier",
+                                            "name": {
+                                              "type": "IDENTIFIER",
+                                              "value": "threshold",
+                                              "line": 93,
+                                              "column": 53
+                                            }
+                                          }
+                                        },
+                                        "operator": {
+                                          "type": "STAR",
+                                          "value": "*",
+                                          "line": 93,
+                                          "column": 63
+                                        },
+                                        "right": {
+                                          "kind": "Member",
+                                          "object": {
+                                            "kind": "Member",
+                                            "object": {
+                                              "kind": "This"
+                                            },
+                                            "property": {
+                                              "kind": "Identifier",
+                                              "name": {
+                                                "type": "IDENTIFIER",
+                                                "value": "data",
+                                                "line": 93,
+                                                "column": 70
+                                              }
+                                            }
+                                          },
+                                          "property": {
+                                            "kind": "Identifier",
+                                            "name": {
+                                              "type": "IDENTIFIER",
+                                              "value": "length",
+                                              "line": 93,
+                                              "column": 75
+                                            }
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "thenBranch": {
+                                      "kind": "BlockStmt",
+                                      "statements": [
+                                        {
+                                          "kind": "BreakStmt"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              },
+                              "elseBranch": {
+                                "kind": "BlockStmt",
+                                "statements": [
+                                  {
+                                    "kind": "ExpressionStmt",
+                                    "expression": {
+                                      "kind": "Assign",
+                                      "name": {
+                                        "kind": "Index",
+                                        "object": {
+                                          "kind": "Member",
+                                          "object": {
+                                            "kind": "This"
+                                          },
+                                          "property": {
+                                            "kind": "Identifier",
+                                            "name": {
+                                              "type": "IDENTIFIER",
+                                              "value": "_stageResults",
+                                              "line": 97,
+                                              "column": 25
+                                            }
+                                          }
+                                        },
+                                        "index": {
+                                          "kind": "Identifier",
+                                          "name": {
+                                            "type": "IDENTIFIER",
+                                            "value": "k",
+                                            "line": 97,
+                                            "column": 39
+                                          }
+                                        }
+                                      },
+                                      "value": {
+                                        "kind": "Binary",
+                                        "left": {
+                                          "kind": "Index",
+                                          "object": {
+                                            "kind": "Member",
+                                            "object": {
+                                              "kind": "This"
+                                            },
+                                            "property": {
+                                              "kind": "Identifier",
+                                              "name": {
+                                                "type": "IDENTIFIER",
+                                                "value": "_stageResults",
+                                                "line": 97,
+                                                "column": 49
+                                              }
+                                            }
+                                          },
+                                          "index": {
+                                            "kind": "Identifier",
+                                            "name": {
+                                              "type": "IDENTIFIER",
+                                              "value": "k",
+                                              "line": 97,
+                                              "column": 63
+                                            }
+                                          }
+                                        },
+                                        "operator": {
+                                          "type": "PLUS",
+                                          "value": "+",
+                                          "line": 97,
+                                          "column": 66
+                                        },
+                                        "right": {
+                                          "kind": "Identifier",
+                                          "name": {
+                                            "type": "IDENTIFIER",
+                                            "value": "stageResult",
+                                            "line": 98,
+                                            "column": 68
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "ExpressionStmt",
+                        "expression": {
+                          "kind": "Assign",
+                          "name": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "result",
+                              "line": 100,
+                              "column": 12
+                            }
+                          },
+                          "value": {
+                            "kind": "Binary",
+                            "left": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "stageResult",
+                                "line": 100,
+                                "column": 21
+                              }
+                            },
+                            "operator": {
+                              "type": "PLUS",
+                              "value": "+",
+                              "line": 100,
+                              "column": 33
+                            },
+                            "right": {
+                              "kind": "Call",
+                              "callee": {
+                                "kind": "Member",
+                                "object": {
+                                  "kind": "This"
+                                },
+                                "property": {
+                                  "kind": "Identifier",
+                                  "name": {
+                                    "type": "IDENTIFIER",
+                                    "value": "getStats",
+                                    "line": 100,
+                                    "column": 40
+                                  }
+                                }
+                              },
+                              "args": []
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "kind": "ExpressionStmt",
+                        "expression": {
+                          "kind": "Assign",
+                          "name": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "i",
+                              "line": 101,
+                              "column": 12
+                            }
+                          },
+                          "value": {
+                            "kind": "Binary",
+                            "left": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "i",
+                                "line": 101,
+                                "column": 16
+                              }
+                            },
+                            "operator": {
+                              "type": "PLUS",
+                              "value": "+",
+                              "line": 101,
+                              "column": 18
+                            },
+                            "right": {
+                              "kind": "Literal",
+                              "value": 1
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "kind": "IfStmt",
+                        "condition": {
+                          "kind": "Binary",
+                          "left": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "result",
+                              "line": 102,
+                              "column": 16
+                            }
+                          },
+                          "operator": {
+                            "type": "GREATER_THAN",
+                            "value": ">",
+                            "line": 102,
+                            "column": 23
+                          },
+                          "right": {
+                            "kind": "Binary",
+                            "left": {
+                              "kind": "Binary",
+                              "left": {
+                                "kind": "Member",
+                                "object": {
+                                  "kind": "This"
+                                },
+                                "property": {
+                                  "kind": "Identifier",
+                                  "name": {
+                                    "type": "IDENTIFIER",
+                                    "value": "threshold",
+                                    "line": 102,
+                                    "column": 30
+                                  }
+                                }
+                              },
+                              "operator": {
+                                "type": "STAR",
+                                "value": "*",
+                                "line": 102,
+                                "column": 40
+                              },
+                              "right": {
+                                "kind": "Member",
+                                "object": {
+                                  "kind": "This"
+                                },
+                                "property": {
+                                  "kind": "Identifier",
+                                  "name": {
+                                    "type": "IDENTIFIER",
+                                    "value": "maxStages",
+                                    "line": 102,
+                                    "column": 47
+                                  }
+                                }
+                              }
+                            },
+                            "operator": {
+                              "type": "STAR",
+                              "value": "*",
+                              "line": 102,
+                              "column": 57
+                            },
+                            "right": {
+                              "kind": "Member",
+                              "object": {
+                                "kind": "This"
+                              },
+                              "property": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "multiplier",
+                                  "line": 102,
+                                  "column": 64
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "thenBranch": {
+                          "kind": "BlockStmt",
+                          "statements": [
+                            {
+                              "kind": "BreakStmt"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "ReturnStmt",
+                  "value": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "result",
+                      "line": 107,
+                      "column": 15
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": null,
+            "isStatic": false
+          },
+          {
+            "name": "getFinalScore",
+            "params": [],
+            "returnType": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 109,
+              "column": 21
+            },
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "VarStmt",
+                  "type": "val",
+                  "typeAnnotation": null,
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "pipeScore",
+                    "line": 110,
+                    "column": 12
+                  },
+                  "initializer": {
+                    "kind": "Binary",
+                    "left": {
+                      "kind": "Call",
+                      "callee": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "This"
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "runPipeline",
+                            "line": 110,
+                            "column": 29
+                          }
+                        }
+                      },
+                      "args": []
+                    },
+                    "operator": {
+                      "type": "STAR",
+                      "value": "*",
+                      "line": 110,
+                      "column": 43
+                    },
+                    "right": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "multiplier",
+                          "line": 111,
+                          "column": 50
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "VarStmt",
+                  "type": "val",
+                  "typeAnnotation": null,
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "stageSum",
+                    "line": 111,
+                    "column": 12
+                  },
+                  "initializer": {
+                    "kind": "Binary",
+                    "left": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Index",
+                        "object": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "_stageResults",
+                              "line": 111,
+                              "column": 28
+                            }
+                          }
+                        },
+                        "index": {
+                          "kind": "Literal",
+                          "value": 0
+                        }
+                      },
+                      "operator": {
+                        "type": "STAR",
+                        "value": "*",
+                        "line": 111,
+                        "column": 45
+                      },
+                      "right": {
+                        "kind": "Index",
+                        "object": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "stages",
+                              "line": 111,
+                              "column": 52
+                            }
+                          }
+                        },
+                        "index": {
+                          "kind": "Literal",
+                          "value": 0
+                        }
+                      }
+                    },
+                    "operator": {
+                      "type": "MINUS",
+                      "value": "-",
+                      "line": 111,
+                      "column": 62
+                    },
+                    "right": {
+                      "kind": "Index",
+                      "object": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "This"
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "_stageResults",
+                            "line": 111,
+                            "column": 69
+                          }
+                        }
+                      },
+                      "index": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "maxStages",
+                              "line": 111,
+                              "column": 88
+                            }
+                          }
+                        },
+                        "operator": {
+                          "type": "MINUS",
+                          "value": "-",
+                          "line": 111,
+                          "column": 98
+                        },
+                        "right": {
+                          "kind": "Literal",
+                          "value": 1
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "VarStmt",
+                  "type": "val",
+                  "typeAnnotation": null,
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "statsFactor",
+                    "line": 112,
+                    "column": 12
+                  },
+                  "initializer": {
+                    "kind": "Binary",
+                    "left": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Call",
+                        "callee": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "getStats",
+                              "line": 112,
+                              "column": 31
+                            }
+                          }
+                        },
+                        "args": []
+                      },
+                      "operator": {
+                        "type": "STAR",
+                        "value": "*",
+                        "line": 112,
+                        "column": 42
+                      },
+                      "right": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "PipelineProcessor",
+                            "line": 112,
+                            "column": 44
+                          }
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "pipelineRuns",
+                            "line": 112,
+                            "column": 62
+                          }
+                        }
+                      }
+                    },
+                    "operator": {
+                      "type": "MINUS",
+                      "value": "-",
+                      "line": 112,
+                      "column": 75
+                    },
+                    "right": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "DataProcessor",
+                          "line": 112,
+                          "column": 77
+                        }
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "totalProcessed",
+                          "line": 113,
+                          "column": 91
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "ReturnStmt",
+                  "value": {
+                    "kind": "Binary",
+                    "left": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "pipeScore",
+                            "line": 113,
+                            "column": 15
+                          }
+                        },
+                        "operator": {
+                          "type": "PLUS",
+                          "value": "+",
+                          "line": 113,
+                          "column": 25
+                        },
+                        "right": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "stageSum",
+                            "line": 113,
+                            "column": 27
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "MINUS",
+                        "value": "-",
+                        "line": 113,
+                        "column": 36
+                      },
+                      "right": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "statsFactor",
+                          "line": 113,
+                          "column": 38
+                        }
+                      }
+                    },
+                    "operator": {
+                      "type": "PLUS",
+                      "value": "+",
+                      "line": 113,
+                      "column": 50
+                    },
+                    "right": {
+                      "kind": "Call",
+                      "callee": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "This"
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "process",
+                            "line": 113,
+                            "column": 57
+                          }
+                        }
+                      },
+                      "args": []
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": null,
+            "isStatic": false
+          }
+        ]
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "proc",
+          "line": 117,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "New",
+          "callee": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "PipelineProcessor",
+              "line": 117,
+              "column": 15
+            }
+          },
+          "args": [
+            {
+              "kind": "Array",
+              "elements": [
+                {
+                  "kind": "Literal",
+                  "value": 10
+                },
+                {
+                  "kind": "Literal",
+                  "value": 20
+                },
+                {
+                  "kind": "Literal",
+                  "value": 30
+                },
+                {
+                  "kind": "Literal",
+                  "value": 40
+                },
+                {
+                  "kind": "Literal",
+                  "value": 50
+                }
+              ]
+            },
+            {
+              "kind": "Array",
+              "elements": [
+                {
+                  "kind": "Literal",
+                  "value": 1
+                },
+                {
+                  "kind": "Literal",
+                  "value": 2
+                },
+                {
+                  "kind": "Literal",
+                  "value": 3
+                },
+                {
+                  "kind": "Literal",
+                  "value": 4
+                },
+                {
+                  "kind": "Literal",
+                  "value": 5
+                }
+              ]
+            },
+            {
+              "kind": "Literal",
+              "value": 15
+            },
+            {
+              "kind": "Array",
+              "elements": [
+                {
+                  "kind": "Literal",
+                  "value": 100
+                },
+                {
+                  "kind": "Literal",
+                  "value": 200
+                },
+                {
+                  "kind": "Literal",
+                  "value": 300
+                },
+                {
+                  "kind": "Literal",
+                  "value": 400
+                },
+                {
+                  "kind": "Literal",
+                  "value": 500
+                }
+              ]
+            },
+            {
+              "kind": "Literal",
+              "value": 3
+            }
+          ]
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "score",
+          "line": 125,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Binary",
+          "left": {
+            "kind": "Binary",
+            "left": {
+              "kind": "Binary",
+              "left": {
+                "kind": "Call",
+                "callee": {
+                  "kind": "Member",
+                  "object": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "proc",
+                      "line": 125,
+                      "column": 12
+                    }
+                  },
+                  "property": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "getFinalScore",
+                      "line": 125,
+                      "column": 17
+                    }
+                  }
+                },
+                "args": []
+              },
+              "operator": {
+                "type": "STAR",
+                "value": "*",
+                "line": 125,
+                "column": 33
+              },
+              "right": {
+                "kind": "Member",
+                "object": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "proc",
+                    "line": 125,
+                    "column": 35
+                  }
+                },
+                "property": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "multiplier",
+                    "line": 125,
+                    "column": 40
+                  }
+                }
+              }
+            },
+            "operator": {
+              "type": "MINUS",
+              "value": "-",
+              "line": 125,
+              "column": 51
+            },
+            "right": {
+              "kind": "Member",
+              "object": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "DataProcessor",
+                  "line": 125,
+                  "column": 53
+                }
+              },
+              "property": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "totalProcessed",
+                  "line": 125,
+                  "column": 67
+                }
+              }
+            }
+          },
+          "operator": {
+            "type": "PLUS",
+            "value": "+",
+            "line": 125,
+            "column": 82
+          },
+          "right": {
+            "kind": "Member",
+            "object": {
+              "kind": "Identifier",
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "PipelineProcessor",
+                "line": 125,
+                "column": 84
+              }
+            },
+            "property": {
+              "kind": "Identifier",
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "pipelineRuns",
+                "line": 126,
+                "column": 102
+              }
+            }
+          }
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "valid",
+          "line": 126,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Logical",
+          "left": {
+            "kind": "Logical",
+            "left": {
+              "kind": "Binary",
+              "left": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "score",
+                  "line": 126,
+                  "column": 12
+                }
+              },
+              "operator": {
+                "type": "GREATER_THAN",
+                "value": ">",
+                "line": 126,
+                "column": 18
+              },
+              "right": {
+                "kind": "Member",
+                "object": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "proc",
+                    "line": 126,
+                    "column": 20
+                  }
+                },
+                "property": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "threshold",
+                    "line": 126,
+                    "column": 25
+                  }
+                }
+              }
+            },
+            "operator": {
+              "type": "AND",
+              "value": "&&",
+              "line": 126,
+              "column": 35
+            },
+            "right": {
+              "kind": "Binary",
+              "left": {
+                "kind": "Unary",
+                "operator": {
+                  "type": "NOT",
+                  "value": "!",
+                  "line": 126,
+                  "column": 38
+                },
+                "right": {
+                  "kind": "Member",
+                  "object": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "PipelineProcessor",
+                      "line": 126,
+                      "column": 39
+                    }
+                  },
+                  "property": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "pipelineRuns",
+                      "line": 126,
+                      "column": 57
+                    }
+                  }
+                }
+              },
+              "operator": {
+                "type": "EQUAL",
+                "value": "==",
+                "line": 126,
+                "column": 70
+              },
+              "right": {
+                "kind": "Literal",
+                "value": 0
+              }
+            }
+          },
+          "operator": {
+            "type": "AND",
+            "value": "&&",
+            "line": 126,
+            "column": 75
+          },
+          "right": {
+            "kind": "Call",
+            "callee": {
+              "kind": "Member",
+              "object": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "proc",
+                  "line": 126,
+                  "column": 78
+                }
+              },
+              "property": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "isValid",
+                  "line": 126,
+                  "column": 83
+                }
+              }
+            },
+            "args": [
+              {
+                "kind": "Literal",
+                "value": 0
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

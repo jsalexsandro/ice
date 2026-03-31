@@ -1,0 +1,3916 @@
+{
+  "id": "parser_206",
+  "reference": "arquivo parser.test.md - teste 206",
+  "description": "static methods, new expressions, class inheritance with constructors and super",
+  "code": "\nclass Counter {\n    static total: int = 0\n    static instances: int = 0\n    static maxAllowed: int = 100\n    static defaultStep: int = 1\n\n    public id: int\n    public count: int = 0\n    public step: int\n    private _active: bool = true\n    protected _multiplier: int\n\n    constructor(id: int, step: int, multiplier: int) {\n        this.id = id\n        this.step = step\n        this._multiplier = multiplier\n        this.count = id * step - multiplier\n        Counter.total = Counter.total + this.count\n        Counter.instances = Counter.instances + 1\n    }\n\n    static getTotal(): int {\n        return Counter.total\n    }\n\n    static getInstance(): int {\n        return Counter.instances\n    }\n\n    static isOverLimit(): bool {\n        return Counter.instances >= Counter.maxAllowed && Counter.total > 0\n    }\n\n    static reset() {\n        Counter.total = 0\n        Counter.instances = 0\n    }\n\n    static computeGlobal(factor: int): int {\n        return Counter.total * factor - Counter.instances * Counter.defaultStep + Counter.maxAllowed\n    }\n\n    increment(): int {\n        val prev = this.count\n        this.count = this.count + this.step * this._multiplier\n        Counter.total = Counter.total + this.count - prev\n        return this.count\n    }\n\n    decrement(): int {\n        val prev = this.count\n        this.count = this.count - this.step\n        Counter.total = Counter.total - (prev - this.count)\n        return this.count\n    }\n\n    reset() {\n        Counter.total = Counter.total - this.count\n        this.count = 0\n    }\n\n    getScore(): int {\n        return this.count * this._multiplier - this.step * Counter.defaultStep + Counter.getTotal()\n    }\n\n    isActive(): bool {\n        return this._active && this.count >= 0 && !Counter.isOverLimit()\n    }\n}\n\nclass RangedCounter extends Counter {\n    public min: int\n    public max: int\n    static rangedInstances: int = 0\n    static rangedTotal: int = 0\n\n    constructor(id: int, step: int, multiplier: int, min: int, max: int) {\n        super(id, step, multiplier)\n        this.min = min\n        this.max = max\n        this.count = min + id * step - multiplier\n        RangedCounter.rangedInstances = RangedCounter.rangedInstances + 1\n        RangedCounter.rangedTotal = RangedCounter.rangedTotal + this.count\n    }\n\n    static getRangedTotal(): int {\n        return RangedCounter.rangedTotal + Counter.getTotal()\n    }\n\n    static isRangedOverLimit(): bool {\n        return RangedCounter.rangedInstances >= Counter.maxAllowed || Counter.isOverLimit()\n    }\n\n    clamp(): int {\n        if (this.count < this.min) {\n            val diff = this.min - this.count\n            Counter.total = Counter.total + diff\n            RangedCounter.rangedTotal = RangedCounter.rangedTotal + diff\n            this.count = this.min\n        }\n        if (this.count > this.max) {\n            val diff = this.count - this.max\n            Counter.total = Counter.total - diff\n            RangedCounter.rangedTotal = RangedCounter.rangedTotal - diff\n            this.count = this.max\n        }\n        return this.count\n    }\n\n    getScore(): int {\n        val base = this.count * this.max - this.min * this.step\n        val globalFactor = Counter.getTotal() * RangedCounter.getRangedTotal()\n        return base + globalFactor - Counter.computeGlobal(this._multiplier)\n    }\n\n    isInRange(): bool {\n        return this.count >= this.min && this.count <= this.max && this.isActive()\n    }\n}\n\nval c1 = new Counter(1, 2, 3)\nval c2 = new Counter(2, 3, 1)\nval r1 = new RangedCounter(1, 1, 2, 0, 100)\nval r2 = new RangedCounter(2, 2, 1, 10, 200)\n\nval totalScore = c1.getScore() * c2.getScore() - r1.getScore() + r2.getScore()\nval globalCheck = Counter.isOverLimit() && !RangedCounter.isRangedOverLimit() || Counter.getTotal() > 0\nval combined = new Counter(totalScore, Counter.defaultStep, Counter.instances).getScore() * Counter.computeGlobal(r1.step)\n",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "Class",
+        "name": "Counter",
+        "properties": [
+          {
+            "name": "total",
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 3,
+              "column": 18
+            },
+            "visibility": null,
+            "isStatic": true,
+            "initializer": {
+              "kind": "Literal",
+              "value": 0
+            }
+          },
+          {
+            "name": "instances",
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 4,
+              "column": 22
+            },
+            "visibility": null,
+            "isStatic": true,
+            "initializer": {
+              "kind": "Literal",
+              "value": 0
+            }
+          },
+          {
+            "name": "maxAllowed",
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 5,
+              "column": 23
+            },
+            "visibility": null,
+            "isStatic": true,
+            "initializer": {
+              "kind": "Literal",
+              "value": 100
+            }
+          },
+          {
+            "name": "defaultStep",
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 6,
+              "column": 24
+            },
+            "visibility": null,
+            "isStatic": true,
+            "initializer": {
+              "kind": "Literal",
+              "value": 1
+            }
+          },
+          {
+            "name": "id",
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 9,
+              "column": 15
+            },
+            "visibility": "public",
+            "isStatic": false
+          },
+          {
+            "name": "count",
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 9,
+              "column": 18
+            },
+            "visibility": "public",
+            "isStatic": false,
+            "initializer": {
+              "kind": "Literal",
+              "value": 0
+            }
+          },
+          {
+            "name": "step",
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 11,
+              "column": 17
+            },
+            "visibility": "public",
+            "isStatic": false
+          },
+          {
+            "name": "_active",
+            "type": {
+              "type": "TYPE_BOOL",
+              "value": "bool",
+              "line": 11,
+              "column": 21
+            },
+            "visibility": "private",
+            "isStatic": false,
+            "initializer": {
+              "kind": "Literal",
+              "value": true
+            }
+          },
+          {
+            "name": "_multiplier",
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 13,
+              "column": 27
+            },
+            "visibility": "protected",
+            "isStatic": false
+          }
+        ],
+        "methods": [
+          {
+            "name": "constructor",
+            "params": [
+              {
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "id",
+                  "line": 14,
+                  "column": 16
+                },
+                "type": {
+                  "type": "TYPE_INT",
+                  "value": "int",
+                  "line": 14,
+                  "column": 20
+                }
+              },
+              {
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "step",
+                  "line": 14,
+                  "column": 25
+                },
+                "type": {
+                  "type": "TYPE_INT",
+                  "value": "int",
+                  "line": 14,
+                  "column": 31
+                }
+              },
+              {
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "multiplier",
+                  "line": 14,
+                  "column": 36
+                },
+                "type": {
+                  "type": "TYPE_INT",
+                  "value": "int",
+                  "line": 14,
+                  "column": 48
+                }
+              }
+            ],
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "id",
+                          "line": 15,
+                          "column": 13
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "id",
+                        "line": 16,
+                        "column": 18
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "step",
+                          "line": 16,
+                          "column": 13
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "step",
+                        "line": 17,
+                        "column": 20
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "_multiplier",
+                          "line": 17,
+                          "column": 13
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "multiplier",
+                        "line": 18,
+                        "column": 27
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "count",
+                          "line": 18,
+                          "column": 13
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "id",
+                            "line": 18,
+                            "column": 21
+                          }
+                        },
+                        "operator": {
+                          "type": "STAR",
+                          "value": "*",
+                          "line": 18,
+                          "column": 24
+                        },
+                        "right": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "step",
+                            "line": 18,
+                            "column": 26
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "MINUS",
+                        "value": "-",
+                        "line": 18,
+                        "column": 31
+                      },
+                      "right": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "multiplier",
+                          "line": 19,
+                          "column": 33
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "Counter",
+                          "line": 19,
+                          "column": 8
+                        }
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "total",
+                          "line": 19,
+                          "column": 16
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "Counter",
+                            "line": 19,
+                            "column": 24
+                          }
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "total",
+                            "line": 19,
+                            "column": 32
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "PLUS",
+                        "value": "+",
+                        "line": 19,
+                        "column": 38
+                      },
+                      "right": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "This"
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "count",
+                            "line": 20,
+                            "column": 45
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "Counter",
+                          "line": 20,
+                          "column": 8
+                        }
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "instances",
+                          "line": 20,
+                          "column": 16
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "Counter",
+                            "line": 20,
+                            "column": 28
+                          }
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "instances",
+                            "line": 20,
+                            "column": 36
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "PLUS",
+                        "value": "+",
+                        "line": 20,
+                        "column": 46
+                      },
+                      "right": {
+                        "kind": "Literal",
+                        "value": 1
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": "public",
+            "isStatic": false
+          },
+          {
+            "name": "getTotal",
+            "params": [],
+            "returnType": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 23,
+              "column": 23
+            },
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "ReturnStmt",
+                  "value": {
+                    "kind": "Member",
+                    "object": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "Counter",
+                        "line": 24,
+                        "column": 15
+                      }
+                    },
+                    "property": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "total",
+                        "line": 25,
+                        "column": 23
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": null,
+            "isStatic": true
+          },
+          {
+            "name": "getInstance",
+            "params": [],
+            "returnType": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 27,
+              "column": 26
+            },
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "ReturnStmt",
+                  "value": {
+                    "kind": "Member",
+                    "object": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "Counter",
+                        "line": 28,
+                        "column": 15
+                      }
+                    },
+                    "property": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "instances",
+                        "line": 29,
+                        "column": 23
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": null,
+            "isStatic": true
+          },
+          {
+            "name": "isOverLimit",
+            "params": [],
+            "returnType": {
+              "type": "TYPE_BOOL",
+              "value": "bool",
+              "line": 31,
+              "column": 26
+            },
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "ReturnStmt",
+                  "value": {
+                    "kind": "Logical",
+                    "left": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "Counter",
+                            "line": 32,
+                            "column": 15
+                          }
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "instances",
+                            "line": 32,
+                            "column": 23
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "GREATER_EQUAL",
+                        "value": ">=",
+                        "line": 32,
+                        "column": 33
+                      },
+                      "right": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "Counter",
+                            "line": 32,
+                            "column": 36
+                          }
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "maxAllowed",
+                            "line": 32,
+                            "column": 44
+                          }
+                        }
+                      }
+                    },
+                    "operator": {
+                      "type": "AND",
+                      "value": "&&",
+                      "line": 32,
+                      "column": 55
+                    },
+                    "right": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "Counter",
+                            "line": 32,
+                            "column": 58
+                          }
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "total",
+                            "line": 32,
+                            "column": 66
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "GREATER_THAN",
+                        "value": ">",
+                        "line": 32,
+                        "column": 72
+                      },
+                      "right": {
+                        "kind": "Literal",
+                        "value": 0
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": null,
+            "isStatic": true
+          },
+          {
+            "name": "reset",
+            "params": [],
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "Counter",
+                          "line": 36,
+                          "column": 8
+                        }
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "total",
+                          "line": 36,
+                          "column": 16
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Literal",
+                      "value": 0
+                    }
+                  }
+                },
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "Counter",
+                          "line": 37,
+                          "column": 8
+                        }
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "instances",
+                          "line": 37,
+                          "column": 16
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Literal",
+                      "value": 0
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": null,
+            "isStatic": true
+          },
+          {
+            "name": "computeGlobal",
+            "params": [
+              {
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "factor",
+                  "line": 40,
+                  "column": 25
+                },
+                "type": {
+                  "type": "TYPE_INT",
+                  "value": "int",
+                  "line": 40,
+                  "column": 33
+                }
+              }
+            ],
+            "returnType": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 40,
+              "column": 39
+            },
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "ReturnStmt",
+                  "value": {
+                    "kind": "Binary",
+                    "left": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "Counter",
+                              "line": 41,
+                              "column": 15
+                            }
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "total",
+                              "line": 41,
+                              "column": 23
+                            }
+                          }
+                        },
+                        "operator": {
+                          "type": "STAR",
+                          "value": "*",
+                          "line": 41,
+                          "column": 29
+                        },
+                        "right": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "factor",
+                            "line": 41,
+                            "column": 31
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "MINUS",
+                        "value": "-",
+                        "line": 41,
+                        "column": 38
+                      },
+                      "right": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "Counter",
+                              "line": 41,
+                              "column": 40
+                            }
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "instances",
+                              "line": 41,
+                              "column": 48
+                            }
+                          }
+                        },
+                        "operator": {
+                          "type": "STAR",
+                          "value": "*",
+                          "line": 41,
+                          "column": 58
+                        },
+                        "right": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "Counter",
+                              "line": 41,
+                              "column": 60
+                            }
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "defaultStep",
+                              "line": 41,
+                              "column": 68
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "operator": {
+                      "type": "PLUS",
+                      "value": "+",
+                      "line": 41,
+                      "column": 80
+                    },
+                    "right": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "Counter",
+                          "line": 41,
+                          "column": 82
+                        }
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "maxAllowed",
+                          "line": 42,
+                          "column": 90
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": null,
+            "isStatic": true
+          },
+          {
+            "name": "increment",
+            "params": [],
+            "returnType": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 44,
+              "column": 17
+            },
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "VarStmt",
+                  "type": "val",
+                  "typeAnnotation": null,
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "prev",
+                    "line": 45,
+                    "column": 12
+                  },
+                  "initializer": {
+                    "kind": "Member",
+                    "object": {
+                      "kind": "This"
+                    },
+                    "property": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "count",
+                        "line": 46,
+                        "column": 24
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "count",
+                          "line": 46,
+                          "column": 13
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "This"
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "count",
+                            "line": 46,
+                            "column": 26
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "PLUS",
+                        "value": "+",
+                        "line": 46,
+                        "column": 32
+                      },
+                      "right": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "step",
+                              "line": 46,
+                              "column": 39
+                            }
+                          }
+                        },
+                        "operator": {
+                          "type": "STAR",
+                          "value": "*",
+                          "line": 46,
+                          "column": 44
+                        },
+                        "right": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "_multiplier",
+                              "line": 47,
+                              "column": 51
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "Counter",
+                          "line": 47,
+                          "column": 8
+                        }
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "total",
+                          "line": 47,
+                          "column": 16
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "Counter",
+                              "line": 47,
+                              "column": 24
+                            }
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "total",
+                              "line": 47,
+                              "column": 32
+                            }
+                          }
+                        },
+                        "operator": {
+                          "type": "PLUS",
+                          "value": "+",
+                          "line": 47,
+                          "column": 38
+                        },
+                        "right": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "count",
+                              "line": 47,
+                              "column": 45
+                            }
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "MINUS",
+                        "value": "-",
+                        "line": 47,
+                        "column": 51
+                      },
+                      "right": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "prev",
+                          "line": 48,
+                          "column": 53
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "ReturnStmt",
+                  "value": {
+                    "kind": "Member",
+                    "object": {
+                      "kind": "This"
+                    },
+                    "property": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "count",
+                        "line": 49,
+                        "column": 20
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": null,
+            "isStatic": false
+          },
+          {
+            "name": "decrement",
+            "params": [],
+            "returnType": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 51,
+              "column": 17
+            },
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "VarStmt",
+                  "type": "val",
+                  "typeAnnotation": null,
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "prev",
+                    "line": 52,
+                    "column": 12
+                  },
+                  "initializer": {
+                    "kind": "Member",
+                    "object": {
+                      "kind": "This"
+                    },
+                    "property": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "count",
+                        "line": 53,
+                        "column": 24
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "count",
+                          "line": 53,
+                          "column": 13
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "This"
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "count",
+                            "line": 53,
+                            "column": 26
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "MINUS",
+                        "value": "-",
+                        "line": 53,
+                        "column": 32
+                      },
+                      "right": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "This"
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "step",
+                            "line": 54,
+                            "column": 39
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "Counter",
+                          "line": 54,
+                          "column": 8
+                        }
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "total",
+                          "line": 54,
+                          "column": 16
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "Counter",
+                            "line": 54,
+                            "column": 24
+                          }
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "total",
+                            "line": 54,
+                            "column": 32
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "MINUS",
+                        "value": "-",
+                        "line": 54,
+                        "column": 38
+                      },
+                      "right": {
+                        "kind": "Group",
+                        "expression": {
+                          "kind": "Binary",
+                          "left": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "prev",
+                              "line": 54,
+                              "column": 41
+                            }
+                          },
+                          "operator": {
+                            "type": "MINUS",
+                            "value": "-",
+                            "line": 54,
+                            "column": 46
+                          },
+                          "right": {
+                            "kind": "Member",
+                            "object": {
+                              "kind": "This"
+                            },
+                            "property": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "count",
+                                "line": 54,
+                                "column": 53
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "ReturnStmt",
+                  "value": {
+                    "kind": "Member",
+                    "object": {
+                      "kind": "This"
+                    },
+                    "property": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "count",
+                        "line": 56,
+                        "column": 20
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": null,
+            "isStatic": false
+          },
+          {
+            "name": "reset",
+            "params": [],
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "Counter",
+                          "line": 59,
+                          "column": 8
+                        }
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "total",
+                          "line": 59,
+                          "column": 16
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "Counter",
+                            "line": 59,
+                            "column": 24
+                          }
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "total",
+                            "line": 59,
+                            "column": 32
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "MINUS",
+                        "value": "-",
+                        "line": 59,
+                        "column": 38
+                      },
+                      "right": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "This"
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "count",
+                            "line": 60,
+                            "column": 45
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "count",
+                          "line": 60,
+                          "column": 13
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Literal",
+                      "value": 0
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": null,
+            "isStatic": false
+          },
+          {
+            "name": "getScore",
+            "params": [],
+            "returnType": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 63,
+              "column": 16
+            },
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "ReturnStmt",
+                  "value": {
+                    "kind": "Binary",
+                    "left": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "count",
+                              "line": 64,
+                              "column": 20
+                            }
+                          }
+                        },
+                        "operator": {
+                          "type": "STAR",
+                          "value": "*",
+                          "line": 64,
+                          "column": 26
+                        },
+                        "right": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "_multiplier",
+                              "line": 64,
+                              "column": 33
+                            }
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "MINUS",
+                        "value": "-",
+                        "line": 64,
+                        "column": 45
+                      },
+                      "right": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "step",
+                              "line": 64,
+                              "column": 52
+                            }
+                          }
+                        },
+                        "operator": {
+                          "type": "STAR",
+                          "value": "*",
+                          "line": 64,
+                          "column": 57
+                        },
+                        "right": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "Counter",
+                              "line": 64,
+                              "column": 59
+                            }
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "defaultStep",
+                              "line": 64,
+                              "column": 67
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "operator": {
+                      "type": "PLUS",
+                      "value": "+",
+                      "line": 64,
+                      "column": 79
+                    },
+                    "right": {
+                      "kind": "Call",
+                      "callee": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "Counter",
+                            "line": 64,
+                            "column": 81
+                          }
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "getTotal",
+                            "line": 64,
+                            "column": 89
+                          }
+                        }
+                      },
+                      "args": []
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": null,
+            "isStatic": false
+          },
+          {
+            "name": "isActive",
+            "params": [],
+            "returnType": {
+              "type": "TYPE_BOOL",
+              "value": "bool",
+              "line": 67,
+              "column": 16
+            },
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "ReturnStmt",
+                  "value": {
+                    "kind": "Logical",
+                    "left": {
+                      "kind": "Logical",
+                      "left": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "This"
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "_active",
+                            "line": 68,
+                            "column": 20
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "AND",
+                        "value": "&&",
+                        "line": 68,
+                        "column": 28
+                      },
+                      "right": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "count",
+                              "line": 68,
+                              "column": 36
+                            }
+                          }
+                        },
+                        "operator": {
+                          "type": "GREATER_EQUAL",
+                          "value": ">=",
+                          "line": 68,
+                          "column": 42
+                        },
+                        "right": {
+                          "kind": "Literal",
+                          "value": 0
+                        }
+                      }
+                    },
+                    "operator": {
+                      "type": "AND",
+                      "value": "&&",
+                      "line": 68,
+                      "column": 47
+                    },
+                    "right": {
+                      "kind": "Unary",
+                      "operator": {
+                        "type": "NOT",
+                        "value": "!",
+                        "line": 68,
+                        "column": 50
+                      },
+                      "right": {
+                        "kind": "Call",
+                        "callee": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "Counter",
+                              "line": 68,
+                              "column": 51
+                            }
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "isOverLimit",
+                              "line": 68,
+                              "column": 59
+                            }
+                          }
+                        },
+                        "args": []
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": null,
+            "isStatic": false
+          }
+        ]
+      },
+      {
+        "kind": "Class",
+        "name": "RangedCounter",
+        "extends": "Counter",
+        "properties": [
+          {
+            "name": "min",
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 74,
+              "column": 16
+            },
+            "visibility": "public",
+            "isStatic": false
+          },
+          {
+            "name": "max",
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 75,
+              "column": 16
+            },
+            "visibility": "public",
+            "isStatic": false
+          },
+          {
+            "name": "rangedInstances",
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 75,
+              "column": 28
+            },
+            "visibility": null,
+            "isStatic": true,
+            "initializer": {
+              "kind": "Literal",
+              "value": 0
+            }
+          },
+          {
+            "name": "rangedTotal",
+            "type": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 76,
+              "column": 24
+            },
+            "visibility": null,
+            "isStatic": true,
+            "initializer": {
+              "kind": "Literal",
+              "value": 0
+            }
+          }
+        ],
+        "methods": [
+          {
+            "name": "constructor",
+            "params": [
+              {
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "id",
+                  "line": 78,
+                  "column": 16
+                },
+                "type": {
+                  "type": "TYPE_INT",
+                  "value": "int",
+                  "line": 78,
+                  "column": 20
+                }
+              },
+              {
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "step",
+                  "line": 78,
+                  "column": 25
+                },
+                "type": {
+                  "type": "TYPE_INT",
+                  "value": "int",
+                  "line": 78,
+                  "column": 31
+                }
+              },
+              {
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "multiplier",
+                  "line": 78,
+                  "column": 36
+                },
+                "type": {
+                  "type": "TYPE_INT",
+                  "value": "int",
+                  "line": 78,
+                  "column": 48
+                }
+              },
+              {
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "min",
+                  "line": 78,
+                  "column": 53
+                },
+                "type": {
+                  "type": "TYPE_INT",
+                  "value": "int",
+                  "line": 78,
+                  "column": 58
+                }
+              },
+              {
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "max",
+                  "line": 78,
+                  "column": 63
+                },
+                "type": {
+                  "type": "TYPE_INT",
+                  "value": "int",
+                  "line": 78,
+                  "column": 68
+                }
+              }
+            ],
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Call",
+                    "callee": {
+                      "kind": "Super"
+                    },
+                    "args": [
+                      {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "id",
+                          "line": 79,
+                          "column": 14
+                        }
+                      },
+                      {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "step",
+                          "line": 79,
+                          "column": 18
+                        }
+                      },
+                      {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "multiplier",
+                          "line": 79,
+                          "column": 24
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "min",
+                          "line": 80,
+                          "column": 13
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "min",
+                        "line": 81,
+                        "column": 19
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "max",
+                          "line": 81,
+                          "column": 13
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "max",
+                        "line": 82,
+                        "column": 19
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "count",
+                          "line": 82,
+                          "column": 13
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "min",
+                            "line": 82,
+                            "column": 21
+                          }
+                        },
+                        "operator": {
+                          "type": "PLUS",
+                          "value": "+",
+                          "line": 82,
+                          "column": 25
+                        },
+                        "right": {
+                          "kind": "Binary",
+                          "left": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "id",
+                              "line": 82,
+                              "column": 27
+                            }
+                          },
+                          "operator": {
+                            "type": "STAR",
+                            "value": "*",
+                            "line": 82,
+                            "column": 30
+                          },
+                          "right": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "step",
+                              "line": 82,
+                              "column": 32
+                            }
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "MINUS",
+                        "value": "-",
+                        "line": 82,
+                        "column": 37
+                      },
+                      "right": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "multiplier",
+                          "line": 83,
+                          "column": 39
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "RangedCounter",
+                          "line": 83,
+                          "column": 8
+                        }
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "rangedInstances",
+                          "line": 83,
+                          "column": 22
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "RangedCounter",
+                            "line": 83,
+                            "column": 40
+                          }
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "rangedInstances",
+                            "line": 83,
+                            "column": 54
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "PLUS",
+                        "value": "+",
+                        "line": 83,
+                        "column": 70
+                      },
+                      "right": {
+                        "kind": "Literal",
+                        "value": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "ExpressionStmt",
+                  "expression": {
+                    "kind": "Assign",
+                    "name": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "RangedCounter",
+                          "line": 84,
+                          "column": 8
+                        }
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "rangedTotal",
+                          "line": 84,
+                          "column": 22
+                        }
+                      }
+                    },
+                    "value": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "RangedCounter",
+                            "line": 84,
+                            "column": 36
+                          }
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "rangedTotal",
+                            "line": 84,
+                            "column": 50
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "PLUS",
+                        "value": "+",
+                        "line": 84,
+                        "column": 62
+                      },
+                      "right": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "This"
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "count",
+                            "line": 85,
+                            "column": 69
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": "public",
+            "isStatic": false
+          },
+          {
+            "name": "getRangedTotal",
+            "params": [],
+            "returnType": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 87,
+              "column": 29
+            },
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "ReturnStmt",
+                  "value": {
+                    "kind": "Binary",
+                    "left": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "RangedCounter",
+                          "line": 88,
+                          "column": 15
+                        }
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "rangedTotal",
+                          "line": 88,
+                          "column": 29
+                        }
+                      }
+                    },
+                    "operator": {
+                      "type": "PLUS",
+                      "value": "+",
+                      "line": 88,
+                      "column": 41
+                    },
+                    "right": {
+                      "kind": "Call",
+                      "callee": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "Counter",
+                            "line": 88,
+                            "column": 43
+                          }
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "getTotal",
+                            "line": 88,
+                            "column": 51
+                          }
+                        }
+                      },
+                      "args": []
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": null,
+            "isStatic": true
+          },
+          {
+            "name": "isRangedOverLimit",
+            "params": [],
+            "returnType": {
+              "type": "TYPE_BOOL",
+              "value": "bool",
+              "line": 91,
+              "column": 32
+            },
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "ReturnStmt",
+                  "value": {
+                    "kind": "Logical",
+                    "left": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "RangedCounter",
+                            "line": 92,
+                            "column": 15
+                          }
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "rangedInstances",
+                            "line": 92,
+                            "column": 29
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "GREATER_EQUAL",
+                        "value": ">=",
+                        "line": 92,
+                        "column": 45
+                      },
+                      "right": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "Counter",
+                            "line": 92,
+                            "column": 48
+                          }
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "maxAllowed",
+                            "line": 92,
+                            "column": 56
+                          }
+                        }
+                      }
+                    },
+                    "operator": {
+                      "type": "OR",
+                      "value": "||",
+                      "line": 92,
+                      "column": 67
+                    },
+                    "right": {
+                      "kind": "Call",
+                      "callee": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "Counter",
+                            "line": 92,
+                            "column": 70
+                          }
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "isOverLimit",
+                            "line": 92,
+                            "column": 78
+                          }
+                        }
+                      },
+                      "args": []
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": null,
+            "isStatic": true
+          },
+          {
+            "name": "clamp",
+            "params": [],
+            "returnType": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 95,
+              "column": 13
+            },
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "IfStmt",
+                  "condition": {
+                    "kind": "Binary",
+                    "left": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "count",
+                          "line": 96,
+                          "column": 17
+                        }
+                      }
+                    },
+                    "operator": {
+                      "type": "LESS_THAN",
+                      "value": "<",
+                      "line": 96,
+                      "column": 23
+                    },
+                    "right": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "min",
+                          "line": 96,
+                          "column": 30
+                        }
+                      }
+                    }
+                  },
+                  "thenBranch": {
+                    "kind": "BlockStmt",
+                    "statements": [
+                      {
+                        "kind": "VarStmt",
+                        "type": "val",
+                        "typeAnnotation": null,
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "diff",
+                          "line": 97,
+                          "column": 16
+                        },
+                        "initializer": {
+                          "kind": "Binary",
+                          "left": {
+                            "kind": "Member",
+                            "object": {
+                              "kind": "This"
+                            },
+                            "property": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "min",
+                                "line": 97,
+                                "column": 28
+                              }
+                            }
+                          },
+                          "operator": {
+                            "type": "MINUS",
+                            "value": "-",
+                            "line": 97,
+                            "column": 32
+                          },
+                          "right": {
+                            "kind": "Member",
+                            "object": {
+                              "kind": "This"
+                            },
+                            "property": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "count",
+                                "line": 98,
+                                "column": 39
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "kind": "ExpressionStmt",
+                        "expression": {
+                          "kind": "Assign",
+                          "name": {
+                            "kind": "Member",
+                            "object": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "Counter",
+                                "line": 98,
+                                "column": 12
+                              }
+                            },
+                            "property": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "total",
+                                "line": 98,
+                                "column": 20
+                              }
+                            }
+                          },
+                          "value": {
+                            "kind": "Binary",
+                            "left": {
+                              "kind": "Member",
+                              "object": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "Counter",
+                                  "line": 98,
+                                  "column": 28
+                                }
+                              },
+                              "property": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "total",
+                                  "line": 98,
+                                  "column": 36
+                                }
+                              }
+                            },
+                            "operator": {
+                              "type": "PLUS",
+                              "value": "+",
+                              "line": 98,
+                              "column": 42
+                            },
+                            "right": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "diff",
+                                "line": 99,
+                                "column": 44
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "kind": "ExpressionStmt",
+                        "expression": {
+                          "kind": "Assign",
+                          "name": {
+                            "kind": "Member",
+                            "object": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "RangedCounter",
+                                "line": 99,
+                                "column": 12
+                              }
+                            },
+                            "property": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "rangedTotal",
+                                "line": 99,
+                                "column": 26
+                              }
+                            }
+                          },
+                          "value": {
+                            "kind": "Binary",
+                            "left": {
+                              "kind": "Member",
+                              "object": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "RangedCounter",
+                                  "line": 99,
+                                  "column": 40
+                                }
+                              },
+                              "property": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "rangedTotal",
+                                  "line": 99,
+                                  "column": 54
+                                }
+                              }
+                            },
+                            "operator": {
+                              "type": "PLUS",
+                              "value": "+",
+                              "line": 99,
+                              "column": 66
+                            },
+                            "right": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "diff",
+                                "line": 100,
+                                "column": 68
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "kind": "ExpressionStmt",
+                        "expression": {
+                          "kind": "Assign",
+                          "name": {
+                            "kind": "Member",
+                            "object": {
+                              "kind": "This"
+                            },
+                            "property": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "count",
+                                "line": 100,
+                                "column": 17
+                              }
+                            }
+                          },
+                          "value": {
+                            "kind": "Member",
+                            "object": {
+                              "kind": "This"
+                            },
+                            "property": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "min",
+                                "line": 101,
+                                "column": 30
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "IfStmt",
+                  "condition": {
+                    "kind": "Binary",
+                    "left": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "count",
+                          "line": 102,
+                          "column": 17
+                        }
+                      }
+                    },
+                    "operator": {
+                      "type": "GREATER_THAN",
+                      "value": ">",
+                      "line": 102,
+                      "column": 23
+                    },
+                    "right": {
+                      "kind": "Member",
+                      "object": {
+                        "kind": "This"
+                      },
+                      "property": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "max",
+                          "line": 102,
+                          "column": 30
+                        }
+                      }
+                    }
+                  },
+                  "thenBranch": {
+                    "kind": "BlockStmt",
+                    "statements": [
+                      {
+                        "kind": "VarStmt",
+                        "type": "val",
+                        "typeAnnotation": null,
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "diff",
+                          "line": 103,
+                          "column": 16
+                        },
+                        "initializer": {
+                          "kind": "Binary",
+                          "left": {
+                            "kind": "Member",
+                            "object": {
+                              "kind": "This"
+                            },
+                            "property": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "count",
+                                "line": 103,
+                                "column": 28
+                              }
+                            }
+                          },
+                          "operator": {
+                            "type": "MINUS",
+                            "value": "-",
+                            "line": 103,
+                            "column": 34
+                          },
+                          "right": {
+                            "kind": "Member",
+                            "object": {
+                              "kind": "This"
+                            },
+                            "property": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "max",
+                                "line": 104,
+                                "column": 41
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "kind": "ExpressionStmt",
+                        "expression": {
+                          "kind": "Assign",
+                          "name": {
+                            "kind": "Member",
+                            "object": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "Counter",
+                                "line": 104,
+                                "column": 12
+                              }
+                            },
+                            "property": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "total",
+                                "line": 104,
+                                "column": 20
+                              }
+                            }
+                          },
+                          "value": {
+                            "kind": "Binary",
+                            "left": {
+                              "kind": "Member",
+                              "object": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "Counter",
+                                  "line": 104,
+                                  "column": 28
+                                }
+                              },
+                              "property": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "total",
+                                  "line": 104,
+                                  "column": 36
+                                }
+                              }
+                            },
+                            "operator": {
+                              "type": "MINUS",
+                              "value": "-",
+                              "line": 104,
+                              "column": 42
+                            },
+                            "right": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "diff",
+                                "line": 105,
+                                "column": 44
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "kind": "ExpressionStmt",
+                        "expression": {
+                          "kind": "Assign",
+                          "name": {
+                            "kind": "Member",
+                            "object": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "RangedCounter",
+                                "line": 105,
+                                "column": 12
+                              }
+                            },
+                            "property": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "rangedTotal",
+                                "line": 105,
+                                "column": 26
+                              }
+                            }
+                          },
+                          "value": {
+                            "kind": "Binary",
+                            "left": {
+                              "kind": "Member",
+                              "object": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "RangedCounter",
+                                  "line": 105,
+                                  "column": 40
+                                }
+                              },
+                              "property": {
+                                "kind": "Identifier",
+                                "name": {
+                                  "type": "IDENTIFIER",
+                                  "value": "rangedTotal",
+                                  "line": 105,
+                                  "column": 54
+                                }
+                              }
+                            },
+                            "operator": {
+                              "type": "MINUS",
+                              "value": "-",
+                              "line": 105,
+                              "column": 66
+                            },
+                            "right": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "diff",
+                                "line": 106,
+                                "column": 68
+                              }
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "kind": "ExpressionStmt",
+                        "expression": {
+                          "kind": "Assign",
+                          "name": {
+                            "kind": "Member",
+                            "object": {
+                              "kind": "This"
+                            },
+                            "property": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "count",
+                                "line": 106,
+                                "column": 17
+                              }
+                            }
+                          },
+                          "value": {
+                            "kind": "Member",
+                            "object": {
+                              "kind": "This"
+                            },
+                            "property": {
+                              "kind": "Identifier",
+                              "name": {
+                                "type": "IDENTIFIER",
+                                "value": "max",
+                                "line": 107,
+                                "column": 30
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "ReturnStmt",
+                  "value": {
+                    "kind": "Member",
+                    "object": {
+                      "kind": "This"
+                    },
+                    "property": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "count",
+                        "line": 109,
+                        "column": 20
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": null,
+            "isStatic": false
+          },
+          {
+            "name": "getScore",
+            "params": [],
+            "returnType": {
+              "type": "TYPE_INT",
+              "value": "int",
+              "line": 111,
+              "column": 16
+            },
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "VarStmt",
+                  "type": "val",
+                  "typeAnnotation": null,
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "base",
+                    "line": 112,
+                    "column": 12
+                  },
+                  "initializer": {
+                    "kind": "Binary",
+                    "left": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "This"
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "count",
+                            "line": 112,
+                            "column": 24
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "STAR",
+                        "value": "*",
+                        "line": 112,
+                        "column": 30
+                      },
+                      "right": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "This"
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "max",
+                            "line": 112,
+                            "column": 37
+                          }
+                        }
+                      }
+                    },
+                    "operator": {
+                      "type": "MINUS",
+                      "value": "-",
+                      "line": 112,
+                      "column": 41
+                    },
+                    "right": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "This"
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "min",
+                            "line": 112,
+                            "column": 48
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "STAR",
+                        "value": "*",
+                        "line": 112,
+                        "column": 52
+                      },
+                      "right": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "This"
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "step",
+                            "line": 113,
+                            "column": 59
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "kind": "VarStmt",
+                  "type": "val",
+                  "typeAnnotation": null,
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "globalFactor",
+                    "line": 113,
+                    "column": 12
+                  },
+                  "initializer": {
+                    "kind": "Binary",
+                    "left": {
+                      "kind": "Call",
+                      "callee": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "Counter",
+                            "line": 113,
+                            "column": 27
+                          }
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "getTotal",
+                            "line": 113,
+                            "column": 35
+                          }
+                        }
+                      },
+                      "args": []
+                    },
+                    "operator": {
+                      "type": "STAR",
+                      "value": "*",
+                      "line": 113,
+                      "column": 46
+                    },
+                    "right": {
+                      "kind": "Call",
+                      "callee": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "RangedCounter",
+                            "line": 113,
+                            "column": 48
+                          }
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "getRangedTotal",
+                            "line": 113,
+                            "column": 62
+                          }
+                        }
+                      },
+                      "args": []
+                    }
+                  }
+                },
+                {
+                  "kind": "ReturnStmt",
+                  "value": {
+                    "kind": "Binary",
+                    "left": {
+                      "kind": "Binary",
+                      "left": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "base",
+                          "line": 114,
+                          "column": 15
+                        }
+                      },
+                      "operator": {
+                        "type": "PLUS",
+                        "value": "+",
+                        "line": 114,
+                        "column": 20
+                      },
+                      "right": {
+                        "kind": "Identifier",
+                        "name": {
+                          "type": "IDENTIFIER",
+                          "value": "globalFactor",
+                          "line": 114,
+                          "column": 22
+                        }
+                      }
+                    },
+                    "operator": {
+                      "type": "MINUS",
+                      "value": "-",
+                      "line": 114,
+                      "column": 35
+                    },
+                    "right": {
+                      "kind": "Call",
+                      "callee": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "Counter",
+                            "line": 114,
+                            "column": 37
+                          }
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "computeGlobal",
+                            "line": 114,
+                            "column": 45
+                          }
+                        }
+                      },
+                      "args": [
+                        {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "_multiplier",
+                              "line": 114,
+                              "column": 64
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": null,
+            "isStatic": false
+          },
+          {
+            "name": "isInRange",
+            "params": [],
+            "returnType": {
+              "type": "TYPE_BOOL",
+              "value": "bool",
+              "line": 117,
+              "column": 17
+            },
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "ReturnStmt",
+                  "value": {
+                    "kind": "Logical",
+                    "left": {
+                      "kind": "Logical",
+                      "left": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "count",
+                              "line": 118,
+                              "column": 20
+                            }
+                          }
+                        },
+                        "operator": {
+                          "type": "GREATER_EQUAL",
+                          "value": ">=",
+                          "line": 118,
+                          "column": 26
+                        },
+                        "right": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "min",
+                              "line": 118,
+                              "column": 34
+                            }
+                          }
+                        }
+                      },
+                      "operator": {
+                        "type": "AND",
+                        "value": "&&",
+                        "line": 118,
+                        "column": 38
+                      },
+                      "right": {
+                        "kind": "Binary",
+                        "left": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "count",
+                              "line": 118,
+                              "column": 46
+                            }
+                          }
+                        },
+                        "operator": {
+                          "type": "LESS_EQUAL",
+                          "value": "<=",
+                          "line": 118,
+                          "column": 52
+                        },
+                        "right": {
+                          "kind": "Member",
+                          "object": {
+                            "kind": "This"
+                          },
+                          "property": {
+                            "kind": "Identifier",
+                            "name": {
+                              "type": "IDENTIFIER",
+                              "value": "max",
+                              "line": 118,
+                              "column": 60
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "operator": {
+                      "type": "AND",
+                      "value": "&&",
+                      "line": 118,
+                      "column": 64
+                    },
+                    "right": {
+                      "kind": "Call",
+                      "callee": {
+                        "kind": "Member",
+                        "object": {
+                          "kind": "This"
+                        },
+                        "property": {
+                          "kind": "Identifier",
+                          "name": {
+                            "type": "IDENTIFIER",
+                            "value": "isActive",
+                            "line": 118,
+                            "column": 72
+                          }
+                        }
+                      },
+                      "args": []
+                    }
+                  }
+                }
+              ]
+            },
+            "visibility": null,
+            "isStatic": false
+          }
+        ]
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "c1",
+          "line": 122,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "New",
+          "callee": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "Counter",
+              "line": 122,
+              "column": 13
+            }
+          },
+          "args": [
+            {
+              "kind": "Literal",
+              "value": 1
+            },
+            {
+              "kind": "Literal",
+              "value": 2
+            },
+            {
+              "kind": "Literal",
+              "value": 3
+            }
+          ]
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "c2",
+          "line": 123,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "New",
+          "callee": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "Counter",
+              "line": 123,
+              "column": 13
+            }
+          },
+          "args": [
+            {
+              "kind": "Literal",
+              "value": 2
+            },
+            {
+              "kind": "Literal",
+              "value": 3
+            },
+            {
+              "kind": "Literal",
+              "value": 1
+            }
+          ]
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "r1",
+          "line": 124,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "New",
+          "callee": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "RangedCounter",
+              "line": 124,
+              "column": 13
+            }
+          },
+          "args": [
+            {
+              "kind": "Literal",
+              "value": 1
+            },
+            {
+              "kind": "Literal",
+              "value": 1
+            },
+            {
+              "kind": "Literal",
+              "value": 2
+            },
+            {
+              "kind": "Literal",
+              "value": 0
+            },
+            {
+              "kind": "Literal",
+              "value": 100
+            }
+          ]
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "r2",
+          "line": 125,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "New",
+          "callee": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "RangedCounter",
+              "line": 125,
+              "column": 13
+            }
+          },
+          "args": [
+            {
+              "kind": "Literal",
+              "value": 2
+            },
+            {
+              "kind": "Literal",
+              "value": 2
+            },
+            {
+              "kind": "Literal",
+              "value": 1
+            },
+            {
+              "kind": "Literal",
+              "value": 10
+            },
+            {
+              "kind": "Literal",
+              "value": 200
+            }
+          ]
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "totalScore",
+          "line": 127,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Binary",
+          "left": {
+            "kind": "Binary",
+            "left": {
+              "kind": "Binary",
+              "left": {
+                "kind": "Call",
+                "callee": {
+                  "kind": "Member",
+                  "object": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "c1",
+                      "line": 127,
+                      "column": 17
+                    }
+                  },
+                  "property": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "getScore",
+                      "line": 127,
+                      "column": 20
+                    }
+                  }
+                },
+                "args": []
+              },
+              "operator": {
+                "type": "STAR",
+                "value": "*",
+                "line": 127,
+                "column": 31
+              },
+              "right": {
+                "kind": "Call",
+                "callee": {
+                  "kind": "Member",
+                  "object": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "c2",
+                      "line": 127,
+                      "column": 33
+                    }
+                  },
+                  "property": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "getScore",
+                      "line": 127,
+                      "column": 36
+                    }
+                  }
+                },
+                "args": []
+              }
+            },
+            "operator": {
+              "type": "MINUS",
+              "value": "-",
+              "line": 127,
+              "column": 47
+            },
+            "right": {
+              "kind": "Call",
+              "callee": {
+                "kind": "Member",
+                "object": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "r1",
+                    "line": 127,
+                    "column": 49
+                  }
+                },
+                "property": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "getScore",
+                    "line": 127,
+                    "column": 52
+                  }
+                }
+              },
+              "args": []
+            }
+          },
+          "operator": {
+            "type": "PLUS",
+            "value": "+",
+            "line": 127,
+            "column": 63
+          },
+          "right": {
+            "kind": "Call",
+            "callee": {
+              "kind": "Member",
+              "object": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "r2",
+                  "line": 127,
+                  "column": 65
+                }
+              },
+              "property": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "getScore",
+                  "line": 127,
+                  "column": 68
+                }
+              }
+            },
+            "args": []
+          }
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "globalCheck",
+          "line": 128,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Logical",
+          "left": {
+            "kind": "Logical",
+            "left": {
+              "kind": "Call",
+              "callee": {
+                "kind": "Member",
+                "object": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "Counter",
+                    "line": 128,
+                    "column": 18
+                  }
+                },
+                "property": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "isOverLimit",
+                    "line": 128,
+                    "column": 26
+                  }
+                }
+              },
+              "args": []
+            },
+            "operator": {
+              "type": "AND",
+              "value": "&&",
+              "line": 128,
+              "column": 40
+            },
+            "right": {
+              "kind": "Unary",
+              "operator": {
+                "type": "NOT",
+                "value": "!",
+                "line": 128,
+                "column": 43
+              },
+              "right": {
+                "kind": "Call",
+                "callee": {
+                  "kind": "Member",
+                  "object": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "RangedCounter",
+                      "line": 128,
+                      "column": 44
+                    }
+                  },
+                  "property": {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "isRangedOverLimit",
+                      "line": 128,
+                      "column": 58
+                    }
+                  }
+                },
+                "args": []
+              }
+            }
+          },
+          "operator": {
+            "type": "OR",
+            "value": "||",
+            "line": 128,
+            "column": 78
+          },
+          "right": {
+            "kind": "Binary",
+            "left": {
+              "kind": "Call",
+              "callee": {
+                "kind": "Member",
+                "object": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "Counter",
+                    "line": 128,
+                    "column": 81
+                  }
+                },
+                "property": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "getTotal",
+                    "line": 128,
+                    "column": 89
+                  }
+                }
+              },
+              "args": []
+            },
+            "operator": {
+              "type": "GREATER_THAN",
+              "value": ">",
+              "line": 128,
+              "column": 100
+            },
+            "right": {
+              "kind": "Literal",
+              "value": 0
+            }
+          }
+        }
+      },
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "combined",
+          "line": 129,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Binary",
+          "left": {
+            "kind": "Call",
+            "callee": {
+              "kind": "Member",
+              "object": {
+                "kind": "New",
+                "callee": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "Counter",
+                    "line": 129,
+                    "column": 19
+                  }
+                },
+                "args": [
+                  {
+                    "kind": "Identifier",
+                    "name": {
+                      "type": "IDENTIFIER",
+                      "value": "totalScore",
+                      "line": 129,
+                      "column": 27
+                    }
+                  },
+                  {
+                    "kind": "Member",
+                    "object": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "Counter",
+                        "line": 129,
+                        "column": 39
+                      }
+                    },
+                    "property": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "defaultStep",
+                        "line": 129,
+                        "column": 47
+                      }
+                    }
+                  },
+                  {
+                    "kind": "Member",
+                    "object": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "Counter",
+                        "line": 129,
+                        "column": 60
+                      }
+                    },
+                    "property": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "instances",
+                        "line": 129,
+                        "column": 68
+                      }
+                    }
+                  }
+                ]
+              },
+              "property": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "getScore",
+                  "line": 129,
+                  "column": 79
+                }
+              }
+            },
+            "args": []
+          },
+          "operator": {
+            "type": "STAR",
+            "value": "*",
+            "line": 129,
+            "column": 90
+          },
+          "right": {
+            "kind": "Call",
+            "callee": {
+              "kind": "Member",
+              "object": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "Counter",
+                  "line": 129,
+                  "column": 92
+                }
+              },
+              "property": {
+                "kind": "Identifier",
+                "name": {
+                  "type": "IDENTIFIER",
+                  "value": "computeGlobal",
+                  "line": 129,
+                  "column": 100
+                }
+              }
+            },
+            "args": [
+              {
+                "kind": "Member",
+                "object": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "r1",
+                    "line": 129,
+                    "column": 114
+                  }
+                },
+                "property": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "step",
+                    "line": 129,
+                    "column": 117
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

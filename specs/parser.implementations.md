@@ -36,26 +36,30 @@ Este documento rastreia a implementação do parser Ice Lang.
 | 26 | ContinueStatement | `continue` |
 | 27 | ClassStatement | `class` |
 | 28 | ThisExpr | `this` |
+| 29 | SuperExpr | `super` |
+| 30 | NewExpr | `new Class()` |
 
 ---
 
-
 ## Class Features Added
 ✓ basic class
-✓ property
+✓ property (com tipo, com valor default)
 ✓ public/private/protected
 ✓ static property
-✓ static with default
-✓ constructor
-✓ constructor with body
-✓ method
 ✓ static method
-✓ extends
-✓ extends with props
+✓ constructor (com params, array types, super())
+✓ method (com params, return type)
+✓ extends (herança)
 ✓ new expression
-✓ new with args
 ✓ super in constructor
-✓ full class
+✓ this expression
+✓ ASI (Automatic Semicolon Insertion) - corrigido
+✓ Array types em constructor params
+✓ Métodos retornando ICEX
+✓ new expressions dentro de métodos
+✓ loops (while, for) dentro de classes
+✓ Construtor com param visibility**
+✓ Construtor no block code (construtor())
 
 
 ## Expressões
@@ -131,8 +135,7 @@ type IcexChild = IcexElement | IcexText | IcexExpression
 | 3 | Import/Export | Alta | Keywords existem, não parseado |
 | 4 | Do-While | Baixa | Só tem `while` |
 | 5 | Lambdas/Arrow | Alta | Não existe |
-| 6 | Generics | Média | Só arrays `[]` |
-| 7 | Async/Await | Alta | Keywords existem |
+| 6 | Async/Await | Alta | Keywords existem |
 
 ---
 
@@ -146,13 +149,12 @@ type IcexChild = IcexElement | IcexText | IcexExpression
 
 ---
 
-## Keywords Definidas mas Não Parsed
+## Keywords Definidas e Parsed
 
 ```
-try, catch, throw       → Error handling
-new                     → OOP (instanciar classes)
-import, export, from    → Módulos
-async, await            → Async
+try, catch, throw       → Error handling (não parsed)
+import, export, from    → Módulos (não parsed)
+async, await            → Async (não parsed)
 ```
 
 ---
@@ -196,18 +198,37 @@ interface ClassMethod {
 | Propriedade | `name: string` |
 | Propriedade com valor | `count: int = 0` |
 | Visibilidade | `public`, `private`, `protected` |
-| Static | `static count: int` |
+| Static property | `static count: int` |
+| Static method | `static getCount(): int { }` |
 | Herança | `class User extends Person { }` |
 | Construtor | `constructor(name: string) { }` |
+| Construtor com array types | `constructor(data: int[]) { }` |
+| **Construtor com param visibility** | `constructor(public name: string, private age: int)` |
+| Super no construtor | `super(name)` |
 | Método | `getName(): string { return "test" }` |
-| This | `this.name = name` |
+| Método retornando ICEX | `render(): string { return <div/> }` |
+| This expression | `this.name = name` |
+| Super expression | `super.method()` |
+| New expression | `new User()` |
+| New em método | `new DataWidget(...)` |
+| ASI (sem `;`) | `super() \n this.x = 1` |
+| Loops em métodos | `while`, `for`, `continue`, `break` |
+| Construtores sem bloco de codigo obrigatorio. -> constructor(public name: string)
+
+### Não Implementado (ainda) (para um futuro distante)
+- Class expressions (apenas declarações)
+- Abstract classes
+- Interfaces
+- Overloading
+- Decorators
+- Generic types
 
 ---
 
 ## Plano de Implementação
 
 ### Fase 1: Essentials
-1. ~~Classes básico~~ ✅
+1. ~~Classes~~ ✅ (completo!)
 2. Try-Catch
 
 ### Fase 2: Conveniência
@@ -217,9 +238,9 @@ interface ClassMethod {
 
 ### Fase 3: Avançadas
 1. Switch/Match
-2. Generics
-3. Do-While
-4. Range/Iterator
+2. Do-While
+3. Range/Iterator
+4. Async/Await
 
 ---
 
@@ -227,9 +248,9 @@ interface ClassMethod {
 
 | Componente | Cobertura |
 |------------|-----------|
-| Statements | ~85% |
-| Expressions | ~80% |
-| Types | ~70% |
-| Classes | ~90% |
+| Statements | ~90% |
+| Expressions | ~85% |
+| Types | ~80% |
+| Classes | ~100% |
 | Modules | ~0% |
 | Error Handling | ~20% |

@@ -48,6 +48,11 @@ export class Parser {
     return validTypes.includes(token.value) || token.type === TokenType.IDENTIFIER
   }
 
+  private isAccessModifier(token: Token): boolean {
+    return (token.type === TokenType.KEYWORD || token.type === TokenType.IDENTIFIER) &&
+      ['public', 'private', 'protected'].includes(token.value as string)
+  }
+
   /*
   =====================================
   Cursor helpers
@@ -157,6 +162,13 @@ export class Parser {
       kind: "BlockStmt",
       statements
     }
+  }
+
+  private parseBodyOrEmpty(): BlockStmt {
+    if (this.current().type === TokenType.LBRACE) {
+      return this.parseBlockStatement()
+    }
+    return { kind: "BlockStmt", statements: [] }
   }
 
   private parseIfStatement(): IfStmt {
@@ -367,34 +379,68 @@ export class Parser {
         this.advance()
         this.expect(TokenType.LPAREN)
         
-        const params: { name: Token; type?: Token }[] = []
+        const params: { name: Token; type?: Token; visibility?: string }[] = []
         if (this.current().type !== TokenType.RPAREN) {
+          let paramVisibility: string | undefined = undefined
+          
+          if (this.isAccessModifier(this.current())) {
+            paramVisibility = this.current().value as string
+            this.advance()
+          }
+          
           const paramName = this.expect(TokenType.IDENTIFIER)
           let paramType: Token | undefined = undefined
           
           if (this.current().type === TokenType.COLON) {
             this.advance()
-            paramType = this.advance()
+            if (this.isValidType(this.current())) {
+              let typeToken = this.advance()
+              
+              if (this.current().type === TokenType.LBRACKET) {
+                this.advance()
+                this.expect(TokenType.RBRACKET)
+                paramType = { ...typeToken, value: typeToken.value + '[]' }
+              } else {
+                paramType = typeToken
+              }
+            }
           }
           
-          params.push({ name: paramName, type: paramType })
+          params.push({ name: paramName, type: paramType, visibility: paramVisibility })
           
           while (this.current().type === TokenType.COMMA) {
             this.advance()
+            
+            let pVisibility: string | undefined = undefined
+            if (this.isAccessModifier(this.current())) {
+              pVisibility = this.current().value as string
+              this.advance()
+            }
+            
             const pName = this.expect(TokenType.IDENTIFIER)
             let pType: Token | undefined = undefined
             
             if (this.current().type === TokenType.COLON) {
               this.advance()
-              pType = this.advance()
+              if (this.isValidType(this.current())) {
+                let typeToken = this.advance()
+                
+                if (this.current().type === TokenType.LBRACKET) {
+                  this.advance()
+                  this.expect(TokenType.RBRACKET)
+                  pType = { ...typeToken, value: typeToken.value + '[]' }
+                } else {
+                  pType = typeToken
+                }
+              }
             }
             
-            params.push({ name: pName, type: pType })
+            params.push({ name: pName, type: pType, visibility: pVisibility })
           }
         }
         
         this.expect(TokenType.RPAREN)
-        const body = this.parseBlockStatement()
+        const body = this.parseBodyOrEmpty()
         
         methods.push({
           name: 'constructor',
@@ -440,29 +486,63 @@ export class Parser {
       if (this.current().type === TokenType.LPAREN) {
         this.expect(TokenType.LPAREN)
         
-        const params: { name: Token; type?: Token }[] = []
+        const params: { name: Token; type?: Token; visibility?: string }[] = []
         if (this.current().type !== TokenType.RPAREN) {
+          let paramVisibility: string | undefined = undefined
+          
+          if (this.isAccessModifier(this.current())) {
+            paramVisibility = this.current().value as string
+            this.advance()
+          }
+          
           const paramName = this.expect(TokenType.IDENTIFIER)
           let paramType: Token | undefined = undefined
           
           if (this.current().type === TokenType.COLON) {
             this.advance()
-            paramType = this.advance()
+            if (this.isValidType(this.current())) {
+              let typeToken = this.advance()
+              
+              if (this.current().type === TokenType.LBRACKET) {
+                this.advance()
+                this.expect(TokenType.RBRACKET)
+                paramType = { ...typeToken, value: typeToken.value + '[]' }
+              } else {
+                paramType = typeToken
+              }
+            }
           }
           
-          params.push({ name: paramName, type: paramType })
+          params.push({ name: paramName, type: paramType, visibility: paramVisibility })
           
           while (this.current().type === TokenType.COMMA) {
             this.advance()
+            
+            let pVisibility: string | undefined = undefined
+            if (this.isAccessModifier(this.current())) {
+              pVisibility = this.current().value as string
+              this.advance()
+            }
+            
             const pName = this.expect(TokenType.IDENTIFIER)
             let pType: Token | undefined = undefined
             
             if (this.current().type === TokenType.COLON) {
               this.advance()
-              pType = this.advance()
+              if (this.isValidType(this.current())) {
+                let typeToken = this.advance()
+                
+                if (this.current().type === TokenType.LBRACKET) {
+                  this.advance()
+                  this.expect(TokenType.RBRACKET)
+                  pType = { ...typeToken, value: typeToken.value + '[]' }
+                } else {
+                  pType = typeToken
+                }
+              }
             }
             
-            params.push({ name: pName, type: pType })
+            params.push({ name: pName, type: pType, visibility: pVisibility })
           }
         }
         
@@ -471,7 +551,15 @@ export class Parser {
         let returnType: Token | undefined = undefined
         if (this.current().type === TokenType.COLON) {
           this.advance()
-          returnType = this.advance()
+          let typeToken = this.advance()
+          
+          if (this.current().type === TokenType.LBRACKET) {
+            this.advance()
+            this.expect(TokenType.RBRACKET)
+            returnType = { ...typeToken, value: typeToken.value + '[]' }
+          } else {
+            returnType = typeToken
+          }
         }
         
         const body = this.parseBlockStatement()
@@ -515,7 +603,7 @@ export class Parser {
       currentType === TokenType.SEMICOLON ||
       currentType === TokenType.RBRACE ||
       currentType === TokenType.EOF ||
-      (currentType === TokenType.KEYWORD && ['val', 'const', 'if', 'while', 'for', 'func', 'return', 'else'].includes(this.current().value as string))
+      (currentType === TokenType.KEYWORD && ['val', 'const', 'if', 'while', 'for', 'func', 'return', 'else', 'super', 'new', 'class'].includes(this.current().value as string))
     
     if (!isStatementTerminator) {
       value = this.parseExpression()
@@ -664,7 +752,12 @@ export class Parser {
       }
 
       if (operator.type === TokenType.KEYWORD && 
-          ['val', 'const', 'if', 'while', 'for', 'func', 'return', 'else', 'break', 'continue'].includes(operator.value as string)) {
+          ['val', 'const', 'if', 'while', 'for', 'func', 'return', 'else', 'break', 'continue', 'this', 'super', 'new', 'class'].includes(operator.value as string)) {
+        break
+      }
+
+      if (operator.type === TokenType.IDENTIFIER && 
+          ['this', 'super', 'new', 'public', 'private', 'protected', 'static'].includes(operator.value as string)) {
         break
       }
 
