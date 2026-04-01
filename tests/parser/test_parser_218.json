@@ -1,0 +1,27 @@
+{
+  "id": "parser_218",
+  "reference": "arquivo parser.test.md - teste 218",
+  "description": "throw expression",
+  "code": "throw getError()",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ThrowStmt",
+        "value": {
+          "kind": "Call",
+          "callee": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "getError",
+              "line": 1,
+              "column": 6
+            }
+          },
+          "args": []
+        }
+      }
+    ]
+  }
+}
