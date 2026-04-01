@@ -1,0 +1,30 @@
+{
+  "id": "parser_215",
+  "reference": "arquivo parser.test.md - teste 215",
+  "description": "try-catch-finally",
+  "code": "try { } catch { } finally { }",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "TryCatchStmt",
+        "tryBlock": {
+          "kind": "BlockStmt",
+          "statements": []
+        },
+        "catchClauses": [
+          {
+            "body": {
+              "kind": "BlockStmt",
+              "statements": []
+            }
+          }
+        ],
+        "finallyBlock": {
+          "kind": "BlockStmt",
+          "statements": []
+        }
+      }
+    ]
+  }
+}
