@@ -1,7 +1,7 @@
 class App {
   constructor(public name: string, age: int)
   
-  test(){
+  test(){}
 }
 
 

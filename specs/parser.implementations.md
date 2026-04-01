@@ -152,8 +152,7 @@ type IcexChild = IcexElement | IcexText | IcexExpression
 | 4 | Do-While | Baixa | Só tem `while` |
 | 5 | Lambdas/Arrow | Alta | Não existe |
 | 6 | Async/Await | Alta | Keywords existem |
-| 7 | ~~Type annotation multidimensional~~ | ~~Média~~ | ✅ Implementado `int[][]` em parâmetros/return/var |
-
+| 7 | ~~Type annotation multidimensional~~ | ~~Média~~ | ✅ Implementado `int[][]` em parâmetros/return/var 
 ---
 
 ## Bugs Conhecidos

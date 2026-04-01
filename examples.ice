@@ -7,6 +7,10 @@ val numbers: int[] = [1, 2, 3, 4, 5]
 val strings: string[] = ["a", "b", "c"]
 val mixed = [1, "two", true, null]
 
+val matrix: int[][] = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+val grid: string[][] = [["a", "b"], ["c", "d"]]
+val empty3d: int[][][] = []
+
 val user = {name: "John", age: 30}
 val config = {color: "blue", size: 10, active: true}
 val nested = {a: {b: {c: 1}}}
@@ -45,6 +49,30 @@ func add(a: int, b: int): int {
     return a + b
 }
 
+func processMatrix(data: int[][]): int[] {
+    val result: int[] = []
+    for (val i = 0; i < data.length; i = i + 1) {
+        val sum = 0
+        for (val j = 0; j < data[i].length; j = j + 1) {
+            sum = sum + data[i][j]
+        }
+        result[j] = sum
+    }
+    return result
+}
+
+func transpose(matrix: int[][]): int[][] {
+    val rows = matrix.length
+    val cols = matrix[0].length
+    val result: int[][] = []
+    for (val i = 0; i < cols; i = i + 1) {
+        for (val j = 0; j < rows; j = j + 1) {
+            result[i][j] = matrix[j][i]
+        }
+    }
+    return result
+}
+
 func sum(numbers: int[]): int {
     val total = 0
     for (val i = 0; i < 10; i = i + 1) {
@@ -68,6 +96,19 @@ while (i < 10) {
     i = i + 1
 }
 
+for (val i = 0; i < 10; i = i + 1) {
+    val item = items[i]
+}
+
+for (val i = 0; i < 10; i = i + 1) {
+    if (i == 5) {
+        break
+    }
+    if (i == 3) {
+        continue
+    }
+}
+
 val result = a ? b : c
 val value = x > 0 ? x : -x
 
@@ -83,6 +124,8 @@ val comparison4 = a > b
 
 val logical = a && b
 val logical2 = a || b
+
+val nullish = nullableValue ?? "default"
 
 val unary = -10
 val unary2 = +10
@@ -111,3 +154,54 @@ continue
 
 return
 return value
+
+try {
+} catch (E: VeryERROR) {
+
+} catch (Error) {
+
+} finally {
+
+}
+
+throw new Error()
+throw "Error"
+throw FuncError()
+
+class App extends SApp {
+    constructor(){
+        super()
+    }
+}
+
+class Game  {
+    constructor (public name)
+}
+
+val game = new Game("Snake Game")
+print(game.name)
+
+class Counter {
+    static count: int = 0
+    static instance: Counter
+    
+    constructor(public name: string, private age: int) {
+        Counter.count = Counter.count + 1
+    }
+    
+    static getCount(): int {
+        return Counter.count
+    }
+    
+    static create(name: string): Counter {
+        return new Counter(name, 0)
+    }
+    
+    getName(): string {
+        return this.name
+    }
+    
+    private increment() {
+        Counter.count = Counter.count + 1
+    }
+}

@@ -26,6 +26,23 @@
 
 ---
 
+## Features Pendentes (Parser)
+
+| # | Feature | Descrição |
+|---|---------|-----------|
+| 1 | Trailing comma array | `[1, 2, 3,]` não funciona |
+| 2 | Spread operator | `[...arr]` não funciona |
+| 3 | Computed object key | `{[key]: value}` não funciona |
+| 4 | Default parameters | `func f(a = 1)` não funciona |
+| 5 | Rest parameters | `func f(...args)` não funciona |
+| 6 | Interface | `interface X { }` não funciona |
+| 7 | Type alias | `type MyType = int` não funciona |
+| 8 | Multiple semicolons | `val x = 1;;;` não funciona |
+| 9 | Semicolon after block | `if (true) { };` não funciona |
+| 10 | Line comments in blocks | `//` dentro de `{ }` não funciona |
+
+---
+
 ## Bugs Pendentes (Semântico) - Futuros
 
 | # | Bug | Descrição |
