@@ -1,0 +1,42 @@
+{
+  "id": "parser_219",
+  "reference": "arquivo parser.test.md - teste 219",
+  "description": "try aninhado",
+  "code": "try { try { } catch { } } catch { }",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "TryCatchStmt",
+        "tryBlock": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "TryCatchStmt",
+              "tryBlock": {
+                "kind": "BlockStmt",
+                "statements": []
+              },
+              "catchClauses": [
+                {
+                  "body": {
+                    "kind": "BlockStmt",
+                    "statements": []
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "catchClauses": [
+          {
+            "body": {
+              "kind": "BlockStmt",
+              "statements": []
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
