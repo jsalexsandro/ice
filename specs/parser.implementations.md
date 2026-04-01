@@ -21,7 +21,7 @@ Este documento rastreia a implementação do parser Ice Lang.
 | 11 | CallExpression | `fn(a, b)` |
 | 12 | VariableDeclaration | `val`/`const` |
 | 13 | BlockStatement | `{ ... }` |
-| 14 | IfStatement | `if/else` |'
+| 14 | IfStatement | `if/else` |
 | 15 | WhileStatement | `while` |
 | 16 | FunctionStmt | `func` |
 | 17 | ReturnStatement | `return` |
@@ -109,7 +109,7 @@ Este documento rastreia a implementação do parser Ice Lang.
 
 ---
 
-## ICEX (JSX-like)
+## ICEX (JSX-like)  ✅ Implementado
 
 ### Tipos AST
 
@@ -152,7 +152,7 @@ type IcexChild = IcexElement | IcexText | IcexExpression
 | 4 | Do-While | Baixa | Só tem `while` |
 | 5 | Lambdas/Arrow | Alta | Não existe |
 | 6 | Async/Await | Alta | Keywords existem |
-| 7 | Type annotation multidimensional | Média | `int[][]` em parâmetros/return/var |
+| 7 | ~~Type annotation multidimensional~~ | ~~Média~~ | ✅ Implementado `int[][]` em parâmetros/return/var |
 
 ---
 
@@ -214,7 +214,7 @@ async, await               → Async (não parsed)
 
 ---
 
-## Try-Catch-Finally  para implementar
+## Try-Catch-Finally  ✅ Implementado
 
 ### Tipos AST
 
@@ -237,7 +237,7 @@ interface ThrowStmt {
 }
 ```
 
-### Sintaxe que deverá ser suportada
+### Sintaxe 
 
 | Feature | Exemplo |
 |---------|---------|
@@ -256,7 +256,7 @@ interface ThrowStmt {
 
 ### Fase 1: Essentials
 1. ~~Classes~~ ✅ (completo!)
-2. ~~Try-Catch  
+2. ~~Try-Catch~~  ✅ (completo!)
 
 
 ### Fase 2: Conveniência
@@ -281,8 +281,5 @@ interface ThrowStmt {
 | Types | ~80% |
 | Classes | ~100% |
 | Modules | ~0% |
-| Error Handling | ~60% |
+| Error Handling | ~100% |
 
-
-
-Amanha pedi para ele trazer o código do git da um reset
