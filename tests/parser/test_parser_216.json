@@ -1,0 +1,32 @@
+{
+  "id": "parser_216",
+  "reference": "arquivo parser.test.md - teste 216",
+  "description": "throw new Error",
+  "code": "throw new Error(\"msg\")",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ThrowStmt",
+        "value": {
+          "kind": "New",
+          "callee": {
+            "kind": "Identifier",
+            "name": {
+              "type": "IDENTIFIER",
+              "value": "Error",
+              "line": 1,
+              "column": 10
+            }
+          },
+          "args": [
+            {
+              "kind": "Literal",
+              "value": "msg"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
