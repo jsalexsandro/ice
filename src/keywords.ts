@@ -20,6 +20,7 @@ export const KEYWORDS = [
   'await',
   'try',
   'catch',
+  'finally',
   'throw',
   'break',
   'continue',

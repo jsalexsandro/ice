@@ -1,2 +1,2 @@
-import {runAll} from './tests/test-runner.ts';
-runAll();
+import { runAll } from './tests/test-runner'
+runAll()

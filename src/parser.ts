@@ -139,6 +139,18 @@ export class Parser {
       if (token.value === 'continue') {
         return this.parseContinueStatement()
       }
+      if (token.value === 'try') {
+        return this.parseTryCatchStatement()
+      }
+      if (token.value === 'catch') {
+        throw new Error(`Unexpected 'catch' without matching 'try' at line ${token.line}, column ${token.column}`)
+      }
+      if (token.value === 'finally') {
+        throw new Error(`Unexpected 'finally' without matching 'try' at line ${token.line}, column ${token.column}`)
+      }
+      if (token.value === 'throw') {
+        return this.parseThrowStatement()
+      }
     }
 
     if (token.type === TokenType.LBRACE) {
@@ -260,13 +272,12 @@ export class Parser {
         if (this.isValidType(this.current())) {
           let typeToken = this.advance()
           
-          if (this.current().type === TokenType.LBRACKET) {
+          while (this.current().type === TokenType.LBRACKET) {
             this.advance()
             this.expect(TokenType.RBRACKET)
-            paramType = { ...typeToken, value: typeToken.value + '[]' }
-          } else {
-            paramType = typeToken
+            typeToken = { ...typeToken, value: typeToken.value + '[]' }
           }
+          paramType = typeToken
         } else {
           throw new Error(`Invalid type '${this.current().value}' at line ${this.current().line}, column ${this.current().column}`)
         }
@@ -284,13 +295,12 @@ export class Parser {
           if (this.isValidType(this.current())) {
             let typeToken = this.advance()
             
-            if (this.current().type === TokenType.LBRACKET) {
+            while (this.current().type === TokenType.LBRACKET) {
               this.advance()
               this.expect(TokenType.RBRACKET)
-              pType = { ...typeToken, value: typeToken.value + '[]' }
-            } else {
-              pType = typeToken
+              typeToken = { ...typeToken, value: typeToken.value + '[]' }
             }
+            pType = typeToken
           } else {
             throw new Error(`Invalid type '${this.current().value}' at line ${this.current().line}, column ${this.current().column}`)
           }
@@ -307,13 +317,12 @@ export class Parser {
       this.advance()
       let typeToken = this.advance()
       
-      if (this.current().type === TokenType.LBRACKET) {
+      while (this.current().type === TokenType.LBRACKET) {
         this.advance()
         this.expect(TokenType.RBRACKET)
-        returnType = { ...typeToken, value: typeToken.value + '[]' }
-      } else {
-        returnType = typeToken
+        typeToken = { ...typeToken, value: typeToken.value + '[]' }
       }
+      returnType = typeToken
     }
 
     const body = this.parseBlockStatement()
@@ -396,13 +405,12 @@ export class Parser {
             if (this.isValidType(this.current())) {
               let typeToken = this.advance()
               
-              if (this.current().type === TokenType.LBRACKET) {
+              while (this.current().type === TokenType.LBRACKET) {
                 this.advance()
                 this.expect(TokenType.RBRACKET)
-                paramType = { ...typeToken, value: typeToken.value + '[]' }
-              } else {
-                paramType = typeToken
+                typeToken = { ...typeToken, value: typeToken.value + '[]' }
               }
+              paramType = typeToken
             }
           }
           
@@ -425,13 +433,12 @@ export class Parser {
               if (this.isValidType(this.current())) {
                 let typeToken = this.advance()
                 
-                if (this.current().type === TokenType.LBRACKET) {
+                while (this.current().type === TokenType.LBRACKET) {
                   this.advance()
                   this.expect(TokenType.RBRACKET)
-                  pType = { ...typeToken, value: typeToken.value + '[]' }
-                } else {
-                  pType = typeToken
+                  typeToken = { ...typeToken, value: typeToken.value + '[]' }
                 }
+                pType = typeToken
               }
             }
             
@@ -464,13 +471,14 @@ export class Parser {
       if (this.current().type === TokenType.COLON) {
         this.advance()
         if (this.isValidType(this.current())) {
-          propType = this.advance()
+          let typeToken = this.advance()
           
-          if (this.current().type === TokenType.LBRACKET) {
+          while (this.current().type === TokenType.LBRACKET) {
             this.advance()
             this.expect(TokenType.RBRACKET)
-            propType = { ...propType, value: propType.value + '[]' }
+            typeToken = { ...typeToken, value: typeToken.value + '[]' }
           }
+          propType = typeToken
         }
       }
       
@@ -503,13 +511,12 @@ export class Parser {
             if (this.isValidType(this.current())) {
               let typeToken = this.advance()
               
-              if (this.current().type === TokenType.LBRACKET) {
+              while (this.current().type === TokenType.LBRACKET) {
                 this.advance()
                 this.expect(TokenType.RBRACKET)
-                paramType = { ...typeToken, value: typeToken.value + '[]' }
-              } else {
-                paramType = typeToken
+                typeToken = { ...typeToken, value: typeToken.value + '[]' }
               }
+              paramType = typeToken
             }
           }
           
@@ -532,13 +539,12 @@ export class Parser {
               if (this.isValidType(this.current())) {
                 let typeToken = this.advance()
                 
-                if (this.current().type === TokenType.LBRACKET) {
+                while (this.current().type === TokenType.LBRACKET) {
                   this.advance()
                   this.expect(TokenType.RBRACKET)
-                  pType = { ...typeToken, value: typeToken.value + '[]' }
-                } else {
-                  pType = typeToken
+                  typeToken = { ...typeToken, value: typeToken.value + '[]' }
                 }
+                pType = typeToken
               }
             }
             
@@ -603,7 +609,7 @@ export class Parser {
       currentType === TokenType.SEMICOLON ||
       currentType === TokenType.RBRACE ||
       currentType === TokenType.EOF ||
-      (currentType === TokenType.KEYWORD && ['val', 'const', 'if', 'while', 'for', 'func', 'return', 'else', 'super', 'new', 'class'].includes(this.current().value as string))
+      (currentType === TokenType.KEYWORD && ['val', 'const', 'if', 'while', 'for', 'func', 'return', 'else', 'super', 'new', 'class', 'try', 'catch', 'finally', 'throw'].includes(this.current().value as string))
     
     if (!isStatementTerminator) {
       value = this.parseExpression()
@@ -615,6 +621,21 @@ export class Parser {
 
     return {
       kind: "ReturnStmt",
+      value
+    }
+  }
+
+  private parseThrowStatement(): ThrowStmt {
+    this.expect(TokenType.KEYWORD)
+    
+    const value = this.parseExpression()
+
+    if (this.current().type === TokenType.SEMICOLON) {
+      this.advance()
+    }
+
+    return {
+      kind: "ThrowStmt",
       value
     }
   }
@@ -643,6 +664,49 @@ export class Parser {
     }
   }
 
+  private parseTryCatchStatement(): TryCatchStmt {
+    this.expect(TokenType.KEYWORD)
+    
+    const tryBlock = this.parseBlockStatement()
+    
+    const catchClauses: CatchClause[] = []
+    while (this.current().type === TokenType.KEYWORD && this.current().value === 'catch') {
+      this.advance()
+      
+      let param: { name: Token; type?: Token } | undefined
+      if (this.current().type === TokenType.LPAREN) {
+        this.advance()
+        const name = this.expect(TokenType.IDENTIFIER)
+        
+        let paramType: Token | undefined
+        if (this.current().type === TokenType.COLON) {
+          this.advance()
+          paramType = this.advance()
+        }
+        
+        this.expect(TokenType.RPAREN)
+        
+        param = { name, type: paramType }
+      }
+      
+      const catchBody = this.parseBlockStatement()
+      catchClauses.push({ param, body: catchBody })
+    }
+    
+    let finallyBlock: BlockStmt | undefined
+    if (this.current().type === TokenType.KEYWORD && this.current().value === 'finally') {
+      this.advance()
+      finallyBlock = this.parseBlockStatement()
+    }
+
+    return {
+      kind: "TryCatchStmt",
+      tryBlock,
+      catchClauses,
+      finallyBlock
+    }
+  }
+
   private parseVariableDeclaration(): VarStmt {
     const keyword = this.advance()
     const kind = keyword.value === 'const' ? 'const' : 'val'
@@ -655,13 +719,12 @@ export class Parser {
       
       let typeToken = this.advance()
       
-      if (this.current().type === TokenType.LBRACKET) {
+      while (this.current().type === TokenType.LBRACKET) {
         this.advance()
         this.expect(TokenType.RBRACKET)
-        typeAnnotation = { ...typeToken, value: typeToken.value + '[]' }
-      } else {
-        typeAnnotation = typeToken
+        typeToken = { ...typeToken, value: typeToken.value + '[]' }
       }
+      typeAnnotation = typeToken
     }
 
     let initializer: Expr | undefined = undefined
@@ -765,7 +828,8 @@ export class Parser {
           operator.type === TokenType.NUMBER ||
           operator.type === TokenType.STRING ||
           operator.type === TokenType.BOOLEAN ||
-          operator.type === TokenType.NULL) {
+          operator.type === TokenType.NULL ||
+          operator.type === TokenType.KEYWORD) {
         break
       }
 

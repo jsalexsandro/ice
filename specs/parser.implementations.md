@@ -21,7 +21,7 @@ Este documento rastreia a implementação do parser Ice Lang.
 | 11 | CallExpression | `fn(a, b)` |
 | 12 | VariableDeclaration | `val`/`const` |
 | 13 | BlockStatement | `{ ... }` |
-| 14 | IfStatement | `if/else` |
+| 14 | IfStatement | `if/else` |'
 | 15 | WhileStatement | `while` |
 | 16 | FunctionStmt | `func` |
 | 17 | ReturnStatement | `return` |
@@ -38,6 +38,9 @@ Este documento rastreia a implementação do parser Ice Lang.
 | 28 | ThisExpr | `this` |
 | 29 | SuperExpr | `super` |
 | 30 | NewExpr | `new Class()` |
+
+| 31 | TryCatchStmt | `try { } catch { }` | ✅ Implementado
+| 32 | ThrowStmt | `throw new Error()` | ✅ Implementado
 
 ---
 
@@ -61,6 +64,19 @@ Este documento rastreia a implementação do parser Ice Lang.
 ✓ Construtor com param visibility**
 ✓ Construtor no block code (construtor())
 
+---
+
+## Try-Catch-Finally  ✅ Implementado
+
+✅ try-catch básico
+✅ try-catch com parâmetro (e: Error)
+✅ múltiplos catch
+✅ finally block
+✅ throw new Error("msg")
+✅ throw string
+✅ try aninhado com throw
+
+---
 
 ## Expressões
 
@@ -130,12 +146,13 @@ type IcexChild = IcexElement | IcexText | IcexExpression
 
 | # | Feature | Prioridade | Notas |
 |---|---------|------------|-------|
-| 1 | Try-Catch | Alta | Keywords existem, não parseado |
+| 1 | ~~Try-Catch~~ | ~~Alta~~ | ✅ Implementado |
 | 2 | Switch/Match | Média | Não existe |
 | 3 | Import/Export | Alta | Keywords existem, não parseado |
 | 4 | Do-While | Baixa | Só tem `while` |
 | 5 | Lambdas/Arrow | Alta | Não existe |
 | 6 | Async/Await | Alta | Keywords existem |
+| 7 | Type annotation multidimensional | Média | `int[][]` em parâmetros/return/var |
 
 ---
 
@@ -152,42 +169,14 @@ type IcexChild = IcexElement | IcexText | IcexExpression
 ## Keywords Definidas e Parsed
 
 ```
-try, catch, throw       → Error handling (não parsed)
-import, export, from    → Módulos (não parsed)
-async, await            → Async (não parsed)
+try, catch, throw, finally  
+import, export, from        → Módulos (não parsed)
+async, await               → Async (não parsed)
 ```
 
 ---
 
 ## Classes ✅ Implementado
-
-### Tipos AST
-
-```typescript
-interface ClassExpr {
-  kind: "Class"
-  name: string
-  extends?: string
-  properties: ClassProperty[]
-  methods: ClassMethod[]
-}
-
-interface ClassProperty {
-  name: string
-  type?: Token
-  visibility: "public" | "private" | "protected" | null
-  isStatic: boolean
-  initializer?: Expr
-}
-
-interface ClassMethod {
-  name: string
-  params: { name: Token; type?: Token }[]
-  returnType?: Token
-  body: BlockStmt
-  visibility: "public" | "private" | "protected" | null
-  isStatic: boolean
-}
 ```
 
 ### Sintaxe Suportada
@@ -225,11 +214,50 @@ interface ClassMethod {
 
 ---
 
+## Try-Catch-Finally  para implementar
+
+### Tipos AST
+
+```typescript
+interface TryCatchStmt {
+  kind: "TryCatchStmt"
+  tryBlock: BlockStmt
+  catchClauses: CatchClause[]
+  finallyBlock?: BlockStmt
+}
+
+interface CatchClause {
+  param?: { name: Token; type?: Token }
+  body: BlockStmt
+}
+
+interface ThrowStmt {
+  kind: "ThrowStmt"
+  value: Expr
+}
+```
+
+### Sintaxe que deverá ser suportada
+
+| Feature | Exemplo |
+|---------|---------|
+| try-catch básico | `try { } catch { }` |
+| try-catch com param | `try { } catch (e: Error) { }` |
+| múltiplos catch | `catch (e: Error) { } catch (e: Exception) { }` |
+| try-catch-finally | `try { } catch { } finally { }` |
+| throw new Error | `throw new Error("msg")` |
+| throw string | `throw "erro"` |
+| throw expression | `throw getError()` |
+| try aninhado | `try { try { } catch {} } catch {}` |
+
+---
+
 ## Plano de Implementação
 
 ### Fase 1: Essentials
 1. ~~Classes~~ ✅ (completo!)
-2. Try-Catch
+2. ~~Try-Catch  
+
 
 ### Fase 2: Conveniência
 1. String Interpolation (`$""`)
@@ -253,4 +281,8 @@ interface ClassMethod {
 | Types | ~80% |
 | Classes | ~100% |
 | Modules | ~0% |
-| Error Handling | ~20% |
+| Error Handling | ~60% |
+
+
+
+Amanha pedi para ele trazer o código do git da um reset
