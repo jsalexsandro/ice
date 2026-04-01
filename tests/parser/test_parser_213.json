@@ -1,0 +1,72 @@
+{
+  "id": "parser_213",
+  "reference": "arquivo parser.test.md - teste 213",
+  "description": "try-catch com parâmetro",
+  "code": "try { val x = 1 } catch (e: Error) { val y = 2 }",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "TryCatchStmt",
+        "tryBlock": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "VarStmt",
+              "type": "val",
+              "typeAnnotation": null,
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "x",
+                "line": 1,
+                "column": 10
+              },
+              "initializer": {
+                "kind": "Literal",
+                "value": 1
+              }
+            }
+          ]
+        },
+        "catchClauses": [
+          {
+            "param": {
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "e",
+                "line": 1,
+                "column": 25
+              },
+              "type": {
+                "type": "IDENTIFIER",
+                "value": "Error",
+                "line": 1,
+                "column": 28
+              }
+            },
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "VarStmt",
+                  "type": "val",
+                  "typeAnnotation": null,
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "y",
+                    "line": 1,
+                    "column": 41
+                  },
+                  "initializer": {
+                    "kind": "Literal",
+                    "value": 2
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
