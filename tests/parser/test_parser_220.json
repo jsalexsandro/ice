@@ -1,0 +1,84 @@
+{
+  "id": "parser_220",
+  "reference": "arquivo parser.test.md - teste 220",
+  "description": "throw dentro de catch (re-throw)",
+  "code": "try { throw new Error(\"original\") } catch (e: Error) { throw new Error(\"wrapped\") }",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "TryCatchStmt",
+        "tryBlock": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "ThrowStmt",
+              "value": {
+                "kind": "New",
+                "callee": {
+                  "kind": "Identifier",
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "Error",
+                    "line": 1,
+                    "column": 16
+                  }
+                },
+                "args": [
+                  {
+                    "kind": "Literal",
+                    "value": "original"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "catchClauses": [
+          {
+            "param": {
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "e",
+                "line": 1,
+                "column": 43
+              },
+              "type": {
+                "type": "IDENTIFIER",
+                "value": "Error",
+                "line": 1,
+                "column": 46
+              }
+            },
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "ThrowStmt",
+                  "value": {
+                    "kind": "New",
+                    "callee": {
+                      "kind": "Identifier",
+                      "name": {
+                        "type": "IDENTIFIER",
+                        "value": "Error",
+                        "line": 1,
+                        "column": 65
+                      }
+                    },
+                    "args": [
+                      {
+                        "kind": "Literal",
+                        "value": "wrapped"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
