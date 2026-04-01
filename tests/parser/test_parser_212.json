@@ -1,0 +1,58 @@
+{
+  "id": "parser_212",
+  "reference": "arquivo parser.test.md - teste 212",
+  "description": "try-catch básico",
+  "code": "try { val x = 1 } catch { val y = 2 }",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "TryCatchStmt",
+        "tryBlock": {
+          "kind": "BlockStmt",
+          "statements": [
+            {
+              "kind": "VarStmt",
+              "type": "val",
+              "typeAnnotation": null,
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "x",
+                "line": 1,
+                "column": 10
+              },
+              "initializer": {
+                "kind": "Literal",
+                "value": 1
+              }
+            }
+          ]
+        },
+        "catchClauses": [
+          {
+            "body": {
+              "kind": "BlockStmt",
+              "statements": [
+                {
+                  "kind": "VarStmt",
+                  "type": "val",
+                  "typeAnnotation": null,
+                  "name": {
+                    "type": "IDENTIFIER",
+                    "value": "y",
+                    "line": 1,
+                    "column": 30
+                  },
+                  "initializer": {
+                    "kind": "Literal",
+                    "value": 2
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
