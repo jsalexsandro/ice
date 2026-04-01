@@ -1,0 +1,66 @@
+{
+  "id": "parser_214",
+  "reference": "arquivo parser.test.md - teste 214",
+  "description": "múltiplos catch",
+  "code": "try { } catch (e: Error) { } catch (e: Exception) { } catch { }",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "TryCatchStmt",
+        "tryBlock": {
+          "kind": "BlockStmt",
+          "statements": []
+        },
+        "catchClauses": [
+          {
+            "param": {
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "e",
+                "line": 1,
+                "column": 15
+              },
+              "type": {
+                "type": "IDENTIFIER",
+                "value": "Error",
+                "line": 1,
+                "column": 18
+              }
+            },
+            "body": {
+              "kind": "BlockStmt",
+              "statements": []
+            }
+          },
+          {
+            "param": {
+              "name": {
+                "type": "IDENTIFIER",
+                "value": "e",
+                "line": 1,
+                "column": 36
+              },
+              "type": {
+                "type": "IDENTIFIER",
+                "value": "Exception",
+                "line": 1,
+                "column": 39
+              }
+            },
+            "body": {
+              "kind": "BlockStmt",
+              "statements": []
+            }
+          },
+          {
+            "body": {
+              "kind": "BlockStmt",
+              "statements": []
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
