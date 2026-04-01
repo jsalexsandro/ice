@@ -1,0 +1,18 @@
+{
+  "id": "parser_217",
+  "reference": "arquivo parser.test.md - teste 217",
+  "description": "throw string",
+  "code": "throw \"erro\"",
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ThrowStmt",
+        "value": {
+          "kind": "Literal",
+          "value": "erro"
+        }
+      }
+    ]
+  }
+}
