@@ -20,6 +20,7 @@ export type Expr =
   | ObjectExpr
   | NullishCoalescingExpr
   | ClassExpr
+  | ArrowFunctionExpr
 
 export interface BinaryExpr {
   kind: "Binary"
@@ -242,4 +243,11 @@ export interface ClassMethod {
   body: BlockStmt
   visibility: "public" | "private" | "protected" | null
   isStatic: boolean
+}
+
+export interface ArrowFunctionExpr {
+  kind: "ArrowFunction"
+  params: { name: Token; type?: Token }[]
+  returnType?: Token
+  body: Expr | Stmt
 }

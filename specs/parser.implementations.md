@@ -98,6 +98,7 @@ Este documento rastreia a implementação do parser Ice Lang.
 | 12 | Identifier | `name` |
 | 13 | Literal | `"text"`, `123`, `true`, `null` |
 | 14 | Nullish Coalescing | `a ?? b` |
+| 15 | Arrow Function | `x => x`, `(x: int) => x + 1` |
 
 ### Faltantes ❌
 
@@ -105,7 +106,6 @@ Este documento rastreia a implementação do parser Ice Lang.
 |---|-----------|---------|
 | 1 | String Interpolation | `$"hello {name}"` |
 | 2 | Spread | `...obj` |
-| 3 | Arrow Functions | `fn(x) => x + 1` |
 
 ---
 
@@ -150,7 +150,7 @@ type IcexChild = IcexElement | IcexText | IcexExpression
 | 2 | Switch/Match | Média | Não existe |
 | 3 | Import/Export | Alta | Keywords existem, não parseado |
 | 4 | Do-While | Baixa | Só tem `while` |
-| 5 | Lambdas/Arrow | Alta | Não existe |
+| 5 | ~~Lambdas/Arrow~~ | ~~Alta~~ | ✅ Implementado `x => x * 2` |
 | 6 | Async/Await | Alta | Keywords existem |
 | 7 | ~~Type annotation multidimensional~~ | ~~Média~~ | ✅ Implementado `int[][]` em parâmetros/return/var 
 ---
@@ -213,6 +213,34 @@ async, await               → Async (não parsed)
 
 ---
 
+## Arrow Functions  ✅ Implementado
+
+### Tipos AST
+
+```typescript
+interface ArrowFunctionExpr {
+  kind: "ArrowFunction"
+  params: { name: Token; type?: Token }[]
+  returnType?: Token
+  body: Expr | Stmt
+}
+```
+
+### Sintaxe
+
+| Feature | Exemplo |
+|---------|---------|
+| Parâmetro único | `x => x * 2` |
+| Com parênteses | `(x) => x + 1` |
+| Múltiplos parâmetros | `(x, y) => x + y` |
+| Com tipos | `(x: int) => x` |
+| Com return type | `(x: int): int => x` |
+| Bloco | `x => { return x * 2 }` |
+| Em chamada | `items.map(x => x * 2)` |
+| Sem parâmetros | `() => defaultValue` |
+
+---
+
 ## Try-Catch-Finally  ✅ Implementado
 
 ### Tipos AST
@@ -259,8 +287,8 @@ interface ThrowStmt {
 
 
 ### Fase 2: Conveniência
-1. String Interpolation (`$""`)
-2. Arrow Functions
+1. ~~String Interpolation (`$""`)~~
+2. ~~Arrow Functions~~ ✅ (completo!)
 3. Import/Export
 
 ### Fase 3: Avançadas

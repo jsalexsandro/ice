@@ -985,6 +985,9 @@ export class Parser {
           this.advance()
           return { kind: "Super" }
         }
+        if (this.peek().type === TokenType.ARROW) {
+          return this.parseArrowFunctionNoParens()
+        }
         return this.parseIdentifier()
 
       case TokenType.KEYWORD:
@@ -1068,9 +1071,15 @@ export class Parser {
       
       while (this.current().type !== TokenType.RBRACE) {
         const keyToken = this.expect(TokenType.IDENTIFIER)
-        this.expect(TokenType.COLON)
-        const value = this.parseExpression()
-        properties.push({ key: keyToken.value as string, value })
+        
+        if (this.current().type === TokenType.COLON) {
+          this.advance()
+          const value = this.parseExpression()
+          properties.push({ key: keyToken.value as string, value })
+        } else {
+          const valueExpr: Expr = { kind: "Identifier", name: keyToken }
+          properties.push({ key: keyToken.value as string, value: valueExpr })
+        }
 
         if (this.current().type === TokenType.COMMA) {
           this.advance()
@@ -1086,25 +1095,37 @@ export class Parser {
         throw new Error(`Expected identifier or keyword for object key but got '${token.type}'`)
       }
       this.advance()
-      this.expect(TokenType.COLON)
-      const value = this.parseExpression()
-      properties.push({ key: token.value as string, value })
-
-      if (this.current().type === TokenType.COMMA) {
+      
+      if (this.current().type === TokenType.COLON) {
         this.advance()
-        while (this.current().type !== TokenType.RBRACE) {
-          const nextKeyToken = this.expect(TokenType.IDENTIFIER)
-          this.expect(TokenType.COLON)
-          const nextValue = this.parseExpression()
-          properties.push({ key: nextKeyToken.value as string, value: nextValue })
+        const value = this.parseExpression()
+        properties.push({ key: token.value as string, value })
 
-          if (this.current().type === TokenType.COMMA) {
-            this.advance()
-          } else {
-            break
+        if (this.current().type === TokenType.COMMA) {
+          this.advance()
+          while (this.current().type !== TokenType.RBRACE) {
+            const nextKeyToken = this.expect(TokenType.IDENTIFIER)
+            
+            if (this.current().type === TokenType.COLON) {
+              this.advance()
+              const nextValue = this.parseExpression()
+              properties.push({ key: nextKeyToken.value as string, value: nextValue })
+            } else {
+              const nextValueExpr: Expr = { kind: "Identifier", name: nextKeyToken }
+              properties.push({ key: nextKeyToken.value as string, value: nextValueExpr })
+            }
+
+            if (this.current().type === TokenType.COMMA) {
+              this.advance()
+            } else {
+              break
+            }
           }
+          this.expect(TokenType.RBRACE)
         }
-        this.expect(TokenType.RBRACE)
+      } else {
+        const valueExpr: Expr = { kind: "Identifier", name: token }
+        properties.push({ key: token.value as string, value: valueExpr })
       }
     }
 
@@ -1140,12 +1161,135 @@ export class Parser {
 
   private parseGroup(): Expr {
     this.expect(TokenType.LPAREN)
+    
+    if (this.isArrowFunctionStart()) {
+      return this.parseArrowFunction()
+    }
+    
     const expr = this.parseExpression()
     this.expect(TokenType.RPAREN)
 
     return {
       kind: "Group",
       expression: expr
+    }
+  }
+
+  private isArrowFunctionStart(): boolean {
+    const startPos = this.position
+    
+    if (this.current().type === TokenType.RPAREN) {
+      this.advance()
+      const isArrow = this.current().type === TokenType.ARROW
+      this.position = startPos
+      return isArrow
+    }
+    
+    if (this.current().type !== TokenType.IDENTIFIER) {
+      this.position = startPos
+      return false
+    }
+    
+    this.advance()
+    
+    if (this.current().type === TokenType.COLON) {
+      this.position = startPos
+      return true
+    }
+    
+    if (this.current().type === TokenType.COMMA) {
+      this.position = startPos
+      return true
+    }
+    
+    if (this.current().type === TokenType.RPAREN) {
+      this.advance()
+      const isArrow = this.current().type === TokenType.ARROW
+      this.position = startPos
+      return isArrow
+    }
+    
+    this.position = startPos
+    return false
+  }
+
+  private parseArrowFunction(): ArrowFunctionExpr {
+    const params: { name: Token; type?: Token }[] = []
+    let returnType: Token | undefined
+    
+    if (this.current().type !== TokenType.RPAREN) {
+      while (true) {
+        const nameToken = this.expect(TokenType.IDENTIFIER)
+        
+        if (this.current().type === TokenType.COLON) {
+          this.advance()
+          returnType = this.current()
+          this.advance()
+          
+          while (this.current().type === TokenType.LBRACKET) {
+            this.advance()
+            this.expect(TokenType.RBRACKET)
+          }
+        }
+        
+        params.push({ name: nameToken, type: returnType })
+        returnType = undefined
+        
+        if (this.current().type !== TokenType.COMMA) {
+          break
+        }
+        this.advance()
+      }
+    }
+    
+    this.expect(TokenType.RPAREN)
+    
+    if (this.current().type === TokenType.COLON) {
+      this.advance()
+      returnType = this.current()
+      this.advance()
+      
+      while (this.current().type === TokenType.LBRACKET) {
+        this.advance()
+        this.expect(TokenType.RBRACKET)
+      }
+    }
+    
+    this.expect(TokenType.ARROW)
+    
+    let body: Expr | Stmt
+    
+    if (this.current().type === TokenType.LBRACE) {
+      body = this.parseBlockStatement()
+    } else {
+      body = this.parseExpression()
+    }
+    
+    return {
+      kind: "ArrowFunction",
+      params,
+      returnType,
+      body
+    }
+  }
+
+  private parseArrowFunctionNoParens(): any {
+    const nameToken = this.advance()
+    
+    this.expect(TokenType.ARROW)
+    
+    let body: Expr | Stmt
+    
+    if (this.current().type === TokenType.LBRACE) {
+      body = this.parseBlockStatement()
+    } else {
+      body = this.parseExpression()
+    }
+    
+    return {
+      kind: "ArrowFunction",
+      params: [{ name: nameToken }],
+      body
     }
   }
 
@@ -1331,6 +1475,9 @@ export class Parser {
       case TokenType.MINUS:
       case TokenType.NOT:
         return this.parseUnary()
+      
+      case TokenType.ARROW:
+        throw new Error(`Parser Error: Unexpected arrow '=>' in attribute value at line ${token.line}, column ${token.column}`)
 
       default:
         throw ErrorMessages.expectedExpression(token)

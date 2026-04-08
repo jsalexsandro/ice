@@ -39,6 +39,7 @@ export enum TokenType {
   NOT = 'NOT',
   QUESTION = 'QUESTION',
   QUESTION_QUESTION = 'QUESTION_QUESTION',
+  ARROW = 'ARROW',
   ASSIGN = 'ASSIGN',
   EOF = 'EOF',
   ERROR = 'ERROR',
@@ -56,6 +57,8 @@ export class Lexer {
   position = 0
   readPosition = 0
   ch = ""
+  previousCh = ""
+  previousTokenType: TokenType | null = null
   line = 1
   column = 0
 
@@ -67,6 +70,7 @@ export class Lexer {
 
   readChar() {
     this.position = this.readPosition
+    this.previousCh = this.ch
     this.ch = this.input[this.readPosition] || ""
     if (this.ch === '\n') {
       this.line++
@@ -264,6 +268,10 @@ export class Lexer {
     return { type, value: ident, line: this.line, column: startColumn }
   }
 
+  isIdentifierChar(ch: string): boolean {
+    return this.isLetter(ch) || this.isDigit(ch)
+  }
+
   isLetter(ch: string): boolean {
     return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch === '_' || ch === '$'
   }
@@ -282,6 +290,10 @@ export class Lexer {
         if (this.ch === '=') {
           this.readChar()
           return { type: TokenType.EQUAL, value: '==', line: this.line, column: startColumn }
+        }
+        if (this.ch === '>' && this.previousTokenType !== TokenType.KEYWORD) {
+          this.readChar()
+          return { type: TokenType.ARROW, value: '=>', line: this.line, column: startColumn }
         }
         return { type: TokenType.ASSIGN, value: '=', line: this.line, column: startColumn }
       
@@ -400,6 +412,12 @@ export class Lexer {
   }
 
   nextToken(): Token {
+    const token = this._nextToken()
+    this.previousTokenType = token.type
+    return token
+  }
+
+  private _nextToken(): Token {
     this.skipWhitespace()
 
     if (this.ch === '') {
@@ -426,7 +444,7 @@ export class Lexer {
       if (this.ch === '/') {
         return this.readOperator()
       }
-      return this.nextToken()
+      return this._nextToken()
     }
 
     return this.readOperator()

@@ -149,6 +149,44 @@ arr[0] = 10
 user.name = "Jane"
 user.age = 31
 
+val double = x => x * 2
+val triple = x => x * 3
+
+val add = (x, y) => x + y
+val multiply = (a: int, b: int) => a * b
+
+val process = (data: int[]) => {
+    val sum = 0
+    for (val i = 0; i < data.length; i = i + 1) {
+        sum = sum + data[i]
+    }
+    return sum
+}
+
+val processSimple = (x: int) => {
+    return x * 2
+}
+
+val increment = () => count + 1
+
+val handler = event => handleClick(event)
+val validator = (value: string) => value.length > 0
+
+val numbers: int[] = [1, 2, 3, 4, 5]
+val doubled = numbers.map(x => x * 2)
+val filtered = numbers.filter(x => x > 2)
+
+val htmlList = <ul>{items.map(item => <li>{item}</li>)}</ul>
+
+val button = <button onClick={() => doSomething()}>Click</button>
+
+val summed = numbers.reduce((acc, x) => acc + x, 0)
+
+val config = {
+    handler: (event) => handleEvent(event),
+    validator: (value: string) => value.length > 0
+}
+
 break
 continue
 
