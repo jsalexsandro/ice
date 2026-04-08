@@ -1,3 +1,18 @@
+import math
+import web.document
+import api
+
+import { pow } from math
+import { sqrt, sin, cos } from math
+import { document } from web
+
+import math as m
+import web as w
+
+import { pow as power } from math
+import { sqrt as squareRoot, cos as cosine } from math
+import { pow as p, sqrt as s } from math
+
 val name: string = "Hello"
 const age: int = 25
 val isActive: bool = true
@@ -243,3 +258,7 @@ class Counter {
         Counter.count = Counter.count + 1
     }
 }
+
+val greeting = $`Hello {name}!`
+val mathResult = $`{a} + {b} = {a + b}`
+val template = $`User: {user.name}, Age: {user.age}`

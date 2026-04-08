@@ -1,10 +1,11 @@
-import { Token, TokenType } from "./lexer"
-import { Expr, Stmt } from "./ast"
+import { Token, TokenType, Lexer } from "./lexer"
+import { Expr, Stmt, ImportStmt, ImportSpecifier } from "./ast"
 import { ErrorMessages } from "./errors"
 
 export class Parser {
   private tokens: Token[]
   private position: number = 0
+  private topLevel: boolean = true
 
   constructor(tokens: Token[]) {
     this.tokens = tokens
@@ -91,10 +92,14 @@ export class Parser {
 
   public parseProgram() {
     const statements: Stmt[] = []
+    const previousTopLevel = this.topLevel
+    this.topLevel = true
 
     while (!this.isEOF()) {
       statements.push(this.parseStatement())
     }
+
+    this.topLevel = previousTopLevel
 
     return {
       kind: "Program",
@@ -151,6 +156,9 @@ export class Parser {
       if (token.value === 'throw') {
         return this.parseThrowStatement()
       }
+      if (token.value === 'import') {
+        return this.parseImportStatement()
+      }
     }
 
     if (token.type === TokenType.LBRACE) {
@@ -163,12 +171,17 @@ export class Parser {
   private parseBlockStatement(): BlockStmt {
     this.expect(TokenType.LBRACE)
     
+    const previousTopLevel = this.topLevel
+    this.topLevel = false
+    
     const statements: Stmt[] = []
     while (this.current().type !== TokenType.RBRACE && !this.isEOF()) {
       statements.push(this.parseStatement())
     }
     
     this.expect(TokenType.RBRACE)
+    
+    this.topLevel = previousTopLevel
 
     return {
       kind: "BlockStmt",
@@ -975,9 +988,14 @@ export class Parser {
 
     switch (token.type) {
       case TokenType.NUMBER:
-      case TokenType.STRING:
       case TokenType.BOOLEAN:
       case TokenType.NULL:
+        return this.parseLiteral()
+        
+      case TokenType.STRING:
+        if (this.peek().type === TokenType.LBRACE) {
+          return this.parseTemplateLiteral()
+        }
         return this.parseLiteral()
 
       case TokenType.IDENTIFIER:
@@ -1021,6 +1039,9 @@ export class Parser {
         return this.parseGroup()
 
       case TokenType.LBRACE:
+        if (this.peek().type === TokenType.TEMPLATE_MIDDLE) {
+          return this.parseTemplateLiteral()
+        }
         return this.parseObjectLiteral()
 
       case TokenType.LBRACKET:
@@ -1037,8 +1058,59 @@ export class Parser {
         }
         throw ErrorMessages.expectedExpression(token)
 
+      case TokenType.TEMPLATE_STRING:
+        return this.parseTemplateLiteral()
+
+      case TokenType.STRING:
+        return this.parseTemplateLiteral()
+
       default:
         throw ErrorMessages.expectedExpression(token)
+    }
+  }
+
+  private parseTemplateLiteral(): TemplateLiteralExpr {
+    const quasis: string[] = []
+    const expressions: (Expr | null)[] = []
+    
+    while (this.current().type !== TokenType.EOF) {
+      if (this.current().type === TokenType.STRING) {
+        quasis.push(this.advance().value as string)
+        expressions.push(null)
+        continue
+      }
+      
+      if (this.current().type === TokenType.LBRACE) {
+        quasis.push('')
+        this.advance()
+        
+        if (this.current().type === TokenType.TEMPLATE_MIDDLE) {
+          const exprStr = this.advance().value as string
+          const tempLexer = new Lexer(exprStr, false)
+          const tempTokens = tempLexer.tokenize()
+          const tempParser = new Parser(tempTokens)
+          const expr = tempParser.parseExpression()
+          expressions.push(expr)
+        } else if (this.current().type !== TokenType.RBRACE) {
+          const expr = this.parseExpression()
+          expressions.push(expr)
+        } else {
+          expressions.push(null)
+        }
+        
+        if (this.current().type === TokenType.RBRACE) {
+          this.advance()
+        }
+        continue
+      }
+      
+      break
+    }
+    
+    return {
+      kind: "TemplateLiteral",
+      quasis,
+      expressions
     }
   }
 
@@ -1555,5 +1627,78 @@ export class Parser {
     }
 
     return children
+  }
+
+  private parseImportStatement(): ImportStmt {
+    if (!this.topLevel) {
+      const token = this.current()
+      throw new Error(`Imports must be at top-level at line ${token.line}, column ${token.column}`)
+    }
+    
+    this.expect(TokenType.KEYWORD)
+    
+    let source = ''
+    let specifiers: ImportSpecifier[] | undefined = undefined
+    let alias: string | undefined = undefined
+    
+    if (this.current().type === TokenType.LBRACE) {
+      this.advance()
+      specifiers = []
+      
+      while (this.current().type !== TokenType.RBRACE && !this.isEOF()) {
+        const nameToken = this.expect(TokenType.IDENTIFIER)
+        let name = nameToken.value as string
+        let specAlias: string | undefined = undefined
+        
+        if (this.current().type === TokenType.KEYWORD && this.current().value === 'as') {
+          this.advance()
+          const aliasToken = this.expect(TokenType.IDENTIFIER)
+          specAlias = aliasToken.value as string
+        }
+        
+        specifiers.push({ kind: "ImportSpecifier", name, alias: specAlias })
+        
+        if (this.current().type === TokenType.COMMA) {
+          this.advance()
+        } else if (this.current().type !== TokenType.RBRACE) {
+          break
+        }
+      }
+      
+      this.expect(TokenType.RBRACE)
+      
+      if (this.current().type === TokenType.KEYWORD && this.current().value === 'from') {
+        this.advance()
+        const fromToken = this.expect(TokenType.IDENTIFIER)
+        source = fromToken.value as string
+        
+        while (this.current().type === TokenType.DOT) {
+          this.advance()
+          const nextToken = this.expect(TokenType.IDENTIFIER)
+          source += '.' + nextToken.value
+        }
+      }
+    } else {
+      const firstToken = this.expect(TokenType.IDENTIFIER)
+      source = firstToken.value as string
+      
+      while (this.current().type === TokenType.DOT) {
+        this.advance()
+        const nextToken = this.expect(TokenType.IDENTIFIER)
+        source += '.' + nextToken.value
+      }
+      
+      if (this.current().type === TokenType.KEYWORD && this.current().value === 'as') {
+        this.advance()
+        const aliasToken = this.expect(TokenType.IDENTIFIER)
+        alias = aliasToken.value as string
+      }
+    }
+    
+    if (this.current().type === TokenType.SEMICOLON) {
+      this.advance()
+    }
+    
+    return { kind: "ImportStmt", source, specifiers, alias }
   }
 }

@@ -2,5 +2,5 @@
   "id": "parser_10",
   "reference": "arquivo parser.test.md - teste 10",
   "code": "val name =",
-  "result": "Parser Error: Expected expression but got 'EOF' at line 1, column 10"
+  "result": "Parser Error: Expected expression but got 'EOF'"
 }

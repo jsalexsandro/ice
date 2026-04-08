@@ -21,6 +21,7 @@ export type Expr =
   | NullishCoalescingExpr
   | ClassExpr
   | ArrowFunctionExpr
+  | TemplateLiteralExpr
 
 export interface BinaryExpr {
   kind: "Binary"
@@ -116,6 +117,7 @@ export type Stmt =
   | ContinueStmt
   | FunctionStmt
   | ReturnStmt
+  | ImportStmt
 
 export interface ExpressionStmt {
   kind: "ExpressionStmt"
@@ -250,4 +252,23 @@ export interface ArrowFunctionExpr {
   params: { name: Token; type?: Token }[]
   returnType?: Token
   body: Expr | Stmt
+}
+
+export interface TemplateLiteralExpr {
+  kind: "TemplateLiteral"
+  quasis: string[]
+  expressions: (string | null)[]
+}
+
+export interface ImportSpecifier {
+  kind: "ImportSpecifier"
+  name: string
+  alias?: string
+}
+
+export interface ImportStmt {
+  kind: "ImportStmt"
+  source: string
+  specifiers?: ImportSpecifier[]
+  alias?: string
 }

@@ -11,6 +11,7 @@ export const KEYWORDS = [
   'import',
   'export',
   'from',
+  'as',
   'true',
   'false',
   'null',

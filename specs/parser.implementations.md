@@ -41,6 +41,7 @@ Este documento rastreia a implementação do parser Ice Lang.
 
 | 31 | TryCatchStmt | `try { } catch { }` | ✅ Implementado
 | 32 | ThrowStmt | `throw new Error()` | ✅ Implementado
+| 33 | ImportStmt | `import ... from ...` | ✅ Implementado
 
 ---
 
@@ -99,13 +100,15 @@ Este documento rastreia a implementação do parser Ice Lang.
 | 13 | Literal | `"text"`, `123`, `true`, `null` |
 | 14 | Nullish Coalescing | `a ?? b` |
 | 15 | Arrow Function | `x => x`, `(x: int) => x + 1` |
+| 16 | String Interpolation | `$`hello {name}` ` |
 
 ### Faltantes ❌
 
 | # | Expressão | Sintaxe |
 |---|-----------|---------|
-| 1 | String Interpolation | `$"hello {name}"` |
+| 1 | ~~String Interpolation~~ | ~~$`hello {name}`~~ ✅ Implementado |
 | 2 | Spread | `...obj` |
+| 3 | Export Statement | `export { x }` |
 
 ---
 
@@ -148,11 +151,12 @@ type IcexChild = IcexElement | IcexText | IcexExpression
 |---|---------|------------|-------|
 | 1 | ~~Try-Catch~~ | ~~Alta~~ | ✅ Implementado |
 | 2 | Switch/Match | Média | Não existe |
-| 3 | Import/Export | Alta | Keywords existem, não parseado |
+| 3 | ~~Import/Export~~ | ~~Alta~~ | ✅ Implementado `import { x } from mod` |
 | 4 | Do-While | Baixa | Só tem `while` |
 | 5 | ~~Lambdas/Arrow~~ | ~~Alta~~ | ✅ Implementado `x => x * 2` |
 | 6 | Async/Await | Alta | Keywords existem |
-| 7 | ~~Type annotation multidimensional~~ | ~~Média~~ | ✅ Implementado `int[][]` em parâmetros/return/var 
+| 7 | ~~Type annotation multidimensional~~ | ~~Média~~ | ✅ Implementado `int[][]` em parâmetros/return/var |
+| 8 | Export Statement | Alta | Keyword `export` existe, não parseado |
 ---
 
 ## Bugs Conhecidos
@@ -168,9 +172,10 @@ type IcexChild = IcexElement | IcexText | IcexExpression
 ## Keywords Definidas e Parsed
 
 ```
-try, catch, throw, finally  
-import, export, from        → Módulos (não parsed)
-async, await               → Async (não parsed)
+try, catch, throw, finally  → Parsed
+import, from, as            → Import parsed ✅
+export                       → Não parsed
+async, await               → Não parsed
 ```
 
 ---
@@ -241,6 +246,74 @@ interface ArrowFunctionExpr {
 
 ---
 
+## String Interpolation  ✅ Implementado
+
+### Tipos AST
+
+```typescript
+interface TemplateLiteralExpr {
+  kind: "TemplateLiteral"
+  quasis: string[]
+  expressions: (Expr | null)[]
+}
+```
+
+### Sintaxe
+
+| Feature | Exemplo |
+|---------|---------|
+| Template simples | `$`hello` ` |
+| Com interpolação | `$`hello {name}` ` |
+| Múltiplas expressões | `$`{a} + {b} = {a + b}` ` |
+| Acesso a objetos | `$`User: {user.name}` ` |
+| Acesso a arrays | `$`Items: {arr[0]}` ` |
+| Métodos | `$`Count: {items.length}` ` |
+| Expressões complexas | `$`Result: {(x + y) * z}` ` |
+
+### Notas
+- Usa backticks: `` $`...` ``
+- Expressões dentro de `{}` são parseadas recursivamente
+- Requer `templateMode: true` no Lexer
+
+---
+
+## Import Statement  ✅ Implementado
+
+### Tipos AST
+
+```typescript
+interface ImportSpecifier {
+  kind: "ImportSpecifier"
+  name: string
+  alias?: string
+}
+
+interface ImportStmt {
+  kind: "ImportStmt"
+  source: string
+  specifiers?: ImportSpecifier[]
+  alias?: string
+}
+```
+
+### Sintaxe
+
+| Feature | Exemplo |
+|---------|---------|
+| Import completo | `import math` |
+| Import caminho | `import web.document` |
+| Import específico | `import { pow } from math` |
+| Múltiplos | `import { pow, sqrt, sin } from math` |
+| Alias módulo | `import math as m` |
+| Alias membro | `import { pow as power } from math` |
+
+### Notas
+- Keyword `as` adicionada ao lexer
+- `source` contém o caminho do módulo
+- Resolução de módulos (index.ice) fica por conta do module loader
+
+---
+
 ## Try-Catch-Finally  ✅ Implementado
 
 ### Tipos AST
@@ -287,9 +360,9 @@ interface ThrowStmt {
 
 
 ### Fase 2: Conveniência
-1. ~~String Interpolation (`$""`)~~
+1. ~~String Interpolation (`$""`)~~ ✅
 2. ~~Arrow Functions~~ ✅ (completo!)
-3. Import/Export
+3. ~~Import/Export~~ ✅
 
 ### Fase 3: Avançadas
 1. Switch/Match
@@ -303,10 +376,10 @@ interface ThrowStmt {
 
 | Componente | Cobertura |
 |------------|-----------|
-| Statements | ~90% |
+| Statements | ~95% |
 | Expressions | ~85% |
 | Types | ~80% |
 | Classes | ~100% |
-| Modules | ~0% |
+| Modules | ~50% |
 | Error Handling | ~100% |
 
