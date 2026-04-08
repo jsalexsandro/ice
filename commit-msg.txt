@@ -1,0 +1,5 @@
+docs: fix parser.implementations.md inconsistencies
+
+- Fix typo on line 24
+- Mark type annotation multidimensional as implemented  
+- Update Error Handling metric to 100%
