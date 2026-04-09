@@ -22,6 +22,7 @@ export type Expr =
   | ClassExpr
   | ArrowFunctionExpr
   | TemplateLiteralExpr
+  | AwaitExpr
 
 export interface BinaryExpr {
   kind: "Binary"
@@ -178,6 +179,7 @@ export interface FunctionStmt {
   params: FunctionStmtParam[]
   returnType?: Token
   body: BlockStmt
+  async?: boolean
 }
 
 export interface ReturnStmt {
@@ -253,6 +255,7 @@ export interface ArrowFunctionExpr {
   params: { name: Token; type?: Token }[]
   returnType?: Token
   body: Expr | Stmt
+  async?: boolean
 }
 
 export interface TemplateLiteralExpr {
@@ -283,4 +286,9 @@ export interface ExportSpecifier {
 export interface ExportStmt {
   kind: "ExportStmt"
   specifiers?: ExportSpecifier[]
+}
+
+export interface AwaitExpr {
+  kind: "Await"
+  expression: Expr
 }

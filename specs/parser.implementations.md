@@ -44,6 +44,9 @@ Este documento rastreia a implementação do parser Ice Lang.
 | 33 | ImportStmt | `import ... from ...` |
 | 34 | ExportStmt | `export { x }` |
 | 35 | ExportStmt (decl) | `export const/val/func/class` |
+| 36 | AsyncFunctionStmt | `async func` |
+| 37 | AwaitExpr | `await expr` |
+| 38 | AsyncArrowFunction | `async x => x` |
 
 ---
 
@@ -156,7 +159,7 @@ type IcexChild = IcexElement | IcexText | IcexExpression
 | 3 | ~~Import/Export~~ | ~~Alta~~ | ✅ Implementado |
 | 4 | Do-While | Baixa | Só tem `while` |
 | 5 | ~~Lambdas/Arrow~~ | ~~Alta~~ | ✅ Implementado `x => x * 2` |
-| 6 | Async/Await | Alta | Keywords existem |
+| 6 | ~~Async/Await~~ | ~~Alta~~ | ✅ Implementado |
 | 7 | ~~Type annotation multidimensional~~ | ~~Média~~ | ✅ Implementado `int[][]` em parâmetros/return/var |
 | 8 | ~~Export val/const/func/class~~ | ~~Alta~~ | ✅ Implementado `export const x = 1` |
 ---
@@ -177,7 +180,7 @@ type IcexChild = IcexElement | IcexText | IcexExpression
 try, catch, throw, finally  → Parsed
 import, from, as            → Parsed ✅
 export                       → Parsed ✅
-async, await               → Não parsed
+async, await               → Parsed ✅
 ```
 
 ---
@@ -395,6 +398,52 @@ interface ThrowStmt {
 
 ---
 
+## Async/Await  ✅ Implementado
+
+### Tipos AST
+
+```typescript
+interface FunctionStmt {
+  kind: "FunctionStmt"
+  name: Token
+  params: FunctionStmtParam[]
+  returnType?: Token
+  body: BlockStmt
+  async?: boolean  // NEW
+}
+
+interface ArrowFunctionExpr {
+  kind: "ArrowFunction"
+  params: { name: Token; type?: Token }[]
+  returnType?: Token
+  body: Expr | Stmt
+  async?: boolean  // NEW
+}
+
+interface AwaitExpr {
+  kind: "Await"
+  expression: Expr
+}
+```
+
+### Sintaxe
+
+| Feature | Exemplo |
+|---------|---------|
+| Async function | `async func fetch(): string { return 'data' }` |
+| Async arrow (no parens) | `async x => x + 1` |
+| Async arrow (com parens) | `async (x: int): int => x * 2` |
+| Await expression | `await fetch()` |
+| Await in arrow body | `val fn = async () => await test()` |
+
+### Notas
+- `async` pode preceder `func` ou expressions
+- `await` é um prefix operator que parseia a expressão seguinte
+- Arrow functions com `async` são detectadas automaticamente via `isArrowFunctionStart()`
+- Funções normais têm `async: false` por padrão
+
+---
+
 ## Plano de Implementação
 
 ### Fase 1: Essentials
@@ -408,10 +457,10 @@ interface ThrowStmt {
 3. ~~Import/Export~~ ✅
 
 ### Fase 3: Avançadas
-1. Switch/Match
-2. Do-While
-3. Range/Iterator
-4. Async/Await
+1. ~~Async/Await~~ ✅
+2. Switch/Match
+3. Do-While
+4. Range/Iterator
 
 ---
 

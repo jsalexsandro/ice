@@ -130,7 +130,17 @@ export class Parser {
         return this.parseForStatement()
       }
       if (token.value === 'func') {
-        return this.parseFunctionStatement()
+        return this.parseFunctionStatement(false)
+      }
+      if (token.value === 'async') {
+        this.advance()
+        if (this.current().value === 'func') {
+          return this.parseFunctionStatement(true)
+        }
+        // Se não é func, pode ser async arrow - deixa expressãoidar como expressão
+        // Volta uma posição para ser processado como expressão
+        this.position--
+        // Não faz nada aqui - vai cair para parseExpressionStatement
       }
       if (token.value === 'class') {
         return this.parseClassStatement()
@@ -273,7 +283,7 @@ export class Parser {
     }
   }
 
-  private parseFunctionStatement(): FunctionStmt {
+  private parseFunctionStatement(isAsync: boolean = false): FunctionStmt {
     this.expect(TokenType.KEYWORD)
     const name = this.expect(TokenType.IDENTIFIER)
     this.expect(TokenType.LPAREN)
@@ -348,7 +358,8 @@ export class Parser {
       name,
       params,
       returnType,
-      body
+      body,
+      async: isAsync
     }
   }
 
@@ -1036,6 +1047,22 @@ export class Parser {
           this.expect(TokenType.RPAREN)
           return { kind: "New", callee, args }
         }
+        if (token.value === 'await') {
+          this.advance()
+          const expression = this.parseExpression()
+          return { kind: "Await", expression }
+        }
+        if (token.value === 'async') {
+          this.advance()
+          // Verificar se é async arrow function
+          if (this.current().type === TokenType.IDENTIFIER) {
+            return this.parseArrowFunctionNoParens(true)
+          }
+          if (this.current().type === TokenType.LPAREN) {
+            return this.parseArrowFunction(true)
+          }
+          throw new Error(`Expected identifier or '(' after 'async' at line ${token.line}, column ${token.column}`)
+        }
         throw ErrorMessages.expectedExpression(token)
 
       case TokenType.LPAREN:
@@ -1235,10 +1262,12 @@ export class Parser {
   }
 
   private parseGroup(): Expr {
+    const lparenPos = this.position
     this.expect(TokenType.LPAREN)
     
     if (this.isArrowFunctionStart()) {
-      return this.parseArrowFunction()
+      const isAsync = lparenPos > 0 && this.tokens[lparenPos - 1].type === TokenType.KEYWORD && this.tokens[lparenPos - 1].value === 'async'
+      return this.parseArrowFunction(isAsync)
     }
     
     const expr = this.parseExpression()
@@ -1258,6 +1287,16 @@ export class Parser {
       const isArrow = this.current().type === TokenType.ARROW
       this.position = startPos
       return isArrow
+    }
+    
+    if (this.current().type === TokenType.KEYWORD && this.current().value === 'async') {
+      this.advance()
+      if (this.current().type === TokenType.RPAREN || this.current().type === TokenType.IDENTIFIER || this.current().type === TokenType.LPAREN) {
+        this.position = startPos
+        return true
+      }
+      this.position = startPos
+      return false
     }
     
     if (this.current().type !== TokenType.IDENTIFIER) {
@@ -1288,7 +1327,11 @@ export class Parser {
     return false
   }
 
-  private parseArrowFunction(): ArrowFunctionExpr {
+  private parseArrowFunction(isAsync: boolean = false): ArrowFunctionExpr {
+    if (isAsync) {
+      this.advance()
+    }
+    
     const params: { name: Token; type?: Token }[] = []
     let returnType: Token | undefined
     
@@ -1344,11 +1387,12 @@ export class Parser {
       kind: "ArrowFunction",
       params,
       returnType,
-      body
+      body,
+      async: isAsync
     }
   }
 
-  private parseArrowFunctionNoParens(): any {
+  private parseArrowFunctionNoParens(isAsync: boolean = false): any {
     const nameToken = this.advance()
     
     this.expect(TokenType.ARROW)
@@ -1364,7 +1408,8 @@ export class Parser {
     return {
       kind: "ArrowFunction",
       params: [{ name: nameToken }],
-      body
+      body,
+      async: isAsync
     }
   }
 

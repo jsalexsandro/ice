@@ -1,30 +1,25 @@
-import { Lexer } from './src/lexer';
-import { Parser } from './src/parser';
+import { Lexer } from "./src/lexer"
+import { Parser } from "./src/parser"
 
-const code = `class User {
-    public name: string
-    private age: int
-    protected email: string
-    
-    static count: int = 0
-    
-    constructor(name: string) {
-        this.name = name
-    }
-    
-    public getName(): string {
-        return this.name
-    }
-    
-    private setAge(age: int): void {
-        this.age = age
-    }
-}`;
+const testCases = [
+  { code: "async func fetch(): string { return 'hi' }", name: "async func" },
+  { code: "func normal(): int { return 1 }", name: "normal func" },
+  { code: "await fetch()", name: "await expr" },
+  { code: "async x => x + 1", name: "async arrow no parens" },
+  { code: "async (x: int): int => x * 2", name: "async arrow with parens" },
+  { code: "val fn = async () => await test()", name: "async arrow assigned" },
+]
 
-try {
-    const ast = new Parser(new Lexer(code).tokenize()).parseProgram();
-    console.log('✅ Full class parsed!');
-    console.log(JSON.stringify(ast, null, 2));
-} catch(e: any) {
-    console.log('❌ Error:', e.message);
+for (const tc of testCases) {
+  console.log(`\n=== ${tc.name} ===`)
+  console.log(`Code: ${tc.code}`)
+  try {
+    const lexer = new Lexer(tc.code)
+    const tokens = lexer.tokenize()
+    const parser = new Parser(tokens)
+    const ast = parser.parseProgram()
+    console.log("Result:", JSON.stringify(ast.body[0], null, 2))
+  } catch (e: any) {
+    console.log("Error:", e.message)
+  }
 }

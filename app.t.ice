@@ -1,4 +1,1 @@
-const Button = {
-    color: {a: [1, 2, 3, "Good", false]},
-    padding: 10
-}
+export const e = async (x) => await print(x)

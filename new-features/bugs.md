@@ -110,3 +110,8 @@ Objetos literais não funcionam em interpolação JSX (ex: {name: "John"})
 
 - **Arquivos**: src/parser.ts, src/ast.ts
 - **Status**: CORRIGIDO em faf403e
+
+
+-- Possivel bug:
+no ast um metodo da classes deve ser publico por padrão não null
+não to vendo em string[] o que informe que é um array
