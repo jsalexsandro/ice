@@ -157,7 +157,37 @@ function runAll(component?: Component, options?: RunOptions): void {
   }
 }
 
-export { runAll, createTest }
+export { runAll, createTest, updateTest }
+
+function updateTest(component: Component, id: string): void {
+  const testId = `${component}_${id.padStart(2, '0')}`
+  const filePath = `./tests/${component}/test_${testId}.json`
+  
+  let testData: any
+  
+  try {
+    const content = readFileSync(filePath, 'utf-8')
+    testData = JSON.parse(content)
+  } catch {
+    console.log(`❌ Test ${testId} not found`)
+    return
+  }
+  
+  try {
+    const lexer = new Lexer(testData.code)
+    const tokens = lexer.tokenize()
+    const parser = new Parser(tokens)
+    const ast = parser.parseProgram()
+    testData.result = ast
+    console.log(`✅ Test ${testId} - UPDATED (new AST saved)`)
+  } catch (error: any) {
+    testData.result = error.message
+    console.log(`✅ Test ${testId} - UPDATED (new error: ${error.message})`)
+  }
+  
+  writeFileSync(filePath, JSON.stringify(testData, null, 2))
+  console.log(`📄 Saved: ${filePath}`)
+}
 
 function createTest(component: Component, options: CreateTestOptions): any {
   const { id, description, code } = options

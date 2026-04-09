@@ -27,7 +27,8 @@
               "value": "int[]",
               "line": 1,
               "column": 26
-            }
+            },
+            "isRest": false
           },
           {
             "name": {
@@ -41,7 +42,8 @@
               "value": "int[]",
               "line": 1,
               "column": 42
-            }
+            },
+            "isRest": false
           },
           {
             "name": {
@@ -55,7 +57,8 @@
               "value": "int",
               "line": 1,
               "column": 57
-            }
+            },
+            "isRest": false
           }
         ],
         "returnType": {
@@ -394,7 +397,8 @@
               }
             }
           ]
-        }
+        },
+        "async": false
       },
       {
         "kind": "FunctionStmt",
@@ -417,7 +421,8 @@
               "value": "string",
               "line": 14,
               "column": 24
-            }
+            },
+            "isRest": false
           },
           {
             "name": {
@@ -431,7 +436,8 @@
               "value": "int",
               "line": 14,
               "column": 39
-            }
+            },
+            "isRest": false
           },
           {
             "name": {
@@ -445,7 +451,8 @@
               "value": "int",
               "line": 14,
               "column": 50
-            }
+            },
+            "isRest": false
           },
           {
             "name": {
@@ -459,7 +466,8 @@
               "value": "Config",
               "line": 14,
               "column": 60
-            }
+            },
+            "isRest": false
           }
         ],
         "returnType": {
@@ -1096,7 +1104,8 @@
               }
             }
           ]
-        }
+        },
+        "async": false
       },
       {
         "kind": "FunctionStmt",
@@ -1119,7 +1128,8 @@
               "value": "Item",
               "line": 31,
               "column": 21
-            }
+            },
+            "isRest": false
           },
           {
             "name": {
@@ -1133,7 +1143,8 @@
               "value": "int",
               "line": 31,
               "column": 32
-            }
+            },
+            "isRest": false
           },
           {
             "name": {
@@ -1147,7 +1158,8 @@
               "value": "int",
               "line": 31,
               "column": 43
-            }
+            },
+            "isRest": false
           },
           {
             "name": {
@@ -1161,7 +1173,8 @@
               "value": "Config",
               "line": 31,
               "column": 53
-            }
+            },
+            "isRest": false
           },
           {
             "name": {
@@ -1175,7 +1188,8 @@
               "value": "State",
               "line": 31,
               "column": 68
-            }
+            },
+            "isRest": false
           }
         ],
         "returnType": {
@@ -2465,7 +2479,8 @@
               }
             }
           ]
-        }
+        },
+        "async": false
       },
       {
         "kind": "FunctionStmt",
@@ -2488,7 +2503,8 @@
               "value": "Dataset",
               "line": 69,
               "column": 27
-            }
+            },
+            "isRest": false
           },
           {
             "name": {
@@ -2502,7 +2518,8 @@
               "value": "Config",
               "line": 69,
               "column": 41
-            }
+            },
+            "isRest": false
           },
           {
             "name": {
@@ -2516,7 +2533,8 @@
               "value": "State",
               "line": 69,
               "column": 56
-            }
+            },
+            "isRest": false
           }
         ],
         "returnType": {
@@ -6869,7 +6887,8 @@
               }
             }
           ]
-        }
+        },
+        "async": false
       }
     ]
   }

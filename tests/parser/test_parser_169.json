@@ -26,7 +26,8 @@
               "value": "string",
               "line": 1,
               "column": 17
-            }
+            },
+            "isRest": false
           }
         ],
         "returnType": {
@@ -97,7 +98,8 @@
               }
             }
           ]
-        }
+        },
+        "async": false
       }
     ]
   }

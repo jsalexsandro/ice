@@ -762,7 +762,8 @@
                   "value": "int",
                   "line": 40,
                   "column": 33
-                }
+                },
+                "isRest": false
               }
             ],
             "returnType": {

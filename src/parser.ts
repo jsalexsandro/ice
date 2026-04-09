@@ -68,6 +68,10 @@ export class Parser {
     return this.tokens[this.position + 1] ?? this.tokens[this.position]
   }
 
+  private peekNext(): Token {
+    return this.tokens[this.position + 2] ?? this.tokens[this.position + 1] ?? this.tokens[this.position]
+  }
+
   private advance(): Token {
     const token = this.current()
     this.position++
@@ -175,6 +179,17 @@ export class Parser {
     }
 
     if (token.type === TokenType.LBRACE) {
+      // Diferenciar entre Block Statement e Object Literal
+      // Block: { stmt; stmt; } - após { vem keyword, identifier que não é key: value, etc
+      // Object: { key: value, ... } - após { vem identifier seguido de :, ou spread
+      const peek = this.peek()
+      const isObjectLiteral = 
+        (peek.type === TokenType.IDENTIFIER && this.peekNext().type === TokenType.COLON) ||
+        peek.type === TokenType.SPREAD
+      
+      if (isObjectLiteral) {
+        return this.parseExpressionStatement()
+      }
       return this.parseBlockStatement()
     }
 
@@ -288,9 +303,20 @@ export class Parser {
     const name = this.expect(TokenType.IDENTIFIER)
     this.expect(TokenType.LPAREN)
     
-    const params: { name: Token; type?: Token }[] = []
+    const params: { name: Token; type?: Token; isRest?: boolean }[] = []
     if (this.current().type !== TokenType.RPAREN) {
-      const paramName = this.expect(TokenType.IDENTIFIER)
+      // Check for rest parameter (...args)
+      let isRest = false
+      let paramName: Token
+      
+      if (this.current().type === TokenType.SPREAD) {
+        this.advance()
+        isRest = true
+        paramName = this.expect(TokenType.IDENTIFIER)
+      } else {
+        paramName = this.expect(TokenType.IDENTIFIER)
+      }
+      
       let paramType: Token | undefined = undefined
       
       if (this.current().type === TokenType.COLON) {
@@ -309,11 +335,23 @@ export class Parser {
         }
       }
       
-      params.push({ name: paramName, type: paramType })
+      params.push({ name: paramName, type: paramType, isRest })
       
       while (this.current().type === TokenType.COMMA) {
         this.advance()
-        const pName = this.expect(TokenType.IDENTIFIER)
+        
+        // Check for rest parameter after comma
+        let isRestParam = false
+        let pName: Token
+        
+        if (this.current().type === TokenType.SPREAD) {
+          this.advance()
+          isRestParam = true
+          pName = this.expect(TokenType.IDENTIFIER)
+        } else {
+          pName = this.expect(TokenType.IDENTIFIER)
+        }
+        
         let pType: Token | undefined = undefined
         
         if (this.current().type === TokenType.COLON) {
@@ -332,7 +370,7 @@ export class Parser {
           }
         }
         
-        params.push({ name: pName, type: pType })
+        params.push({ name: pName, type: pType, isRest: isRestParam })
       }
     }
     
@@ -521,7 +559,7 @@ export class Parser {
       if (this.current().type === TokenType.LPAREN) {
         this.expect(TokenType.LPAREN)
         
-        const params: { name: Token; type?: Token; visibility?: string }[] = []
+        const params: { name: Token; type?: Token; visibility?: string; isRest?: boolean }[] = []
         if (this.current().type !== TokenType.RPAREN) {
           let paramVisibility: string | undefined = undefined
           
@@ -530,7 +568,17 @@ export class Parser {
             this.advance()
           }
           
-          const paramName = this.expect(TokenType.IDENTIFIER)
+          let isRest = false
+          let paramName: Token
+          
+          if (this.current().type === TokenType.SPREAD) {
+            this.advance()
+            isRest = true
+            paramName = this.expect(TokenType.IDENTIFIER)
+          } else {
+            paramName = this.expect(TokenType.IDENTIFIER)
+          }
+          
           let paramType: Token | undefined = undefined
           
           if (this.current().type === TokenType.COLON) {
@@ -547,7 +595,7 @@ export class Parser {
             }
           }
           
-          params.push({ name: paramName, type: paramType, visibility: paramVisibility })
+          params.push({ name: paramName, type: paramType, visibility: paramVisibility, isRest })
           
           while (this.current().type === TokenType.COMMA) {
             this.advance()
@@ -558,7 +606,17 @@ export class Parser {
               this.advance()
             }
             
-            const pName = this.expect(TokenType.IDENTIFIER)
+            let isRestParam = false
+            let pName: Token
+            
+            if (this.current().type === TokenType.SPREAD) {
+              this.advance()
+              isRestParam = true
+              pName = this.expect(TokenType.IDENTIFIER)
+            } else {
+              pName = this.expect(TokenType.IDENTIFIER)
+            }
+            
             let pType: Token | undefined = undefined
             
             if (this.current().type === TokenType.COLON) {
@@ -575,7 +633,7 @@ export class Parser {
               }
             }
             
-            params.push({ name: pName, type: pType, visibility: pVisibility })
+            params.push({ name: pName, type: pType, visibility: pVisibility, isRest: isRestParam })
           }
         }
         
@@ -1077,6 +1135,9 @@ export class Parser {
       case TokenType.LBRACKET:
         return this.parseArray()
 
+      case TokenType.SPREAD:
+        return this.parseSpread()
+
       case TokenType.PLUS:
       case TokenType.MINUS:
       case TokenType.NOT:
@@ -1166,70 +1227,45 @@ export class Parser {
   }
 
   private parseObjectLiteral(): Expr {
-    const properties: { key: string; value: Expr }[] = []
+    const properties: { key: string | null; value: Expr }[] = []
 
-    if (this.current().type === TokenType.LBRACE) {
-      this.advance()
-      
-      while (this.current().type !== TokenType.RBRACE) {
-        const keyToken = this.expect(TokenType.IDENTIFIER)
+    // Deve começar com LBRACE
+    this.expect(TokenType.LBRACE)
+    
+    while (this.current().type !== TokenType.RBRACE) {
+      // Handle spread: ...obj
+      if (this.current().type === TokenType.SPREAD) {
+        this.advance()
+        const argument = this.parseExpression()
+        properties.push({ key: null, value: { kind: "Spread", argument } })
         
-        if (this.current().type === TokenType.COLON) {
-          this.advance()
-          const value = this.parseExpression()
-          properties.push({ key: keyToken.value as string, value })
-        } else {
-          const valueExpr: Expr = { kind: "Identifier", name: keyToken }
-          properties.push({ key: keyToken.value as string, value: valueExpr })
-        }
-
         if (this.current().type === TokenType.COMMA) {
           this.advance()
-        } else {
+        } else if (this.current().type !== TokenType.RBRACE) {
           break
         }
+        continue
       }
       
-      this.expect(TokenType.RBRACE)
-    } else {
-      const token = this.current()
-      if (token.type !== TokenType.IDENTIFIER && token.type !== TokenType.KEYWORD) {
-        throw new Error(`Expected identifier or keyword for object key but got '${token.type}'`)
-      }
-      this.advance()
+      const keyToken = this.expect(TokenType.IDENTIFIER)
       
       if (this.current().type === TokenType.COLON) {
         this.advance()
         const value = this.parseExpression()
-        properties.push({ key: token.value as string, value })
-
-        if (this.current().type === TokenType.COMMA) {
-          this.advance()
-          while (this.current().type !== TokenType.RBRACE) {
-            const nextKeyToken = this.expect(TokenType.IDENTIFIER)
-            
-            if (this.current().type === TokenType.COLON) {
-              this.advance()
-              const nextValue = this.parseExpression()
-              properties.push({ key: nextKeyToken.value as string, value: nextValue })
-            } else {
-              const nextValueExpr: Expr = { kind: "Identifier", name: nextKeyToken }
-              properties.push({ key: nextKeyToken.value as string, value: nextValueExpr })
-            }
-
-            if (this.current().type === TokenType.COMMA) {
-              this.advance()
-            } else {
-              break
-            }
-          }
-          this.expect(TokenType.RBRACE)
-        }
+        properties.push({ key: keyToken.value as string, value })
       } else {
-        const valueExpr: Expr = { kind: "Identifier", name: token }
-        properties.push({ key: token.value as string, value: valueExpr })
+        const valueExpr: Expr = { kind: "Identifier", name: keyToken }
+        properties.push({ key: keyToken.value as string, value: valueExpr })
+      }
+
+      if (this.current().type === TokenType.COMMA) {
+        this.advance()
+      } else {
+        break
       }
     }
+    
+    this.expect(TokenType.RBRACE)
 
     return {
       kind: "Object",
@@ -1332,12 +1368,21 @@ export class Parser {
       this.advance()
     }
     
-    const params: { name: Token; type?: Token }[] = []
+    const params: { name: Token; type?: Token; isRest?: boolean }[] = []
     let returnType: Token | undefined
     
     if (this.current().type !== TokenType.RPAREN) {
       while (true) {
-        const nameToken = this.expect(TokenType.IDENTIFIER)
+        let isRest = false
+        let nameToken: Token
+        
+        if (this.current().type === TokenType.SPREAD) {
+          this.advance()
+          isRest = true
+          nameToken = this.expect(TokenType.IDENTIFIER)
+        } else {
+          nameToken = this.expect(TokenType.IDENTIFIER)
+        }
         
         if (this.current().type === TokenType.COLON) {
           this.advance()
@@ -1350,7 +1395,7 @@ export class Parser {
           }
         }
         
-        params.push({ name: nameToken, type: returnType })
+        params.push({ name: nameToken, type: returnType, isRest })
         returnType = undefined
         
         if (this.current().type !== TokenType.COMMA) {
@@ -1410,6 +1455,15 @@ export class Parser {
       params: [{ name: nameToken }],
       body,
       async: isAsync
+    }
+  }
+
+  private parseSpread(): Expr {
+    this.advance() // consume '...'
+    const argument = this.parseExpression(8) // higher precedence than unary
+    return {
+      kind: "Spread",
+      argument
     }
   }
 

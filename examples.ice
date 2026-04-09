@@ -272,3 +272,27 @@ class Counter {
 val greeting = $`Hello {name}!`
 val mathResult = $`{a} + {b} = {a + b}`
 val template = $`User: {user.name}, Age: {user.age}`
+
+// Spread Operator
+val arr1 = [1, 2, 3]
+val arr2 = [4, 5, 6]
+val combined = [...arr1, ...arr2]
+val withElement = [0, ...arr1, 7]
+
+val obj1 = {a: 1, b: 2}
+val obj2 = {b: 3, c: 4}
+val merged = {...obj1, ...obj2}
+val withSpread = {x: 1, ...obj1}
+
+func logAll(...args) {
+    for (val i = 0; i < args.length; i = i + 1) {
+        print(args[i])
+    }
+}
+
+logAll(1, 2, 3)
+logAll("a", "b", "c")
+
+val nums = [1, 2, 3]
+val more = [4, 5]
+val all = [...nums, ...more]

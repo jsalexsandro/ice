@@ -23,6 +23,7 @@ export type Expr =
   | ArrowFunctionExpr
   | TemplateLiteralExpr
   | AwaitExpr
+  | SpreadExpr
 
 export interface BinaryExpr {
   kind: "Binary"
@@ -92,7 +93,7 @@ export interface ArrayExpr {
 
 export interface ObjectExpr {
   kind: "Object"
-  properties: { key: string; value: Expr }[]
+  properties: { key: string | null; value: Expr }[]
 }
 
 export interface MemberExpr {
@@ -171,6 +172,7 @@ export interface ContinueStmt {
 export interface FunctionStmtParam {
   name: Token
   type?: Token
+  isRest?: boolean
 }
 
 export interface FunctionStmt {
@@ -252,7 +254,7 @@ export interface ClassMethod {
 
 export interface ArrowFunctionExpr {
   kind: "ArrowFunction"
-  params: { name: Token; type?: Token }[]
+  params: { name: Token; type?: Token; isRest?: boolean }[]
   returnType?: Token
   body: Expr | Stmt
   async?: boolean
@@ -291,4 +293,9 @@ export interface ExportStmt {
 export interface AwaitExpr {
   kind: "Await"
   expression: Expr
+}
+
+export interface SpreadExpr {
+  kind: "Spread"
+  argument: Expr
 }

@@ -26,7 +26,8 @@
               "value": "qualquerCoisa",
               "line": 1,
               "column": 18
-            }
+            },
+            "isRest": false
           }
         ],
         "returnType": {
@@ -46,7 +47,8 @@
               }
             }
           ]
-        }
+        },
+        "async": false
       }
     ]
   }

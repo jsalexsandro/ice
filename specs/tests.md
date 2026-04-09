@@ -184,6 +184,45 @@ runAll("parser")
 
 ---
 
+## Como Atualizar Testes (updateTest)
+
+Quando a estrutura do AST muda (ex: novo campo `async` adicionado), os testes falham. A função `updateTest` re-executa o parser e salva o novo resultado automaticamente.
+
+### Quando usar
+
+- Quando o AST do parser muda e vários testes falham
+- Quando você quer atualizar o resultado esperado para o código atual
+
+### Exemplo
+
+```typescript
+import { updateTest } from './tests/test-runner'
+
+// Atualiza um teste específico
+updateTest("parser", "24")    // Atualiza parser_24
+updateTest("parser", "135")   // Atualiza parser_135
+```
+
+### Executar múltiplos testes
+
+```typescript
+// atualiza-varios.ts
+import { updateTest } from './tests/test-runner'
+
+const testes = ["24", "25", "26", "27", "28", "29", "34"]
+for (const id of testes) {
+  updateTest("parser", id)
+}
+```
+
+```bash
+bun run atualiza-varios.ts
+```
+
+**Nota:** Use com cautela - isso sobrescreve o resultado esperado com o resultado atual. Sempre verifique se a mudança no AST está correta.
+
+---
+
 ## Comparação de Resultados
 
 A comparação é feita convertendo ambos os resultados (AST gerada e resultado esperado) para JSON ordenado:
@@ -237,6 +276,12 @@ Função principal exportada. Coordena a execução de todos os testes.
 ### loadTests(component, ids?)
 Carrega arquivos JSON de teste do componente especificado.
 
+### createTest(component, options)
+Cria novo arquivo de teste JSON automaticamente a partir do código.
+
+### updateTest(component, id)
+Atualiza o resultado de um teste existente executando o parser novamente.
+
 ---
 
 ## Padrão de Nomenclatura
@@ -281,6 +326,6 @@ Carrega arquivos JSON de teste do componente especificado.
 ## Futuras Melhorias
 
 - [ ] Detecção automática de componentes com testes
-- [ ] Testes de snapshot (atualizar resultados com --update)
+- [x] Testes de snapshot (atualizar resultados com --update) ✅ Implementado com updateTest()
 - [ ] Testes de performance/timing
 - [ ] Configurar CI/CD para execução automática

@@ -38,7 +38,8 @@
                   "value": "int",
                   "line": 5,
                   "column": 16
-                }
+                },
+                "isRest": false
               }
             ],
             "returnType": {
@@ -108,7 +109,8 @@
               "value": "User",
               "line": 10,
               "column": 20
-            }
+            },
+            "isRest": false
           }
         ],
         "returnType": {
@@ -169,7 +171,8 @@
               }
             }
           ]
-        }
+        },
+        "async": false
       }
     ]
   }

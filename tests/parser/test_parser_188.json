@@ -26,7 +26,8 @@
               "value": "string",
               "line": 1,
               "column": 22
-            }
+            },
+            "isRest": false
           },
           {
             "name": {
@@ -40,7 +41,8 @@
               "value": "int",
               "line": 1,
               "column": 37
-            }
+            },
+            "isRest": false
           },
           {
             "name": {
@@ -54,7 +56,8 @@
               "value": "bool",
               "line": 1,
               "column": 50
-            }
+            },
+            "isRest": false
           }
         ],
         "returnType": {
@@ -187,7 +190,8 @@
               }
             }
           ]
-        }
+        },
+        "async": false
       }
     ]
   }

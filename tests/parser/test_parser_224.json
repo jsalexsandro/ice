@@ -341,7 +341,8 @@
                   "value": "int[]",
                   "line": 21,
                   "column": 17
-                }
+                },
+                "isRest": false
               },
               {
                 "name": {
@@ -355,7 +356,8 @@
                   "value": "string[]",
                   "line": 21,
                   "column": 32
-                }
+                },
+                "isRest": false
               }
             ],
             "returnType": {
@@ -1857,7 +1859,8 @@
                   "value": "int",
                   "line": 90,
                   "column": 20
-                }
+                },
+                "isRest": false
               },
               {
                 "name": {
@@ -1871,7 +1874,8 @@
                   "value": "int[]",
                   "line": 90,
                   "column": 31
-                }
+                },
+                "isRest": false
               }
             ],
             "returnType": {
@@ -2527,7 +2531,8 @@
                   "value": "int[]",
                   "line": 114,
                   "column": 17
-                }
+                },
+                "isRest": false
               },
               {
                 "name": {
@@ -2541,7 +2546,8 @@
                   "value": "string[]",
                   "line": 114,
                   "column": 32
-                }
+                },
+                "isRest": false
               }
             ],
             "returnType": {

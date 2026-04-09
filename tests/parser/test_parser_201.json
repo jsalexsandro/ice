@@ -27,7 +27,8 @@
               "value": "int[]",
               "line": 1,
               "column": 22
-            }
+            },
+            "isRest": false
           },
           {
             "name": {
@@ -41,7 +42,8 @@
               "value": "int",
               "line": 1,
               "column": 40
-            }
+            },
+            "isRest": false
           }
         ],
         "returnType": {
@@ -311,7 +313,8 @@
               }
             }
           ]
-        }
+        },
+        "async": false
       },
       {
         "kind": "FunctionStmt",
@@ -334,7 +337,8 @@
               "value": "Grid",
               "line": 13,
               "column": 26
-            }
+            },
+            "isRest": false
           },
           {
             "name": {
@@ -348,7 +352,8 @@
               "value": "Config",
               "line": 13,
               "column": 37
-            }
+            },
+            "isRest": false
           },
           {
             "name": {
@@ -362,7 +367,8 @@
               "value": "State",
               "line": 13,
               "column": 52
-            }
+            },
+            "isRest": false
           }
         ],
         "returnType": {
@@ -2820,7 +2826,8 @@
               }
             }
           ]
-        }
+        },
+        "async": false
       }
     ]
   }

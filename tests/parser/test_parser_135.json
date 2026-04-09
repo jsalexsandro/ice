@@ -26,7 +26,8 @@
               "value": "int",
               "line": 1,
               "column": 16
-            }
+            },
+            "isRest": false
           },
           {
             "name": {
@@ -40,7 +41,8 @@
               "value": "int",
               "line": 1,
               "column": 24
-            }
+            },
+            "isRest": false
           }
         ],
         "returnType": {
@@ -473,7 +475,8 @@
               }
             }
           ]
-        }
+        },
+        "async": false
       }
     ]
   }

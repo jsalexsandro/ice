@@ -27,7 +27,8 @@
               "value": "string",
               "line": 1,
               "column": 20
-            }
+            },
+            "isRest": false
           },
           {
             "name": {
@@ -41,7 +42,8 @@
               "value": "string[]",
               "line": 1,
               "column": 35
-            }
+            },
+            "isRest": false
           },
           {
             "name": {
@@ -55,7 +57,8 @@
               "value": "int",
               "line": 1,
               "column": 50
-            }
+            },
+            "isRest": false
           }
         ],
         "returnType": {
@@ -374,7 +377,8 @@
               }
             }
           ]
-        }
+        },
+        "async": false
       },
       {
         "kind": "FunctionStmt",
@@ -397,7 +401,8 @@
               "value": "Field",
               "line": 14,
               "column": 22
-            }
+            },
+            "isRest": false
           },
           {
             "name": {
@@ -411,7 +416,8 @@
               "value": "int",
               "line": 14,
               "column": 34
-            }
+            },
+            "isRest": false
           },
           {
             "name": {
@@ -425,7 +431,8 @@
               "value": "Config",
               "line": 14,
               "column": 44
-            }
+            },
+            "isRest": false
           }
         ],
         "returnType": {
@@ -1215,7 +1222,8 @@
               }
             }
           ]
-        }
+        },
+        "async": false
       },
       {
         "kind": "FunctionStmt",
@@ -1238,7 +1246,8 @@
               "value": "Form",
               "line": 29,
               "column": 21
-            }
+            },
+            "isRest": false
           },
           {
             "name": {
@@ -1252,7 +1261,8 @@
               "value": "int",
               "line": 29,
               "column": 32
-            }
+            },
+            "isRest": false
           },
           {
             "name": {
@@ -1266,7 +1276,8 @@
               "value": "Config",
               "line": 29,
               "column": 42
-            }
+            },
+            "isRest": false
           }
         ],
         "returnType": {
@@ -2160,7 +2171,8 @@
               }
             }
           ]
-        }
+        },
+        "async": false
       },
       {
         "kind": "FunctionStmt",
@@ -2183,7 +2195,8 @@
               "value": "Form",
               "line": 52,
               "column": 22
-            }
+            },
+            "isRest": false
           },
           {
             "name": {
@@ -2197,7 +2210,8 @@
               "value": "Config",
               "line": 52,
               "column": 33
-            }
+            },
+            "isRest": false
           }
         ],
         "returnType": {
@@ -3332,7 +3346,8 @@
               }
             }
           ]
-        }
+        },
+        "async": false
       }
     ]
   }

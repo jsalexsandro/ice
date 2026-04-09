@@ -40,6 +40,7 @@ export enum TokenType {
   QUESTION = 'QUESTION',
   QUESTION_QUESTION = 'QUESTION_QUESTION',
   ARROW = 'ARROW',
+  SPREAD = 'SPREAD',
   ASSIGN = 'ASSIGN',
   EOF = 'EOF',
   ERROR = 'ERROR',
@@ -543,6 +544,11 @@ export class Lexer {
       
       case '.':
         this.readChar()
+        if (this.ch === '.' && this.peek() === '.') {
+          this.readChar()
+          this.readChar()
+          return { type: TokenType.SPREAD, value: '...', line: this.line, column: startColumn }
+        }
         return { type: TokenType.DOT, value: '.', line: this.line, column: startColumn }
       
       case ';':

@@ -426,7 +426,8 @@
                   "value": "int[]",
                   "line": 21,
                   "column": 20
-                }
+                },
+                "isRest": false
               },
               {
                 "name": {
@@ -440,7 +441,8 @@
                   "value": "int",
                   "line": 21,
                   "column": 32
-                }
+                },
+                "isRest": false
               }
             ],
             "returnType": {
@@ -1959,7 +1961,8 @@
                   "value": "int[][]",
                   "line": 75,
                   "column": 16
-                }
+                },
+                "isRest": false
               }
             ],
             "returnType": {

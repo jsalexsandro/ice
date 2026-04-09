@@ -344,7 +344,8 @@
                   "value": "int",
                   "line": 23,
                   "column": 16
-                }
+                },
+                "isRest": false
               }
             ],
             "returnType": {
@@ -793,7 +794,8 @@
                   "value": "int",
                   "line": 44,
                   "column": 18
-                }
+                },
+                "isRest": false
               }
             ],
             "returnType": {
@@ -1588,7 +1590,8 @@
                   "value": "int",
                   "line": 69,
                   "column": 17
-                }
+                },
+                "isRest": false
               }
             ],
             "returnType": {
@@ -2781,7 +2784,8 @@
                   "value": "int",
                   "line": 105,
                   "column": 17
-                }
+                },
+                "isRest": false
               }
             ],
             "returnType": {

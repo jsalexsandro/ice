@@ -47,6 +47,7 @@ Este documento rastreia a implementação do parser Ice Lang.
 | 36 | AsyncFunctionStmt | `async func` |
 | 37 | AwaitExpr | `await expr` |
 | 38 | AsyncArrowFunction | `async x => x` |
+| 39 | SpreadExpr | `...expr` |
 
 ---
 
@@ -105,14 +106,15 @@ Este documento rastreia a implementação do parser Ice Lang.
 | 13 | Literal | `"text"`, `123`, `true`, `null` |
 | 14 | Nullish Coalescing | `a ?? b` |
 | 15 | Arrow Function | `x => x`, `(x: int) => x + 1` |
-| 16 | String Interpolation | `$`hello {name}` ` |
+| 16 | String Interpolation | `` $`hello {name}` `` |
+| 17 | Spread | `...expr` |
 
 ### Faltantes ❌
 
 | # | Expressão | Sintaxe |
 |---|-----------|---------|
 | 1 | ~~String Interpolation~~ | ~~$`hello {name}`~~ ✅ Implementado |
-| 2 | Spread | `...obj` |
+| 2 | ~~Spread~~ | ~~`...obj`~~ ✅ Implementado |
 | 3 | ~~Export Statement~~ | ~~`export { x }`~~ ✅ Implementado |
 
 ---
@@ -458,11 +460,43 @@ interface AwaitExpr {
 
 ### Fase 3: Avançadas
 1. ~~Async/Await~~ ✅
-2. Switch/Match
-3. Do-While
-4. Range/Iterator
+2. ~~Spread Operator~~ ✅
+3. Switch/Match
+4. Do-While
+5. Range/Iterator
 
 ---
+
+## Spread Operator  ✅ Implementado
+
+### Tipos AST
+
+```typescript
+interface SpreadExpr {
+  kind: "Spread"
+  argument: Expr
+}
+```
+
+### Implementação
+
+1. **Lexer**: Token `SPREAD` para `...`
+2. **Parser**: `parseSpread()` como prefix expression
+3. **Contexto array**: funcionava automaticamente via prefix
+4. **Contexto object**: tratado em `parseObjectLiteral()`
+5. **Contexto call**: tratado em `parseArgumentList()`
+
+### Sintaxe Suportada
+
+| Context | Exemplo |
+|---------|---------|
+| Array | `[1, ...arr, 2]` |
+| Array múltiplos | `[...a, ...b, ...c]` |
+| Object (atribuição) | `val x = {a: 1, ...b}` |
+| Call | `fn(1, ...args)` |
+| Call múltiplos | `fn(...a, ...b)` |
+| Aninhado | `[...[1,2]]` |
+
 
 ## Métricas
 

@@ -27,7 +27,8 @@
               "value": "Dashboard",
               "line": 1,
               "column": 27
-            }
+            },
+            "isRest": false
           },
           {
             "name": {
@@ -41,7 +42,8 @@
               "value": "Config",
               "line": 1,
               "column": 43
-            }
+            },
+            "isRest": false
           }
         ],
         "returnType": {
@@ -8420,7 +8422,8 @@
               }
             }
           ]
-        }
+        },
+        "async": false
       }
     ]
   }

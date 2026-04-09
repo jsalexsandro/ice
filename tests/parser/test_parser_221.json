@@ -163,7 +163,8 @@
                   "value": "int[][]",
                   "line": 8,
                   "column": 16
-                }
+                },
+                "isRest": false
               }
             ],
             "returnType": {

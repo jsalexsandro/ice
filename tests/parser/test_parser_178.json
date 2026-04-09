@@ -26,7 +26,8 @@
               "value": "string",
               "line": 1,
               "column": 16
-            }
+            },
+            "isRest": false
           }
         ],
         "returnType": {
@@ -62,7 +63,8 @@
               }
             }
           ]
-        }
+        },
+        "async": false
       },
       {
         "kind": "VarStmt",
