@@ -39,10 +39,11 @@ Este documento rastreia a implementação do parser Ice Lang.
 | 29 | SuperExpr | `super` |
 | 30 | NewExpr | `new Class()` |
 
-| 31 | TryCatchStmt | `try { } catch { }` | ✅ Implementado
-| 32 | ThrowStmt | `throw new Error()` | ✅ Implementado
-| 33 | ImportStmt | `import ... from ...` | ✅ Implementado
-| 34 | ExportStmt | `export`, `export { x }` | ✅ Implementado
+| 31 | TryCatchStmt | `try { } catch { }` |
+| 32 | ThrowStmt | `throw new Error()` |
+| 33 | ImportStmt | `import ... from ...` |
+| 34 | ExportStmt | `export { x }` |
+| 35 | ExportStmt (decl) | `export const/val/func/class` |
 
 ---
 
@@ -109,7 +110,7 @@ Este documento rastreia a implementação do parser Ice Lang.
 |---|-----------|---------|
 | 1 | ~~String Interpolation~~ | ~~$`hello {name}`~~ ✅ Implementado |
 | 2 | Spread | `...obj` |
-| 3 | Export Statement | `export { x }` |
+| 3 | ~~Export Statement~~ | ~~`export { x }`~~ ✅ Implementado |
 
 ---
 
@@ -157,6 +158,7 @@ type IcexChild = IcexElement | IcexText | IcexExpression
 | 5 | ~~Lambdas/Arrow~~ | ~~Alta~~ | ✅ Implementado `x => x * 2` |
 | 6 | Async/Await | Alta | Keywords existem |
 | 7 | ~~Type annotation multidimensional~~ | ~~Média~~ | ✅ Implementado `int[][]` em parâmetros/return/var |
+| 8 | ~~Export val/const/func/class~~ | ~~Alta~~ | ✅ Implementado `export const x = 1` |
 ---
 
 ## Bugs Conhecidos
@@ -329,7 +331,10 @@ interface ExportStmt {
   kind: "ExportStmt"
   specifiers?: ExportSpecifier[]
 }
-```
+
+// Para export de statements (const, val, func, class)
+// a AST adiciona exported: true ao nó original
+//  Declaration exports → statement com flag exported: true
 
 ### Sintaxe
 
@@ -340,6 +345,10 @@ interface ExportStmt {
 | Múltiplos | `export { foo, bar, baz }` |
 | Com alias | `export { foo as bar }` |
 | Keywords | `export { func, class, val }` |
+| Export const | `export const PI = 3.14` |
+| Export val | `export val count = 0` |
+| Export func | `export func greet() {}` |
+| Export class | `export class User {}` |
 
 ### Notas
 - Exports devem ser no top-level
