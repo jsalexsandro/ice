@@ -1705,7 +1705,7 @@ export class Parser {
     return { kind: "ImportStmt", source, specifiers, alias }
   }
 
-  private parseExportStatement(): ExportStmt {
+  private parseExportStatement(): Stmt {
     if (!this.topLevel) {
       const token = this.current()
       throw new Error(`Exports must be at top-level at line ${token.line}, column ${token.column}`)
@@ -1716,6 +1716,24 @@ export class Parser {
     if (this.current().type === TokenType.EOF || 
         (this.current().type === TokenType.SEMICOLON)) {
       throw new Error(`Export requires at least one specifier or '{' at line ${this.current().line}, column ${this.current().column}`)
+    }
+    
+    if (this.current().value === 'val' || this.current().value === 'const') {
+      const stmt = this.parseVariableDeclaration()
+      stmt.exported = true
+      return stmt
+    }
+    
+    if (this.current().value === 'func') {
+      const stmt = this.parseFunctionStatement()
+      stmt.exported = true
+      return stmt
+    }
+    
+    if (this.current().value === 'class') {
+      const stmt = this.parseClassStatement()
+      stmt.exported = true
+      return stmt
     }
     
     let specifiers: ExportSpecifier[] | undefined = undefined

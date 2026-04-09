@@ -13,6 +13,11 @@ import { pow as power } from math
 import { sqrt as squareRoot, cos as cosine } from math
 import { pow as p, sqrt as s } from math
 
+export const age = 45
+export func hello(name: string){
+    return $`Hello {name}`
+}
+
 export { pow }
 export { sqrt, sin, cos }
 export { pow as power, sqrt as squareRoot }
