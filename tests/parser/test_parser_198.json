@@ -2,5 +2,22 @@
   "id": "parser_198",
   "description": "Self-closing com tag de fechamento",
   "code": "<br/>Hello</br>",
-  "result": "Parser Error: Expected expression but got 'SLASH' at line 1, column 11"
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "ExpressionStmt",
+        "expression": {
+          "kind": "IcexElement",
+          "tag": "br",
+          "attributes": [],
+          "children": [],
+          "isSelfClosing": true
+        }
+      }
+    ],
+    "errors": [
+      "Parser Error: Expected expression but got 'SLASH' at line 1, column 11 at line 1, column 11"
+    ]
+  }
 }

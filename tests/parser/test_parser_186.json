@@ -2,5 +2,29 @@
   "id": "parser_186",
   "description": "ICEX em ambos os branches if/else",
   "code": "val isAdmin = false\nval panel = if (isAdmin) {\n    <admin-panel/>\n} else {\n    <user-panel/>\n}",
-  "result": "Parser Error: Expected expression but got 'KEYWORD' at line 2, column 12"
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "VarStmt",
+        "type": "val",
+        "typeAnnotation": null,
+        "name": {
+          "type": "IDENTIFIER",
+          "value": "isAdmin",
+          "line": 1,
+          "column": 4
+        },
+        "initializer": {
+          "kind": "Literal",
+          "value": false
+        }
+      }
+    ],
+    "errors": [
+      "Parser Error: Expected expression but got 'KEYWORD' at line 2, column 12 at line 2, column 12",
+      "Expected token GREATER_THAN but got MINUS at line 3, column 10",
+      "Parser Error: Expected expression but got 'KEYWORD' at line 4, column 2 at line 4, column 2"
+    ]
+  }
 }

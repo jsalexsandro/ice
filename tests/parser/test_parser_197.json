@@ -2,5 +2,11 @@
   "id": "parser_197",
   "description": "Interpolação não fechada",
   "code": "<div>{a + b</div>",
-  "result": "Parser Error: Expected expression but got 'SLASH' at line 1, column 12"
+  "result": {
+    "kind": "Program",
+    "body": [],
+    "errors": [
+      "Parser Error: Expected expression but got 'SLASH' at line 1, column 12 at line 1, column 12"
+    ]
+  }
 }

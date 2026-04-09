@@ -6,6 +6,7 @@ export class Parser {
   private tokens: Token[]
   private position: number = 0
   private topLevel: boolean = true
+  private errors: string[] = []
 
   constructor(tokens: Token[]) {
     this.tokens = tokens
@@ -98,17 +99,38 @@ export class Parser {
     const statements: Stmt[] = []
     const previousTopLevel = this.topLevel
     this.topLevel = true
+    this.clearErrors()
 
-    while (!this.isEOF()) {
-      statements.push(this.parseStatement())
+    let maxStatements = 1000
+    while (!this.isEOF() && maxStatements > 0) {
+      try {
+        const stmt = this.parseStatement()
+        if (stmt) {
+          statements.push(stmt)
+        }
+      } catch (e: any) {
+        this.addError(e.message)
+        // Advance past the problematic token before synchronize
+        if (!this.isEOF()) {
+          this.advance()
+        }
+        this.synchronize()
+      }
+      maxStatements--
     }
 
     this.topLevel = previousTopLevel
 
-    return {
+    const result: any = {
       kind: "Program",
       body: statements
     }
+
+    if (this.errors.length > 0) {
+      result.errors = this.errors
+    }
+
+    return result
   }
 
   /*
@@ -1483,6 +1505,61 @@ export class Parser {
   Utilities
   =====================================
   */
+
+  // Error Recovery
+  private addError(message: string): void {
+    // Evitar erros duplicados
+    if (this.errors.includes(message)) {
+      return
+    }
+    const token = this.current()
+    const location = token?.line !== undefined ? ` at line ${token.line}, column ${token.column}` : ''
+    this.errors.push(`${message}${location}`)
+  }
+
+  private hasError(): boolean {
+    return this.errors.length > 0
+  }
+
+  private getErrors(): string[] {
+    return [...this.errors]
+  }
+
+  private clearErrors(): void {
+    this.errors = []
+  }
+
+  private synchronize(): void {
+    let maxAdvances = 50
+    while (maxAdvances > 0 && !this.isEOF()) {
+      const token = this.current()
+      
+      // Sync points - tokens seguros para continuar
+      // AVANÇAR para além de tokens de fechamento para evitar loop
+      if (token.type === TokenType.RPAREN || 
+          token.type === TokenType.RBRACKET ||
+          token.type === TokenType.RBRACE ||
+          token.type === TokenType.EOF) {
+        this.advance() // Pular o fechamento
+        return
+      }
+      
+      if (token.type === TokenType.SEMICOLON) {
+        this.advance()
+        return
+      }
+      
+      if (token.type === TokenType.KEYWORD) {
+        const keywords = ['val', 'const', 'func', 'class', 'if', 'while', 'for', 'return', 'try', 'import', 'export', 'break', 'continue', 'throw', 'else']
+        if (keywords.includes(token.value as string)) {
+          return
+        }
+      }
+      
+      this.advance()
+      maxAdvances--
+    }
+  }
 
   private isValidLValue(expr: Expr): boolean {
     switch (expr.kind) {

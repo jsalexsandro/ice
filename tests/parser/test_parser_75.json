@@ -2,5 +2,11 @@
   "id": "parser_75",
   "reference": "arquivo parser.test.md - teste 75",
   "code": "user.",
-  "result": "Expected identifier or keyword after '.' but got 'EOF'"
+  "result": {
+    "kind": "Program",
+    "body": [],
+    "errors": [
+      "Expected identifier or keyword after '.' but got 'EOF' at line 0, column 0"
+    ]
+  }
 }

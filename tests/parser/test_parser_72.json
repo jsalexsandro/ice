@@ -2,5 +2,11 @@
   "id": "parser_72",
   "reference": "arquivo parser.test.md - teste 72",
   "code": "sum(1, 2",
-  "result": "Expected token RPAREN but got EOF"
+  "result": {
+    "kind": "Program",
+    "body": [],
+    "errors": [
+      "Expected token RPAREN but got EOF at line 0, column 0"
+    ]
+  }
 }

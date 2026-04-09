@@ -2,5 +2,11 @@
   "id": "parser_78",
   "reference": "arquivo parser.test.md - teste 78",
   "code": "if () { }",
-  "result": "Parser Error: Expected expression but got 'RPAREN' at line 1, column 4"
+  "result": {
+    "kind": "Program",
+    "body": [],
+    "errors": [
+      "Parser Error: Expected expression but got 'RPAREN' at line 1, column 4 at line 1, column 4"
+    ]
+  }
 }

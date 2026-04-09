@@ -2,5 +2,11 @@
   "id": "parser_195",
   "description": "Tag não fechada (EOF)",
   "code": "<div>\n    <span>content",
-  "result": "Tag span não fechada"
+  "result": {
+    "kind": "Program",
+    "body": [],
+    "errors": [
+      "Tag span não fechada at line 0, column 0"
+    ]
+  }
 }

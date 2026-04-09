@@ -2,5 +2,11 @@
   "id": "parser_194",
   "description": "Tag de fechamento errada",
   "code": "<div>content</span>",
-  "result": "Tag de fechamento incorreta: esperado </div>, encontrado </span>"
+  "result": {
+    "kind": "Program",
+    "body": [],
+    "errors": [
+      "Tag de fechamento incorreta: esperado </div>, encontrado </span> at line 1, column 18"
+    ]
+  }
 }

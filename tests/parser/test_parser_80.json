@@ -2,5 +2,16 @@
   "id": "parser_80",
   "reference": "arquivo parser.test.md - teste 80",
   "code": "func () { }",
-  "result": "Expected token IDENTIFIER but got LPAREN"
+  "result": {
+    "kind": "Program",
+    "body": [
+      {
+        "kind": "BlockStmt",
+        "statements": []
+      }
+    ],
+    "errors": [
+      "Expected token IDENTIFIER but got LPAREN at line 1, column 5"
+    ]
+  }
 }

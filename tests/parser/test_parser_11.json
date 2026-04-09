@@ -2,5 +2,11 @@
   "id": "parser_11",
   "reference": "arquivo parser.test.md - teste 11",
   "code": "const name =",
-  "result": "Parser Error: Expected expression but got 'EOF'"
+  "result": {
+    "kind": "Program",
+    "body": [],
+    "errors": [
+      "Parser Error: Expected expression but got 'EOF' at line 0, column 0 at line 0, column 0"
+    ]
+  }
 }

@@ -2,5 +2,11 @@
   "id": "parser_52",
   "reference": "arquivo parser.test.md - teste 52",
   "code": "val x = (10 + 5",
-  "result": "Expected token RPAREN but got EOF"
+  "result": {
+    "kind": "Program",
+    "body": [],
+    "errors": [
+      "Expected token RPAREN but got EOF at line 0, column 0"
+    ]
+  }
 }

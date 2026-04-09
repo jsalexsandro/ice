@@ -2,5 +2,11 @@
   "id": "parser_76",
   "reference": "arquivo parser.test.md - teste 76",
   "code": "arr[]",
-  "result": "Parser Error: Expected expression but got 'RBRACKET' at line 1, column 4"
+  "result": {
+    "kind": "Program",
+    "body": [],
+    "errors": [
+      "Parser Error: Expected expression but got 'RBRACKET' at line 1, column 4 at line 1, column 4"
+    ]
+  }
 }

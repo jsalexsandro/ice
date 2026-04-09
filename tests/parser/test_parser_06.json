@@ -2,5 +2,11 @@
   "id": "parser_06",
   "reference": "arquivo parser.test.md - teste 06",
   "code": "const test;",
-  "result": "Parser Error: Constant 'test' must be initialized at line 1, column 6"
+  "result": {
+    "kind": "Program",
+    "body": [],
+    "errors": [
+      "Parser Error: Constant 'test' must be initialized at line 1, column 6 at line 0, column 0"
+    ]
+  }
 }
