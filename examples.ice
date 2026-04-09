@@ -13,6 +13,11 @@ import { pow as power } from math
 import { sqrt as squareRoot, cos as cosine } from math
 import { pow as p, sqrt as s } from math
 
+export { pow }
+export { sqrt, sin, cos }
+export { pow as power, sqrt as squareRoot }
+export { func, MyClass, val }
+
 val name: string = "Hello"
 const age: int = 25
 val isActive: bool = true

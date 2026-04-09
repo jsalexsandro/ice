@@ -43,6 +43,8 @@ export enum TokenType {
   ASSIGN = 'ASSIGN',
   EOF = 'EOF',
   ERROR = 'ERROR',
+  TEMPLATE_STRING = 'TEMPLATE_STRING',
+  TEMPLATE_MIDDLE = 'TEMPLATE_MIDDLE',
 }
 
 export interface Token {
@@ -61,9 +63,11 @@ export class Lexer {
   previousTokenType: TokenType | null = null
   line = 1
   column = 0
+  templateMode: boolean = false
 
-  constructor(input: string) {
+  constructor(input: string, templateMode: boolean = true) {
     this.input = input
+    this.templateMode = templateMode
     this.column = -1
     this.readChar()
   }
@@ -216,9 +220,161 @@ export class Lexer {
       case '`':
         this.readChar()
         return '`'
+      case '$':
+        this.readChar()
+        return '$'
+      case '{':
+        this.readChar()
+        return '{'
+      case '}':
+        this.readChar()
+        return '}'
       default:
         return null
     }
+  }
+
+  readTemplateString(): Token[] {
+    const startColumn = this.column
+    const startLine = this.line
+    const hasInterpolation = this.ch === '$'
+    
+    if (this.ch === '$') {
+      this.readChar()
+    }
+    this.readChar()
+    
+    const tokens: Token[] = []
+    let currentText = ''
+    let isEscaped = false
+    let braceDepth = 0
+
+    const addTextToken = () => {
+      if (currentText !== '') {
+        tokens.push({ type: TokenType.STRING, value: currentText, line: startLine, column: startColumn })
+        currentText = ''
+      }
+    }
+
+    while (true) {
+      if (this.ch === '') {
+        tokens.push({ type: TokenType.ERROR, value: 'unclosed template string', line: startLine, column: startColumn })
+        break
+      }
+
+      if (isEscaped) {
+        isEscaped = false
+        currentText += this.ch
+        this.readChar()
+        continue
+      }
+
+      if (this.ch === '\\') {
+        isEscaped = true
+        this.readChar()
+        continue
+      }
+
+      if (this.ch === '$' && this.peek() === '{') {
+        addTextToken()
+        this.readChar()
+        this.readChar()
+        tokens.push({ type: TokenType.LBRACE, value: '${', line: startLine, column: startColumn })
+        braceDepth = 1
+        
+        while (braceDepth > 0 && this.ch !== '' && this.ch !== '\n') {
+          if (this.ch === '{') braceDepth++
+          if (this.ch === '}') braceDepth--
+          if (braceDepth > 0) {
+            currentText += this.ch
+          }
+          this.readChar()
+        }
+        
+        if (currentText !== '') {
+          tokens.push({ type: TokenType.TEMPLATE_MIDDLE, value: currentText, line: startLine, column: startColumn })
+          currentText = ''
+        }
+        tokens.push({ type: TokenType.RBRACE, value: '}', line: startLine, column: startColumn })
+        continue
+      }
+
+      if (hasInterpolation && this.ch === '{') {
+        addTextToken()
+        this.readChar()
+        tokens.push({ type: TokenType.LBRACE, value: '{', line: startLine, column: startColumn })
+        braceDepth = 1
+        
+        while (braceDepth > 0 && this.ch !== '' && this.ch !== '\n') {
+          if (this.ch === '{') braceDepth++
+          if (this.ch === '}') braceDepth--
+          if (braceDepth > 0) {
+            currentText += this.ch
+          }
+          this.readChar()
+        }
+        
+        if (currentText !== '') {
+          tokens.push({ type: TokenType.TEMPLATE_MIDDLE, value: currentText, line: startLine, column: startColumn })
+          currentText = ''
+        }
+        tokens.push({ type: TokenType.RBRACE, value: '}', line: startLine, column: startColumn })
+        continue
+      }
+
+      if (this.ch === '`') {
+        addTextToken()
+        this.readChar()
+        tokens.push({ type: TokenType.EOF, value: null, line: startLine, column: startColumn })
+        break
+      }
+
+      currentText += this.ch
+      this.readChar()
+    }
+    
+    return tokens
+  }
+
+  private _nextToken(): Token {
+    this.skipWhitespace()
+
+    if (this.ch === '') {
+      return { type: TokenType.EOF, value: null, line: this.line, column: this.column }
+    }
+
+    if (this.isLetter(this.ch)) {
+      return this.readIdentifier()
+    }
+
+    if (this.ch >= '0' && this.ch <= '9') {
+      return this.readNumber()
+    }
+
+    if (this.ch === '"' || this.ch === "'") {
+      return this.readString(this.ch)
+    }
+
+    if (this.ch === '`') {
+      return this.readTemplateString()
+    }
+
+    if (this.ch === '$' && this.peek() === '`') {
+      return this.readTemplateString()
+    }
+
+    if (this.ch === '/') {
+      const commentResult = this.skipComment()
+      if (commentResult) {
+        return commentResult
+      }
+      if (this.ch === '/') {
+        return this.readOperator()
+      }
+      return this._nextToken()
+    }
+
+    return this.readOperator()
   }
 
   readIdentifier(): Token {
@@ -424,6 +580,16 @@ export class Lexer {
       return { type: TokenType.EOF, value: null, line: this.line, column: this.column }
     }
 
+    if (this.ch === '$' && this.peek() === '`') {
+      const result = this.readTemplateString()
+      return result[0] ?? { type: TokenType.EOF, value: null, line: this.line, column: this.column }
+    }
+
+    if (this.ch === '`') {
+      const result = this.readTemplateString()
+      return result[0] ?? { type: TokenType.EOF, value: null, line: this.line, column: this.column }
+    }
+
     if (this.isLetter(this.ch)) {
       return this.readIdentifier()
     }
@@ -432,7 +598,7 @@ export class Lexer {
       return this.readNumber()
     }
 
-    if (this.ch === '"' || this.ch === "'" || this.ch === '`') {
+    if (this.ch === '"' || this.ch === "'") {
       return this.readString(this.ch)
     }
 
@@ -452,14 +618,65 @@ export class Lexer {
 
   tokenize(): Token[] {
     const tokens: Token[] = []
-    let token = this.nextToken()
     
-    while (token.type !== 'EOF') {
-      tokens.push(token)
-      token = this.nextToken()
+    if (this.templateMode) {
+      this._tokenizeTemplate(tokens)
+    } else {
+      let token = this.nextToken()
+      
+      while (token.type !== 'EOF') {
+        tokens.push(token)
+        token = this.nextToken()
+      }
     }
     
-    tokens.push(token)
+    tokens.push({ type: TokenType.EOF, value: null, line: 0, column: 0 })
     return tokens
+  }
+
+  private _tokenizeTemplate(tokens: Token[]): void {
+    const pendingTokens: Token[] = []
+    
+    while (true) {
+      let token: Token
+      
+      if (pendingTokens.length > 0) {
+        token = pendingTokens.shift()!
+      } else {
+        this.skipWhitespace()
+        
+        if (this.ch === '') {
+          break
+        }
+        
+        if (this.ch === '$' && this.peek() === '`') {
+          const templateTokens = this.readTemplateString()
+          for (const t of templateTokens) {
+            if ((t as any).type !== 'EOF') {
+              pendingTokens.push(t)
+            }
+          }
+          continue
+        }
+        
+        if (this.ch === '`') {
+          const templateTokens = this.readTemplateString()
+          for (const t of templateTokens) {
+            if ((t as any).type !== 'EOF') {
+              pendingTokens.push(t)
+            }
+          }
+          continue
+        }
+        
+        token = this.nextToken()
+      }
+      
+      if ((token as any).type === 'EOF') {
+        break
+      }
+      
+      tokens.push(token)
+    }
   }
 }

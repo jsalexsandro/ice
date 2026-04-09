@@ -118,6 +118,7 @@ export type Stmt =
   | FunctionStmt
   | ReturnStmt
   | ImportStmt
+  | ExportStmt
 
 export interface ExpressionStmt {
   kind: "ExpressionStmt"
@@ -271,4 +272,15 @@ export interface ImportStmt {
   source: string
   specifiers?: ImportSpecifier[]
   alias?: string
+}
+
+export interface ExportSpecifier {
+  kind: "ExportSpecifier"
+  name: string
+  alias?: string
+}
+
+export interface ExportStmt {
+  kind: "ExportStmt"
+  specifiers?: ExportSpecifier[]
 }

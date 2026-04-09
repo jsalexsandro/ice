@@ -42,6 +42,7 @@ Este documento rastreia a implementação do parser Ice Lang.
 | 31 | TryCatchStmt | `try { } catch { }` | ✅ Implementado
 | 32 | ThrowStmt | `throw new Error()` | ✅ Implementado
 | 33 | ImportStmt | `import ... from ...` | ✅ Implementado
+| 34 | ExportStmt | `export`, `export { x }` | ✅ Implementado
 
 ---
 
@@ -151,12 +152,11 @@ type IcexChild = IcexElement | IcexText | IcexExpression
 |---|---------|------------|-------|
 | 1 | ~~Try-Catch~~ | ~~Alta~~ | ✅ Implementado |
 | 2 | Switch/Match | Média | Não existe |
-| 3 | ~~Import/Export~~ | ~~Alta~~ | ✅ Implementado `import { x } from mod` |
+| 3 | ~~Import/Export~~ | ~~Alta~~ | ✅ Implementado |
 | 4 | Do-While | Baixa | Só tem `while` |
 | 5 | ~~Lambdas/Arrow~~ | ~~Alta~~ | ✅ Implementado `x => x * 2` |
 | 6 | Async/Await | Alta | Keywords existem |
 | 7 | ~~Type annotation multidimensional~~ | ~~Média~~ | ✅ Implementado `int[][]` em parâmetros/return/var |
-| 8 | Export Statement | Alta | Keyword `export` existe, não parseado |
 ---
 
 ## Bugs Conhecidos
@@ -173,8 +173,8 @@ type IcexChild = IcexElement | IcexText | IcexExpression
 
 ```
 try, catch, throw, finally  → Parsed
-import, from, as            → Import parsed ✅
-export                       → Não parsed
+import, from, as            → Parsed ✅
+export                       → Parsed ✅
 async, await               → Não parsed
 ```
 
@@ -311,6 +311,40 @@ interface ImportStmt {
 - Keyword `as` adicionada ao lexer
 - `source` contém o caminho do módulo
 - Resolução de módulos (index.ice) fica por conta do module loader
+
+---
+
+## Export Statement  ✅ Implementado
+
+### Tipos AST
+
+```typescript
+interface ExportSpecifier {
+  kind: "ExportSpecifier"
+  name: string
+  alias?: string
+}
+
+interface ExportStmt {
+  kind: "ExportStmt"
+  specifiers?: ExportSpecifier[]
+}
+```
+
+### Sintaxe
+
+| Feature | Exemplo |
+|---------|---------|
+| Export completo | `export` |
+| Named export | `export { foo }` |
+| Múltiplos | `export { foo, bar, baz }` |
+| Com alias | `export { foo as bar }` |
+| Keywords | `export { func, class, val }` |
+
+### Notas
+- Exports devem ser no top-level
+- Aceita IDENTIFIER e KEYWORD nos specifiers
+- Sem default export
 
 ---
 

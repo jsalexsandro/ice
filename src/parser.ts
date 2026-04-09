@@ -1,5 +1,5 @@
 import { Token, TokenType, Lexer } from "./lexer"
-import { Expr, Stmt, ImportStmt, ImportSpecifier } from "./ast"
+import { Expr, Stmt, ImportStmt, ImportSpecifier, ExportStmt, ExportSpecifier } from "./ast"
 import { ErrorMessages } from "./errors"
 
 export class Parser {
@@ -158,6 +158,9 @@ export class Parser {
       }
       if (token.value === 'import') {
         return this.parseImportStatement()
+      }
+      if (token.value === 'export') {
+        return this.parseExportStatement()
       }
     }
 
@@ -1700,5 +1703,65 @@ export class Parser {
     }
     
     return { kind: "ImportStmt", source, specifiers, alias }
+  }
+
+  private parseExportStatement(): ExportStmt {
+    if (!this.topLevel) {
+      const token = this.current()
+      throw new Error(`Exports must be at top-level at line ${token.line}, column ${token.column}`)
+    }
+    
+    this.expect(TokenType.KEYWORD)
+    
+    if (this.current().type === TokenType.EOF || 
+        (this.current().type === TokenType.SEMICOLON)) {
+      throw new Error(`Export requires at least one specifier or '{' at line ${this.current().line}, column ${this.current().column}`)
+    }
+    
+    let specifiers: ExportSpecifier[] | undefined = undefined
+    
+    if (this.current().type === TokenType.LBRACE) {
+      this.advance()
+      specifiers = []
+      
+      while (this.current().type !== TokenType.RBRACE && !this.isEOF()) {
+        let name = ''
+        
+        if (this.current().type === TokenType.IDENTIFIER) {
+          name = this.advance().value as string
+        } else if (this.current().type === TokenType.KEYWORD) {
+          name = this.advance().value as string
+        } else {
+          throw new Error(`Expected identifier or keyword for export but got '${this.current().type}'`)
+        }
+        
+        let specAlias: string | undefined = undefined
+        
+        if (this.current().type === TokenType.KEYWORD && this.current().value === 'as') {
+          this.advance()
+          if (this.current().type === TokenType.IDENTIFIER) {
+            specAlias = this.advance().value as string
+          } else if (this.current().type === TokenType.KEYWORD) {
+            specAlias = this.advance().value as string
+          }
+        }
+        
+        specifiers.push({ kind: "ExportSpecifier", name, alias: specAlias })
+        
+        if (this.current().type === TokenType.COMMA) {
+          this.advance()
+        } else if (this.current().type !== TokenType.RBRACE) {
+          break
+        }
+      }
+      
+      this.expect(TokenType.RBRACE)
+    }
+    
+    if (this.current().type === TokenType.SEMICOLON) {
+      this.advance()
+    }
+    
+    return { kind: "ExportStmt", specifiers }
   }
 }
