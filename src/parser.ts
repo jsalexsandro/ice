@@ -105,6 +105,8 @@ export class Parser {
 
     let maxStatements = 1000
     while (!this.isEOF() && maxStatements > 0) {
+      const startPosition = this.position
+      
       try {
         const stmt = this.parseStatement()
         if (stmt) {
@@ -112,11 +114,45 @@ export class Parser {
         }
       } catch (e: any) {
         this.addError(e.message)
-        // Advance past the problematic token before synchronize
+        
+        // Conservative recovery:
+        // 1. Advance past the error token
+        // 2. Only do aggressive skip if stuck at same position
+        
         if (!this.isEOF()) {
           this.advance()
         }
-        this.synchronize()
+        
+        // If still stuck (same position), do one more advance
+        if (this.position === startPosition && !this.isEOF()) {
+          this.advance()
+        }
+        
+        // If STILL stuck, do aggressive skip to prevent infinite loop
+        if (this.position === startPosition && !this.isEOF()) {
+          const stmtKeywords = ['val', 'const', 'func', 'class', 'if', 'while', 'for', 'return', 'try', 'import', 'export', 'break', 'continue', 'throw', 'async']
+          
+          let skipped = 0
+          while (!this.isEOF() && skipped < 20) {
+            const tok = this.current()
+            
+            // Keyword at column 0 = new statement
+            if (tok.type === TokenType.KEYWORD && stmtKeywords.includes(tok.value as string) && tok.column === 0) {
+              break
+            }
+            
+            // Semicolon = end of statement
+            if (tok.type === TokenType.SEMICOLON) {
+              this.advance()
+              break
+            }
+            
+            if (tok.type === TokenType.EOF) break
+            
+            this.advance()
+            skipped++
+          }
+        }
       }
       maxStatements--
     }
@@ -1546,34 +1582,95 @@ pType = typeToken
   }
 
   private synchronize(): void {
-    let maxAdvances = 50
-    while (maxAdvances > 0 && !this.isEOF()) {
+    const stmtKeywords = ['val', 'const', 'func', 'class', 'if', 'while', 'for', 'return', 'try', 'import', 'export', 'break', 'continue', 'throw', 'async']
+    
+    while (!this.isEOF()) {
       const token = this.current()
       
-      // Sync points - tokens seguros para continuar
-      // AVANÇAR para além de tokens de fechamento para evitar loop
-      if (token.type === TokenType.RPAREN || 
-          token.type === TokenType.RBRACKET ||
-          token.type === TokenType.RBRACE ||
-          token.type === TokenType.EOF) {
-        this.advance() // Pular o fechamento
+      // Keyword at start of line - might be new statement
+      if (token.type === TokenType.KEYWORD && stmtKeywords.includes(token.value as string) && token.column === 0) {
         return
       }
       
+      // Semicolon - consume and return
       if (token.type === TokenType.SEMICOLON) {
         this.advance()
         return
       }
       
-      if (token.type === TokenType.KEYWORD) {
-        const keywords = ['val', 'const', 'func', 'class', 'if', 'while', 'for', 'return', 'try', 'import', 'export', 'break', 'continue', 'throw', 'else']
-        if (keywords.includes(token.value as string)) {
-          return
-        }
+      // EOF
+      if (token.type === TokenType.EOF) {
+        return
       }
       
+      // Skip
       this.advance()
-      maxAdvances--
+    }
+  }
+
+  // Robust error recovery method
+  private skipToSafePoint(): void {
+    const stmtKeywords = ['val', 'const', 'func', 'class', 'if', 'while', 'for', 'return', 'try', 'import', 'export', 'break', 'continue', 'throw', 'async']
+    
+    // Skip tokens until safe point:
+    // 1. Semicolon
+    // 2. Keyword at column 0 (likely new statement)
+    // 3. EOF
+    
+    while (!this.isEOF()) {
+      const token = this.current()
+      
+      // Semicolon - consume and return
+      if (token.type === TokenType.SEMICOLON) {
+        this.advance()
+        return
+      }
+      
+      // Keyword at start of line - might be new valid statement
+      if (token.type === TokenType.KEYWORD && stmtKeywords.includes(token.value as string) && token.column === 0) {
+        return
+      }
+      
+      // EOF
+      if (token.type === TokenType.EOF) {
+        return
+      }
+      
+      // Skip token
+      this.advance()
+    }
+  }
+
+  // Old method - keep for compatibility
+  private skipToNextLine(errorLine: number): void {
+    const stmtKeywords = ['val', 'const', 'func', 'class', 'if', 'while', 'for', 'return', 'try', 'import', 'export', 'break', 'continue', 'throw', 'async']
+    
+    // Aggressive recovery: skip until guaranteed clean state
+    // Only stop at semicolon (clean boundary) or EOF
+    
+    while (!this.isEOF()) {
+      const token = this.current()
+      
+      // Keyword on column 0 is NOT safe - it might be another broken statement
+      // So we skip ALL keywords to avoid getting stuck
+      if (token.type === TokenType.KEYWORD && stmtKeywords.includes(token.value as string)) {
+        this.advance()
+        continue
+      }
+      
+      // Only stop at semicolon (clean statement end)
+      if (token.type === TokenType.SEMICOLON) {
+        this.advance()
+        return
+      }
+      
+      // EOF
+      if (token.type === TokenType.EOF) {
+        return
+      }
+      
+      // Keep skipping
+      this.advance()
     }
   }
 
