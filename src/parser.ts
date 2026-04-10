@@ -1,15 +1,17 @@
 import { Token, TokenType, Lexer } from "./lexer"
 import { Expr, Stmt, ImportStmt, ImportSpecifier, ExportStmt, ExportSpecifier } from "./ast"
-import { ErrorMessages } from "./errors"
+import { ErrorMessages, formatError, printErrorFormatted } from "./errors"
 
 export class Parser {
   private tokens: Token[]
   private position: number = 0
   private topLevel: boolean = true
   private errors: string[] = []
+  private source: string = ""
 
-  constructor(tokens: Token[]) {
+  constructor(tokens: Token[], source: string = "") {
     this.tokens = tokens
+    this.source = source
   }
 
   /*
@@ -83,7 +85,7 @@ export class Parser {
     const token = this.current()
 
     if (token.type !== type) {
-      throw new Error(`Expected token ${type} but got ${token.type}`)
+      throw new Error(ErrorMessages.expectedToken(type, token).message)
     }
 
     return this.advance()
@@ -184,10 +186,10 @@ export class Parser {
         return this.parseTryCatchStatement()
       }
       if (token.value === 'catch') {
-        throw new Error(`Unexpected 'catch' without matching 'try' at line ${token.line}, column ${token.column}`)
+        throw new Error(ErrorMessages.unexpectedCatch(token).message)
       }
       if (token.value === 'finally') {
-        throw new Error(`Unexpected 'finally' without matching 'try' at line ${token.line}, column ${token.column}`)
+        throw new Error(ErrorMessages.unexpectedFinally(token).message)
       }
       if (token.value === 'throw') {
         return this.parseThrowStatement()
@@ -353,7 +355,7 @@ export class Parser {
           }
           paramType = typeToken
         } else {
-          throw new Error(`Invalid type '${this.current().value}' at line ${this.current().line}, column ${this.current().column}`)
+          throw new Error(ErrorMessages.invalidType(this.current().value, this.current()).message)
         }
       }
       
@@ -386,13 +388,13 @@ export class Parser {
               this.expect(TokenType.RBRACKET)
               typeToken = { ...typeToken, value: typeToken.value + '[]' }
             }
-            pType = typeToken
+pType = typeToken
           } else {
-            throw new Error(`Invalid type '${this.current().value}' at line ${this.current().line}, column ${this.current().column}`)
+            throw new Error(ErrorMessages.invalidType(this.current().value, this.current()).message)
           }
-        }
-        
-        params.push({ name: pName, type: pType, isRest: isRestParam })
+      }
+      
+      params.push({ name: pName, type: pType, isRest: isRestParam })
       }
     }
     
@@ -443,7 +445,7 @@ export class Parser {
     
     while (this.current().type !== TokenType.RBRACE) {
       if (this.current().type === TokenType.EOF) {
-        throw new Error(`Class ${className.value} not closed`)
+        throw new Error(ErrorMessages.classNotClosed(className.value, this.current()).message)
       }
       
       let visibility: "public" | "private" | "protected" | null = null
@@ -1141,7 +1143,7 @@ export class Parser {
           if (this.current().type === TokenType.LPAREN) {
             return this.parseArrowFunction(true)
           }
-          throw new Error(`Expected identifier or '(' after 'async' at line ${token.line}, column ${token.column}`)
+          throw new Error(ErrorMessages.expectedIdentifierOrParen(token).message)
         }
         throw ErrorMessages.expectedExpression(token)
 
@@ -1508,13 +1510,27 @@ export class Parser {
 
   // Error Recovery
   private addError(message: string): void {
-    // Evitar erros duplicados
     if (this.errors.includes(message)) {
       return
     }
-    const token = this.current()
-    const location = token?.line !== undefined ? ` at line ${token.line}, column ${token.column}` : ''
-    this.errors.push(`${message}${location}`)
+
+    let token = this.current()
+    let usePrevious = false
+
+    if ((!token || token.line === 0) && this.position > 0) {
+      token = this.tokens[this.position - 1]
+      usePrevious = true
+    }
+
+    if (this.source && token && token.line > 0) {
+      const formatted = formatError(message, token, this.source)
+      this.errors.push(printErrorFormatted(formatted))
+    } else {
+      const loc = usePrevious && token 
+        ? ` (after '${token.value}')` 
+        : token?.line !== undefined ? ` at line ${token.line}, column ${token.column}` : ''
+      this.errors.push(`error: ${message}${loc}`)
+    }
   }
 
   private hasError(): boolean {
@@ -1637,7 +1653,7 @@ export class Parser {
         ? this.advance().value as string
         : null
       if (closeTag !== tag) {
-        throw new Error(`Tag de fechamento incorreta: esperado </${tag}>, encontrado </${closeTagToken.value}>`)
+        throw new Error(ErrorMessages.invalidCloseTag(tag, closeTagToken.value as string, closeTagToken).message)
       }
       this.expect(TokenType.GREATER_THAN)
     }
@@ -1728,7 +1744,7 @@ export class Parser {
         return this.parseUnary()
       
       case TokenType.ARROW:
-        throw new Error(`Parser Error: Unexpected arrow '=>' in attribute value at line ${token.line}, column ${token.column}`)
+        throw new Error(ErrorMessages.unexpectedArrow(token).message)
 
       default:
         throw ErrorMessages.expectedExpression(token)
@@ -1789,7 +1805,7 @@ export class Parser {
       }
 
       if (token.type === TokenType.EOF) {
-        throw new Error(`Tag ${parentTag} não fechada`)
+        throw new Error(ErrorMessages.tagNotClosed(parentTag, token).message)
       }
 
       if ((token.type === TokenType.IDENTIFIER || token.type === TokenType.NUMBER) && currentText !== "" && !currentText.endsWith(" ")) {
@@ -1811,7 +1827,7 @@ export class Parser {
   private parseImportStatement(): ImportStmt {
     if (!this.topLevel) {
       const token = this.current()
-      throw new Error(`Imports must be at top-level at line ${token.line}, column ${token.column}`)
+      throw new Error(ErrorMessages.importNotTopLevel(token).message)
     }
     
     this.expect(TokenType.KEYWORD)
@@ -1884,14 +1900,14 @@ export class Parser {
   private parseExportStatement(): Stmt {
     if (!this.topLevel) {
       const token = this.current()
-      throw new Error(`Exports must be at top-level at line ${token.line}, column ${token.column}`)
+      throw new Error(ErrorMessages.exportNotTopLevel(token).message)
     }
     
     this.expect(TokenType.KEYWORD)
     
     if (this.current().type === TokenType.EOF || 
         (this.current().type === TokenType.SEMICOLON)) {
-      throw new Error(`Export requires at least one specifier or '{' at line ${this.current().line}, column ${this.current().column}`)
+      throw new Error(ErrorMessages.exportMissingSpecifiers(this.current()).message)
     }
     
     if (this.current().value === 'val' || this.current().value === 'const') {
@@ -1926,7 +1942,7 @@ export class Parser {
         } else if (this.current().type === TokenType.KEYWORD) {
           name = this.advance().value as string
         } else {
-          throw new Error(`Expected identifier or keyword for export but got '${this.current().type}'`)
+          throw new Error(ErrorMessages.expectedIdentifierOrKeyword(this.current(), this.current().type).message)
         }
         
         let specAlias: string | undefined = undefined

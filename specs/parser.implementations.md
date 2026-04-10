@@ -48,6 +48,8 @@ Este documento rastreia a implementação do parser Ice Lang.
 | 37 | AwaitExpr | `await expr` |
 | 38 | AsyncArrowFunction | `async x => x` |
 | 39 | SpreadExpr | `...expr` |
+| 40 | Error Recovery | Coleta erros + sync |
+| 41 | Error Messages | Formatadas com ^^^ + snippet |
 
 ---
 
@@ -170,9 +172,9 @@ type IcexChild = IcexElement | IcexText | IcexExpression
 
 | Bug | Severidade | Descrição |
 |-----|------------|-----------|
-| Erro Recovery | Alta | Parser para no primeiro erro |
+| ~~Erro Recovery~~ | ~~Alta~~ | ~~Parser para no primeiro erro~~ ✅ Implementado |
+| ~~Mensagens de Erro~~ | ~~Média~~ | ~~Sem contexto útil~~ ✅ Implementado |
 | ICEX Comments | Média | `<!-- -->` vira texto |
-| Mensagens de Erro | Média | Sem contexto útil |
 
 ---
 
@@ -496,6 +498,65 @@ interface SpreadExpr {
 | Call | `fn(1, ...args)` |
 | Call múltiplos | `fn(...a, ...b)` |
 | Aninhado | `[...[1,2]]` |
+
+
+---
+
+## Error System  ✅ Implementado
+
+### Formato de Erro
+
+```
+ --> line 1, column 14
+   |
+ 1 | val x = sum(1,,2)
+   |              ^
+   |
+error: Parser Error: Expected expression but got 'COMMA'
+```
+
+### Arquivos
+
+- **`src/errors.ts`**: Sistema de erros com formatação
+  - `formatError()` - cria objeto formatado
+  - `printErrorFormatted()` - gera output bonito
+  - `IceErrorFormatted` - interface com line, column, snippet, marker
+  - `ErrorMessages` - 17 mensagens específicas
+
+### Mensagens Implementadas
+
+| Erro | Descrição |
+|------|----------|
+| constWithoutInitializer | Constante sem inicializador |
+| unexpectedToken | Token esperado vsreceived |
+| invalidType | Tipo inválido |
+| expectedExpression | Expressão esperada |
+| invalidAssignment |Alvo de atribuição inválido |
+| importEmptySpecifiers | Specifiers vazios |
+| importMissingFrom | Falta 'from' |
+| importInvalidSpecifier | Specifier inválido |
+| importTrailingComma | Vírgula trailing |
+| importAsWithoutAlias | 'as' sem alias |
+| importMissingAlias | Alias faltando |
+| unexpectedCatch | 'catch' sem 'try' |
+| unexpectedFinally | 'finally' sem 'try' |
+| classNotClosed | Classe não fechada |
+| expectedIdentifierOrParen | Identificador ou '(' esperado |
+| invalidCloseTag | Tag de fechamento errado |
+| unexpectedArrow | Arrow inválido |
+| tagNotClosed | Tag não fechada |
+| importNotTopLevel | Import não no top-level |
+| exportNotTopLevel | Export não no top-level |
+| exportMissingSpecifiers | Export sem specifiers |
+| expectedIdentifierOrKeyword | Identificador ou keyword esperado |
+| expectedToken | Token esperado |
+
+### Error Recovery
+
+- Parser coleta erros em vez de parar
+- `synchronize()` avança para sync points
+- Evita duplicados
+- Limite de 1000 statements
 
 
 ## Métricas
